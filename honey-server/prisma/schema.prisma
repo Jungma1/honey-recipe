@@ -27,7 +27,7 @@ model User {
 
 model SocialAccount {
   id     Int @id @default(autoincrement())
-  userId Int @unique
+  userId Int @unique @map("user_id")
 
   provider  String
   socialId  String   @map("social_id")
@@ -41,7 +41,7 @@ model SocialAccount {
 
 model Token {
   id     Int @id @default(autoincrement())
-  userId Int
+  userId Int @map("user_id")
 
   counter    Int      @default(1)
   invalidate Boolean  @default(false)
