@@ -6,7 +6,7 @@ import { OAuthUser } from '../interface/oauth-user.interface';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
-  constructor(readonly configService: ConfigService) {
+  constructor(private readonly configService: ConfigService) {
     super({
       clientID: configService.get('OAUTH_GOOGLE_ID'),
       clientSecret: configService.get('OAUTH_GOOGLE_SECRET'),

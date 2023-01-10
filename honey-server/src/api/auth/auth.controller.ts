@@ -1,7 +1,7 @@
 import { Controller, Get, Res, UseGuards } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { Response } from 'express';
-import { AppConfigService } from '~/config/app-config.service';
+import { AppConfigService } from '~/common/config/app-config.service';
 import { AuthService } from './auth.service';
 import { AuthUser } from './decorator/auth-user.decorator';
 import { AuthUserDto } from './dto/auth-user.dto';
