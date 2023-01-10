@@ -1,9 +1,12 @@
 import { Controller, Get, Res, UseGuards } from '@nestjs/common';
+import { User } from '@prisma/client';
 import { Response } from 'express';
 import { AppConfigService } from '~/config/app-config.service';
 import { AuthService } from './auth.service';
 import { AuthUser } from './decorator/auth-user.decorator';
+import { AuthUserDto } from './dto/auth-user.dto';
 import { GoogleGuard } from './guard/google.guard';
+import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { OAuthUser } from './interface/oauth-user.interface';
 
 @Controller('auth')
@@ -17,6 +20,12 @@ export class AuthController {
   ) {
     this.host = appConfigService.host;
     this.domain = appConfigService.domain;
+  }
+
+  @Get('profile')
+  @UseGuards(JwtAuthGuard)
+  async profile(@AuthUser() user: User) {
+    return new AuthUserDto(user);
   }
 
   @Get('oauth/google')
