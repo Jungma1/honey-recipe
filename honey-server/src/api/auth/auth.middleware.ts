@@ -1,6 +1,7 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { AppConfigService } from '~/common/config/app-config.service';
+import { setTokenCookies } from '~/lib/cookies';
 import { AuthService } from './auth.service';
 
 @Injectable()
@@ -14,26 +15,17 @@ export class AuthMiddleware implements NestMiddleware {
     const accessToken = req.cookies['access_token'];
     const refreshToken = req.cookies['refresh_token'];
 
-    if (!accessToken && !refreshToken) next();
+    if (!accessToken && !refreshToken) {
+      return next();
+    }
 
     if (!accessToken && refreshToken) {
-      const { accessToken: freshAccessToken, refreshToken: freshRefreshToken } =
-        await this.authService.refreshToken(refreshToken);
+      const tokens = await this.authService.refreshToken(refreshToken);
+      const domain = this.appConfigService.domain;
 
-      res.cookie('access_token', freshAccessToken, {
-        httpOnly: true,
-        path: '/',
-        domain: this.appConfigService.domain,
-        maxAge: 60 * 60 * 1000,
-      });
-      res.cookie('refresh_token', freshRefreshToken, {
-        httpOnly: true,
-        path: '/',
-        domain: this.appConfigService.domain,
-        maxAge: 60 * 60 * 1000 * 24 * 7,
-      });
+      setTokenCookies(res, tokens, domain);
 
-      req.cookies['access_token'] = freshAccessToken;
+      req.cookies['access_token'] = tokens.accessToken;
     }
     next();
   }

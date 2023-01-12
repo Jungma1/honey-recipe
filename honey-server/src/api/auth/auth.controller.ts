@@ -2,6 +2,7 @@ import { Controller, Get, Res, UseGuards } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { Response } from 'express';
 import { AppConfigService } from '~/common/config/app-config.service';
+import { setTokenCookies } from '~/lib/cookies';
 import { AuthService } from './auth.service';
 import { AuthUser } from './decorator/auth-user.decorator';
 import { AuthUserDto } from './dto/auth-user.dto';
@@ -38,25 +39,7 @@ export class AuthController {
   @UseGuards(GoogleGuard)
   async googleRedirect(@AuthUser() user: OAuthUser, @Res() res: Response) {
     const tokens = await this.authService.socialRegister(user);
-    this.setCookies(res, tokens);
+    setTokenCookies(res, tokens, this.domain);
     return res.redirect(this.host);
-  }
-
-  private setCookies(
-    res: Response,
-    tokens: { accessToken: string; refreshToken: string },
-  ) {
-    res.cookie('access_token', tokens.accessToken, {
-      httpOnly: true,
-      path: '/',
-      domain: this.domain,
-      maxAge: 60 * 60 * 1000,
-    });
-    res.cookie('refresh_token', tokens.refreshToken, {
-      httpOnly: true,
-      path: '/',
-      domain: this.domain,
-      maxAge: 60 * 60 * 1000 * 24 * 7,
-    });
   }
 }

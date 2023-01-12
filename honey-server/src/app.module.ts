@@ -17,6 +17,9 @@ import { PrismaModule } from './common/prisma/prisma.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).forRoutes('/');
+    consumer
+      .apply(AuthMiddleware)
+      .exclude('api/v1/auth/oauth/(.*)')
+      .forRoutes('/');
   }
 }
