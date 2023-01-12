@@ -2,6 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './common/exception/http-exception.filter';
 import { PrismaService } from './common/prisma/prisma.service';
 
 async function bootstrap() {
@@ -9,6 +10,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('/api/v1');
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalFilters(new HttpExceptionFilter());
   app.use(cookieParser());
 
   const prismaService = app.get(PrismaService);
