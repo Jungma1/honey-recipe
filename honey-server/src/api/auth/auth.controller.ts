@@ -38,11 +38,11 @@ export class AuthController {
   @UseGuards(GoogleGuard)
   async googleRedirect(@AuthUser() user: OAuthUser, @Res() res: Response) {
     const tokens = await this.authService.socialRegister(user);
-    this.createCookies(res, tokens);
+    this.setCookies(res, tokens);
     return res.redirect(this.host);
   }
 
-  private createCookies(
+  private setCookies(
     res: Response,
     tokens: { accessToken: string; refreshToken: string },
   ) {
@@ -56,7 +56,7 @@ export class AuthController {
       httpOnly: true,
       path: '/',
       domain: this.domain,
-      maxAge: 60 * 60 * 1000 * 24 * 30,
+      maxAge: 60 * 60 * 1000 * 24 * 7,
     });
   }
 }

@@ -1,13 +1,13 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-interface AccessTokenPayload {
+export interface AccessTokenPayload {
   type: 'access_token';
   userId: number;
   tokenId: number;
 }
 
-interface RefreshTokenPayload {
+export interface RefreshTokenPayload {
   type: 'refresh_token';
   tokenId: number;
   counter: number;
@@ -15,14 +15,16 @@ interface RefreshTokenPayload {
 
 type TokensPayload = AccessTokenPayload | RefreshTokenPayload;
 
+type DecodedToken<T> = T & { iat: number; exp: number };
+
 @Injectable()
-export class JwtAuthService {
+export class TokenService {
   constructor(private readonly jwtService: JwtService) {}
 
   async generateToken(payload: TokensPayload) {
     const tokensExpiresIn = {
       access_token: '1h',
-      refresh_token: '30d',
+      refresh_token: '7d',
     } as const;
 
     try {
@@ -32,5 +34,9 @@ export class JwtAuthService {
     } catch (e) {
       throw new InternalServerErrorException('Token generation failed');
     }
+  }
+
+  async verifyToken<T extends TokensPayload>(token: string) {
+    return this.jwtService.verify<DecodedToken<T>>(token);
   }
 }
