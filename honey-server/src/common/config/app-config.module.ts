@@ -17,6 +17,8 @@ import { AppConfigService } from './app-config.service';
         OAUTH_GOOGLE_ID: Joi.string().required(),
         OAUTH_GOOGLE_SECRET: Joi.string().required(),
         OAUTH_GOOGLE_CALLBACK_URL: Joi.string().required(),
+        OAUTH_NAVER_ID: Joi.string().required(),
+        OAUTH_NAVER_SECRET: Joi.string().required(),
       }),
     }),
   ],

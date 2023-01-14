@@ -1,4 +1,4 @@
-import { Controller, Get, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, Res, UseGuards } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { Response } from 'express';
 import { AppConfigService } from '~/common/config/app-config.service';
@@ -32,13 +32,32 @@ export class AuthController {
   @Get('oauth/google')
   @UseGuards(GoogleGuard)
   async google() {
-    // oauth google
+    return;
   }
 
   @Get('oauth/google/redirect')
   @UseGuards(GoogleGuard)
   async googleRedirect(@AuthUser() user: OAuthUser, @Res() res: Response) {
     const tokens = await this.authService.socialRegister(user);
+    setTokenCookies(res, tokens, this.domain);
+    return res.redirect(this.host);
+  }
+
+  @Get('oauth/:provider')
+  async provider(@Param('provider') provider: string, @Res() res: Response) {
+    const socialLink = await this.authService.generateSocialLink(provider);
+    return res.redirect(socialLink);
+  }
+
+  @Get('oauth/:provider/redirect')
+  async providerRedirect(
+    @Param('provider') provider: string,
+    @Query('code') code: string,
+    @Res() res: Response,
+  ) {
+    const user = await this.authService.generateSocialUser(provider, code);
+    const tokens = await this.authService.socialRegister(user);
+
     setTokenCookies(res, tokens, this.domain);
     return res.redirect(this.host);
   }

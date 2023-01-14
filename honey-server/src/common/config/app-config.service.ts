@@ -15,6 +15,12 @@ export class AppConfigService {
       : 'http://localhost:3000';
   }
 
+  get apiHost() {
+    return this.NODE_ENV === 'production'
+      ? 'https://api.kkulpi.com'
+      : 'http://localhost:4000';
+  }
+
   get domain() {
     return this.NODE_ENV === 'production' ? '.kkulpi.com' : undefined;
   }
