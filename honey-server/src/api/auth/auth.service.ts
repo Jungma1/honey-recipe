@@ -12,23 +12,23 @@ import { PrismaService } from '~/common/prisma/prisma.service';
 import { OAuthUser } from './interface/oauth-user.interface';
 import { RefreshTokenPayload, TokenService } from './token.service';
 
-interface NaverTokenResult {
-  access_token: string;
-  refresh_token: string;
-  token_type: string;
-  expires_in: string;
-}
-
-interface NaverProfileResult {
+interface NaverProfile {
   response: {
+    id: string;
     email: string;
     nickname: string;
     profile_image: string;
-    age: string;
-    gender: string;
-    id: string;
-    name: string;
-    birthday: string;
+  };
+}
+
+interface KakaoProfile {
+  id: number;
+  kakao_account: {
+    email: string;
+    profile: {
+      nickname: string;
+      profile_image_url: string;
+    };
   };
 }
 
@@ -36,6 +36,8 @@ interface NaverProfileResult {
 export class AuthService {
   private readonly OAUTH_NAVER_ID: string;
   private readonly OAUTH_NAVER_SECRET: string;
+  private readonly OAUTH_KAKAO_ID: string;
+  private readonly OAUTH_KAKAO_SECRET: string;
 
   constructor(
     private readonly prismaService: PrismaService,
@@ -45,6 +47,8 @@ export class AuthService {
   ) {
     this.OAUTH_NAVER_ID = configService.get<string>('OAUTH_NAVER_ID');
     this.OAUTH_NAVER_SECRET = configService.get<string>('OAUTH_NAVER_SECRET');
+    this.OAUTH_KAKAO_ID = configService.get<string>('OAUTH_KAKAO_ID');
+    this.OAUTH_KAKAO_SECRET = configService.get<string>('OAUTH_KAKAO_SECRET');
   }
 
   async socialRegister(user: OAuthUser) {
@@ -149,7 +153,7 @@ export class AuthService {
 
     const socials = {
       naver: `https://nid.naver.com/oauth2.0/authorize?&client_id=${this.OAUTH_NAVER_ID}&response_type=code&redirect_uri=${redirectUri}&state=/`,
-      kakao: null,
+      kakao: `https://kauth.kakao.com/oauth/authorize?client_id=${this.OAUTH_KAKAO_ID}&response_type=code&redirect_uri=${redirectUri}`,
     } as const;
 
     return socials[provider];
@@ -161,7 +165,7 @@ export class AuthService {
         return this.getNaverProfile(code);
       }
       case 'kakao': {
-        return null;
+        return this.getKakaoProfile(code);
       }
       default: {
         throw new BadRequestException('Not found provider');
@@ -169,22 +173,22 @@ export class AuthService {
     }
   }
 
-  private async getNaverProfile(code: string) {
+  private async getNaverProfile(code: string): Promise<OAuthUser> {
     try {
-      const result = await axios.get<NaverTokenResult>(
+      const {
+        data: { access_token: accessToken },
+      } = await axios.get<{ access_token: string }>(
         `https://nid.naver.com/oauth2.0/token?client_id=${this.OAUTH_NAVER_ID}&client_secret=${this.OAUTH_NAVER_SECRET}&grant_type=authorization_code&state=/&code=${code}`,
       );
 
-      const accessToken = result.data.access_token;
-
-      const profile = await axios.get<NaverProfileResult>(
+      const { data: profile } = await axios.get<NaverProfile>(
         'https://openapi.naver.com/v1/nid/me',
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         },
       );
 
-      const { email, nickname, profile_image, id } = profile.data.response;
+      const { email, nickname, profile_image, id } = profile.response;
 
       const user: OAuthUser = {
         email,
@@ -196,6 +200,41 @@ export class AuthService {
 
       return user;
     } catch (e) {
+      throw new UnauthorizedException();
+    }
+  }
+
+  private async getKakaoProfile(code: string) {
+    try {
+      const host = this.appConfigService.apiHost;
+      const redirectUri = `${host}/api/v1/auth/oauth/kakao/redirect`;
+
+      const {
+        data: { access_token: accessToken },
+      } = await axios.post<{ access_token: string }>(
+        `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${this.OAUTH_KAKAO_ID}&redirect_uri=${redirectUri}&client_secret=${this.OAUTH_KAKAO_SECRET}&code=${code}`,
+      );
+
+      const { data: profile } = await axios.get<KakaoProfile>(
+        'https://kapi.kakao.com/v2/user/me',
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+
+      const user: OAuthUser = {
+        email: profile.kakao_account.email,
+        username: profile.kakao_account.profile.nickname,
+        picture: profile.kakao_account.profile.profile_image_url,
+        provider: 'kakao',
+        socialId: `${profile.id}`,
+      };
+
+      return user;
+    } catch (e) {
+      console.log(e);
       throw new UnauthorizedException();
     }
   }
