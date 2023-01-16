@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { Token, User } from '@prisma/client';
 import axios from 'axios';
 import { AppConfigService } from '~/common/config/app-config.service';
+import { FileService } from '~/common/file/file.service';
 import { PrismaService } from '~/common/prisma/prisma.service';
 import { OAuthUser } from './interface/oauth-user.interface';
 import { RefreshTokenPayload, TokenService } from './token.service';
@@ -44,6 +45,7 @@ export class AuthService {
     private readonly tokenService: TokenService,
     private readonly configService: ConfigService,
     private readonly appConfigService: AppConfigService,
+    private readonly fileService: FileService,
   ) {
     this.OAUTH_NAVER_ID = configService.get<string>('OAUTH_NAVER_ID');
     this.OAUTH_NAVER_SECRET = configService.get<string>('OAUTH_NAVER_SECRET');
@@ -67,13 +69,33 @@ export class AuthService {
           data: {
             email: user.email,
             username: user.username,
-            picture: user.picture,
             socialAccount: {
               create: {
                 provider: user.provider,
                 socialId: user.socialId,
               },
             },
+          },
+        });
+
+        const { buffer, extension } = await this.fileService.generateFile(
+          user.picture,
+        );
+
+        const key = await this.fileService.generateKey({
+          id: findUser.id,
+          type: 'avatars',
+          extension: extension || 'png',
+        });
+
+        await this.fileService.uploadFile(key, buffer);
+
+        await this.prismaService.user.update({
+          where: {
+            id: findUser.id,
+          },
+          data: {
+            picture: `https://cdn.kkulpi.com/${key}`,
           },
         });
       }
@@ -234,7 +256,6 @@ export class AuthService {
 
       return user;
     } catch (e) {
-      console.log(e);
       throw new UnauthorizedException();
     }
   }
