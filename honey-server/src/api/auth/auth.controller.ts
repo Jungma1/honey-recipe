@@ -1,6 +1,15 @@
-import { Controller, Get, Param, Query, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { User } from '@prisma/client';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { AppConfigService } from '~/common/config/app-config.service';
 import { setTokenCookies } from '~/lib/cookies';
 import { AuthService } from './auth.service';
@@ -60,5 +69,13 @@ export class AuthController {
 
     setTokenCookies(res, tokens, this.domain);
     return res.redirect(this.host);
+  }
+
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  async logout(@Req() req: Request, @Res() res: Response) {
+    const refreshToken = req.cookies['refresh_token'];
+    await this.authService.removeToken(refreshToken);
+    return res.clearCookie('access_token').clearCookie('refresh_token').send();
   }
 }

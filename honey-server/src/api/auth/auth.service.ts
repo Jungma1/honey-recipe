@@ -162,6 +162,16 @@ export class AuthService {
     }
   }
 
+  async removeToken(token: string) {
+    try {
+      const { tokenId } =
+        await this.tokenService.verifyToken<RefreshTokenPayload>(token);
+      await this.prismaService.token.delete({ where: { id: tokenId } });
+    } catch (e) {
+      throw new InternalServerErrorException('Logout failed');
+    }
+  }
+
   async generateSocialLink(provider: string): Promise<string> {
     const providers = ['naver', 'kakao'];
     const validated = providers.includes(provider);
