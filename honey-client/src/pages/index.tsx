@@ -1,16 +1,15 @@
 import { GetServerSideProps } from 'next';
 import { withClientCookie } from '~/apis';
 import { getProfile } from '~/apis/user';
-import { useRootStore } from '~/stores';
+import Header from '~/components/common/Header';
+import MainLayout from '~/components/layout/MainLayout';
 import { json } from '~/utils/json';
 
 export default function Home() {
-  const { user } = useRootStore();
-
   return (
-    <div>
-      <h1>{user?.username}</h1>
-    </div>
+    <MainLayout>
+      <Header />
+    </MainLayout>
   );
 }
 

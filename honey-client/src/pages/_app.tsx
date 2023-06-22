@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { AppProps } from 'next/app';
+import GlobalStyles from '~/components/common/GlobalStyles';
 import { useAuthEffect } from '~/hooks/useAuthEffect';
 
 const queryClient = new QueryClient({
@@ -17,6 +18,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools />
+      <GlobalStyles />
       <Component {...pageProps} />
     </QueryClientProvider>
   );
