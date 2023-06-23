@@ -17,4 +17,7 @@ export const colors = {
   primary: resolver('primary'),
   primaryLight: resolver('primary-light'),
   primaryDark: resolver('primary-dark'),
+  secondary: resolver('secondary'),
+  secondaryLight: resolver('secondary-light'),
+  secondaryDark: resolver('secondary-dark'),
 };

@@ -62,8 +62,12 @@ const styles = css`
     --color-danger: #ff7272;
 
     --color-primary: #ff7f2a;
-    --color-primary-light: #ff7f2a;
-    --color-primary-dark: #ff7f2a;
+    --color-primary-light: #ff9955;
+    --color-primary-dark: #cc6622;
+
+    --color-secondary: #465680;
+    --color-secondary-light: #6b7899;
+    --color-secondary-dark: #384566;
   }
 `;
 
