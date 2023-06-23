@@ -61,8 +61,8 @@ const styles = css`
 
     --color-danger: #ff7272;
 
-    --color-primary: #ffaf75;
-    --color-primary-light: #ffe3c7;
+    --color-primary: #ff7f2a;
+    --color-primary-light: #ff7f2a;
     --color-primary-dark: #ff7f2a;
   }
 `;

@@ -19,13 +19,17 @@ export class AuthMiddleware implements NestMiddleware {
       return next();
     }
 
+    if (accessToken && refreshToken) {
+      req.headers.authorization = `Bearer ${accessToken}`;
+    }
+
     if (!accessToken && refreshToken) {
       const tokens = await this.authService.refreshToken(refreshToken);
       const domain = this.appConfigService.domain;
 
       setTokenCookies(res, tokens, domain);
 
-      req.cookies['access_token'] = tokens.accessToken;
+      req.headers.authorization = `Bearer ${tokens.accessToken}`;
     }
     next();
   }
