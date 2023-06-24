@@ -2,13 +2,10 @@ import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { rem } from 'polished';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { colors } from '~/utils/colors';
 
 function RecipeItem() {
-  const imageRef = useRef<HTMLDivElement>(null);
-  const [imageWidth, setImageWidth] = useState(0);
-  const [imageHeight, setImageHeight] = useState(0);
   const [x, setX] = useState(0);
 
   const handleMouseEnter = () => {
@@ -19,18 +16,18 @@ function RecipeItem() {
     setX(0);
   };
 
-  useEffect(() => {
-    if (imageRef.current) {
-      setImageWidth(imageRef.current.clientWidth);
-      setImageHeight(imageRef.current.clientWidth);
-    }
-  }, []);
-
   return (
     <Block onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} animate={{ x }}>
-      <ImageWrapper ref={imageRef}>
+      <ImageWrapper>
         <TagBlock>디저트</TagBlock>
-        <Image src="/test.png" width={imageWidth} height={imageHeight} alt="" />
+        <Image
+          src="/test.png"
+          width={0}
+          height={0}
+          sizes="100vw"
+          style={{ width: '100%', height: 'auto' }}
+          alt=""
+        />
       </ImageWrapper>
       <Wrapper>
         <Title>요리 비법 전수해드림</Title>
