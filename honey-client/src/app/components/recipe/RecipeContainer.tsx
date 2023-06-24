@@ -1,4 +1,4 @@
-import Slider from '../common/Slider';
+import Slider from '../system/Slider';
 
 function RecipeContainer() {
   return (
