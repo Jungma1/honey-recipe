@@ -34,9 +34,8 @@ function Slider({ children, itemWidth, itemCount }: Props) {
   );
 }
 
-const Block = styled.section`
+const Block = styled.div`
   overflow: hidden;
-  padding: ${rem(32)};
 `;
 
 const StyledSlider = styled.div<BlockProps>`

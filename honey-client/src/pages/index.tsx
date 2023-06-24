@@ -1,12 +1,17 @@
 import Header from '~/components/common/Header';
+import ContentLayout from '~/components/layout/ContentLayout';
 import MainLayout from '~/components/layout/MainLayout';
-import RecipeContainer from '~/components/recipe/RecipeContainer';
+import RecipeBanner from '~/components/recipe/RecipeBanner';
+import RecipeList from '~/components/recipe/RecipeList';
 
 export default function Home() {
   return (
     <MainLayout>
       <Header />
-      <RecipeContainer />
+      <ContentLayout>
+        <RecipeBanner />
+        <RecipeList />
+      </ContentLayout>
     </MainLayout>
   );
 }

@@ -44,6 +44,15 @@ const styles = css`
     text-decoration: none;
   }
 
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    list-style: none;
+  }
+
   :root {
     --color-white: #fdfdfd;
     --color-black: #030612;

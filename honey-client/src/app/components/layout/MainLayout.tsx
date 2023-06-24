@@ -10,7 +10,7 @@ function MainLayout({ children }: Props) {
 }
 
 const Main = styled.main`
-  height: 100%;
+  min-height: 100%;
   max-width: 768px;
   margin: 0 auto;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
