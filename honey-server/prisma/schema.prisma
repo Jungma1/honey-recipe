@@ -21,6 +21,7 @@ model User {
 
   tokens        Token[]
   socialAccount SocialAccount?
+  Recipe        Recipe[]
 
   @@map("users")
 }
@@ -51,4 +52,65 @@ model Token {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("tokens")
+}
+
+model Recipe {
+  id           Int @id @default(autoincrement())
+  userId       Int @map("user_id")
+  recipeStatId Int @unique @map("recipe_stat_id")
+  recipeTypeId Int @unique @map("recipe_type_id")
+
+  title       String
+  description String
+  thumbnail   String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipeStat RecipeStat @relation(fields: [recipeStatId], references: [id], onDelete: Cascade)
+  recipeType RecipType  @relation(fields: [recipeTypeId], references: [id])
+
+  RecipeCourse RecipeCourse[]
+
+  @@map("recipes")
+}
+
+model RecipeStat {
+  id Int @id @default(autoincrement())
+
+  likeCount    Int      @default(0) @map("like_count")
+  commentCount Int      @default(0) @map("comment_count")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+
+  Recipe Recipe?
+
+  @@map("recipe_stats")
+}
+
+model RecipeCourse {
+  id       Int @id @default(autoincrement())
+  recipeId Int @map("recipe_id")
+
+  order     Int
+  picture   String?
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@map("recipe_courses")
+}
+
+model RecipType {
+  id Int @id @default(autoincrement())
+
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  Recipe Recipe?
+
+  @@map("recipe_types")
 }
