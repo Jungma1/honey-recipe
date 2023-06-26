@@ -68,8 +68,8 @@ model Recipe {
   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   recipeType RecipeType @relation(fields: [recipeTypeId], references: [id])
 
-  RecipeCourse RecipeCourse[]
-  RecipeStat   RecipeStat?
+  recipeCourse RecipeCourse[]
+  recipeStat   RecipeStat?
 
   @@map("recipes")
 }
