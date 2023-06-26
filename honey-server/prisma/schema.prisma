@@ -57,8 +57,7 @@ model Token {
 model Recipe {
   id           Int @id @default(autoincrement())
   userId       Int @map("user_id")
-  recipeStatId Int @unique @map("recipe_stat_id")
-  recipeTypeId Int @unique @map("recipe_type_id")
+  recipeTypeId Int @map("recipe_type_id")
 
   title       String
   description String
@@ -67,23 +66,24 @@ model Recipe {
   updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
 
   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  recipeStat RecipeStat @relation(fields: [recipeStatId], references: [id], onDelete: Cascade)
-  recipeType RecipType  @relation(fields: [recipeTypeId], references: [id])
+  recipeType RecipeType @relation(fields: [recipeTypeId], references: [id])
 
   RecipeCourse RecipeCourse[]
+  RecipeStat   RecipeStat?
 
   @@map("recipes")
 }
 
 model RecipeStat {
-  id Int @id @default(autoincrement())
+  id       Int @id @default(autoincrement())
+  recipeId Int @unique @map("recipe_id")
 
   likeCount    Int      @default(0) @map("like_count")
   commentCount Int      @default(0) @map("comment_count")
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
 
-  Recipe Recipe?
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 
   @@map("recipe_stats")
 }
@@ -103,14 +103,14 @@ model RecipeCourse {
   @@map("recipe_courses")
 }
 
-model RecipType {
+model RecipeType {
   id Int @id @default(autoincrement())
 
   name      String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  Recipe Recipe?
+  recipe Recipe[]
 
   @@map("recipe_types")
 }
