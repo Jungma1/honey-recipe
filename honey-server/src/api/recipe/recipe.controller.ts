@@ -10,6 +10,7 @@ import {
 import { User } from '@prisma/client';
 import { AuthUser } from '../auth/decorator/auth-user.decorator';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { RecipeCourseUpdateDto } from './dto/recipe-course-update.dto';
 import { RecipeCreateDto } from './dto/recipe-create.dto';
 import { RecipeUpdateDto } from './dto/recipe-update.dto';
 import { RecipeService } from './recipe.service';
@@ -40,5 +41,16 @@ export class RecipeController {
   @UseGuards(JwtAuthGuard)
   async addCourse(@Param('id') id: number) {
     return this.recipeService.addCourse(id);
+  }
+
+  @Patch(':id/course/:courseId')
+  @UseGuards(JwtAuthGuard)
+  async updateCourse(
+    @Param('id') id: number,
+    @Param('courseId') courseId: number,
+    @AuthUser() user: User,
+    @Body() request: RecipeCourseUpdateDto,
+  ) {
+    return this.recipeService.updateCourse(id, courseId, user, request);
   }
 }

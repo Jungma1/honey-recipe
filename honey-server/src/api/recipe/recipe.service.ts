@@ -1,6 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from '~/common/prisma/prisma.service';
+import { RecipeCourseUpdateDto } from './dto/recipe-course-update.dto';
 import { RecipeCreateDto } from './dto/recipe-create.dto';
 import { RecipeResponseDto } from './dto/recipe-response.dto';
 import { RecipeUpdateDto } from './dto/recipe-update.dto';
@@ -72,9 +77,7 @@ export class RecipeService {
 
   async deleteRecipe(id: number) {
     const recipe = await this.prismaService.recipe.findUnique({
-      where: {
-        id,
-      },
+      where: { id },
     });
 
     if (recipe === null) {
@@ -82,9 +85,7 @@ export class RecipeService {
     }
 
     await this.prismaService.recipe.delete({
-      where: {
-        id,
-      },
+      where: { id },
     });
   }
 
@@ -109,6 +110,43 @@ export class RecipeService {
         order: count + 1,
         title: '',
         content: '',
+      },
+    });
+  }
+
+  async updateCourse(
+    id: number,
+    courseId: number,
+    user: User,
+    request: RecipeCourseUpdateDto,
+  ) {
+    const recipe = await this.prismaService.recipe.findUnique({
+      where: { id },
+    });
+
+    if (recipe === null) {
+      throw new NotFoundException('Recipe not found');
+    }
+
+    if (recipe.userId !== user.id) {
+      throw new ForbiddenException('Forbidden');
+    }
+
+    const recipeCourse = await this.prismaService.recipeCourse.findUnique({
+      where: { id: courseId },
+    });
+
+    if (recipeCourse === null) {
+      throw new NotFoundException('Recipe Course not found');
+    }
+
+    await this.prismaService.recipeCourse.update({
+      where: {
+        id: courseId,
+      },
+      data: {
+        title: request.title,
+        content: request.content,
       },
     });
   }
