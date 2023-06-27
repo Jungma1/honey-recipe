@@ -27,20 +27,24 @@ export class RecipeController {
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
-  async update(@Param('id') id: number, @Body() request: RecipeUpdateDto) {
-    return this.recipeService.updateRecipe(id, request);
+  async update(
+    @Param('id') id: number,
+    @AuthUser() user: User,
+    @Body() request: RecipeUpdateDto,
+  ) {
+    return this.recipeService.updateRecipe(id, user, request);
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  async delete(@Param('id') id: number) {
-    return this.recipeService.deleteRecipe(id);
+  async delete(@Param('id') id: number, @AuthUser() user: User) {
+    return this.recipeService.deleteRecipe(id, user);
   }
 
   @Post(':id/course')
   @UseGuards(JwtAuthGuard)
-  async addCourse(@Param('id') id: number) {
-    return this.recipeService.addCourse(id);
+  async addCourse(@Param('id') id: number, @AuthUser() user: User) {
+    return this.recipeService.addCourse(id, user);
   }
 
   @Patch(':id/course/:courseId')

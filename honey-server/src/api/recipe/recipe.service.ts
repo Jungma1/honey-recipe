@@ -52,7 +52,7 @@ export class RecipeService {
     return new RecipeResponseDto(findRecipe);
   }
 
-  async updateRecipe(id: number, request: RecipeUpdateDto) {
+  async updateRecipe(id: number, user: User, request: RecipeUpdateDto) {
     const recipeType = await this.prismaService.recipeType.findFirst({
       where: {
         id: request.recipeTypeId,
@@ -61,6 +61,18 @@ export class RecipeService {
 
     if (recipeType === null) {
       throw new NotFoundException('Recipe type not found');
+    }
+
+    const recipe = await this.prismaService.recipe.findUnique({
+      where: { id },
+    });
+
+    if (recipe === null) {
+      throw new NotFoundException('Recipe not found');
+    }
+
+    if (recipe.userId !== user.id) {
+      throw new ForbiddenException('You are not allowed to edit this recipe');
     }
 
     await this.prismaService.recipe.update({
@@ -75,7 +87,7 @@ export class RecipeService {
     });
   }
 
-  async deleteRecipe(id: number) {
+  async deleteRecipe(id: number, user: User) {
     const recipe = await this.prismaService.recipe.findUnique({
       where: { id },
     });
@@ -84,18 +96,28 @@ export class RecipeService {
       throw new NotFoundException('Recipe not found');
     }
 
+    if (recipe.userId !== user.id) {
+      throw new ForbiddenException('You are not allowed to delete this recipe');
+    }
+
     await this.prismaService.recipe.delete({
       where: { id },
     });
   }
 
-  async addCourse(id: number) {
+  async addCourse(id: number, user: User) {
     const recipe = await this.prismaService.recipe.findUnique({
       where: { id },
     });
 
     if (recipe === null) {
       throw new NotFoundException('Recipe not found');
+    }
+
+    if (recipe.userId !== user.id) {
+      throw new ForbiddenException(
+        'You are not allowed to add this recipe course',
+      );
     }
 
     const count = await this.prismaService.recipeCourse.count({
@@ -129,7 +151,9 @@ export class RecipeService {
     }
 
     if (recipe.userId !== user.id) {
-      throw new ForbiddenException('Forbidden');
+      throw new ForbiddenException(
+        'You are not allowed to edit this recipe course',
+      );
     }
 
     const recipeCourse = await this.prismaService.recipeCourse.findUnique({
