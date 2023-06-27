@@ -30,7 +30,7 @@ export class RecipeResponseDto {
     this.commentCount = recipe.recipeStat.commentCount;
     this.user = {
       id: recipe.user.id,
-      handle: '@handle',
+      handle: recipe.user.handle,
       username: recipe.user.username,
     };
     this.createdAt = recipe.createdAt;

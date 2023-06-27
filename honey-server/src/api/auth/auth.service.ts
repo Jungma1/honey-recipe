@@ -65,8 +65,12 @@ export class AuthService {
 
     try {
       if (!findUser) {
+        const randomValue = Math.random().toString(36).substring(2);
+        const uniqueHandle = `user-${randomValue}`;
+
         findUser = await this.prismaService.user.create({
           data: {
+            handle: uniqueHandle,
             email: user.email,
             username: user.username,
             socialAccount: {
