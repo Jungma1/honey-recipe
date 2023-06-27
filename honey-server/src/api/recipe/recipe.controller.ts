@@ -35,4 +35,10 @@ export class RecipeController {
   async delete(@Param('id') id: number) {
     return this.recipeService.deleteRecipe(id);
   }
+
+  @Post(':id/course')
+  @UseGuards(JwtAuthGuard)
+  async addCourse(@Param('id') id: number) {
+    return this.recipeService.addCourse(id);
+  }
 }

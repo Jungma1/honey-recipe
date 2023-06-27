@@ -94,8 +94,9 @@ model RecipeCourse {
   recipeId Int @map("recipe_id")
 
   order     Int
-  picture   String?
+  title     String
   content   String
+  picture   String?
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 

@@ -87,4 +87,29 @@ export class RecipeService {
       },
     });
   }
+
+  async addCourse(id: number) {
+    const recipe = await this.prismaService.recipe.findUnique({
+      where: { id },
+    });
+
+    if (recipe === null) {
+      throw new NotFoundException('Recipe not found');
+    }
+
+    const count = await this.prismaService.recipeCourse.count({
+      where: {
+        recipeId: recipe.id,
+      },
+    });
+
+    await this.prismaService.recipeCourse.create({
+      data: {
+        recipeId: recipe.id,
+        order: count + 1,
+        title: '',
+        content: '',
+      },
+    });
+  }
 }
