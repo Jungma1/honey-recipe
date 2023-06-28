@@ -174,4 +174,48 @@ export class RecipeService {
       },
     });
   }
+
+  async deleteCourse(id: number, courseId: number, user: User) {
+    const recipe = await this.prismaService.recipe.findUnique({
+      where: { id },
+    });
+
+    if (recipe === null) {
+      throw new NotFoundException('Recipe not found');
+    }
+
+    if (recipe.userId !== user.id) {
+      throw new ForbiddenException(
+        'You are not allowed to edit this recipe course',
+      );
+    }
+
+    const recipeCourse = await this.prismaService.recipeCourse.findUnique({
+      where: { id: courseId },
+    });
+
+    if (recipeCourse === null) {
+      throw new NotFoundException('Recipe Course not found');
+    }
+
+    await this.prismaService.recipeCourse.delete({
+      where: {
+        id: courseId,
+      },
+    });
+
+    await this.prismaService.recipeCourse.updateMany({
+      where: {
+        recipeId: id,
+        order: {
+          gt: recipeCourse.order,
+        },
+      },
+      data: {
+        order: {
+          decrement: 1,
+        },
+      },
+    });
+  }
 }
