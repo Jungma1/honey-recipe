@@ -15,20 +15,14 @@ export class RecipeService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async createRecipe(user: User, request: RecipeCreateDto) {
-    const recipeType = await this.prismaService.recipeType.findUnique({
-      where: { id: request.recipeTypeId },
-    });
-
-    if (recipeType === null) {
-      throw new NotFoundException('Recipe type not found');
-    }
+    await this.validateRecipeType(request.recipeTypeId);
 
     const recipe = await this.prismaService.recipe.create({
       data: {
         title: request.title,
         description: request.description,
         userId: user.id,
-        recipeTypeId: recipeType.id,
+        recipeTypeId: request.recipeTypeId,
       },
     });
 
@@ -53,27 +47,8 @@ export class RecipeService {
   }
 
   async updateRecipe(id: number, user: User, request: RecipeUpdateDto) {
-    const recipeType = await this.prismaService.recipeType.findFirst({
-      where: {
-        id: request.recipeTypeId,
-      },
-    });
-
-    if (recipeType === null) {
-      throw new NotFoundException('Recipe type not found');
-    }
-
-    const recipe = await this.prismaService.recipe.findUnique({
-      where: { id },
-    });
-
-    if (recipe === null) {
-      throw new NotFoundException('Recipe not found');
-    }
-
-    if (recipe.userId !== user.id) {
-      throw new ForbiddenException('You are not allowed to edit this recipe');
-    }
+    await this.validateRecipeType(request.recipeTypeId);
+    await this.validateRecipe(id, user.id);
 
     await this.prismaService.recipe.update({
       where: {
@@ -88,17 +63,7 @@ export class RecipeService {
   }
 
   async deleteRecipe(id: number, user: User) {
-    const recipe = await this.prismaService.recipe.findUnique({
-      where: { id },
-    });
-
-    if (recipe === null) {
-      throw new NotFoundException('Recipe not found');
-    }
-
-    if (recipe.userId !== user.id) {
-      throw new ForbiddenException('You are not allowed to delete this recipe');
-    }
+    await this.validateRecipe(id, user.id);
 
     await this.prismaService.recipe.delete({
       where: { id },
@@ -106,29 +71,17 @@ export class RecipeService {
   }
 
   async addCourse(id: number, user: User) {
-    const recipe = await this.prismaService.recipe.findUnique({
-      where: { id },
-    });
-
-    if (recipe === null) {
-      throw new NotFoundException('Recipe not found');
-    }
-
-    if (recipe.userId !== user.id) {
-      throw new ForbiddenException(
-        'You are not allowed to add this recipe course',
-      );
-    }
+    await this.validateRecipe(id, user.id);
 
     const count = await this.prismaService.recipeCourse.count({
       where: {
-        recipeId: recipe.id,
+        recipeId: id,
       },
     });
 
     await this.prismaService.recipeCourse.create({
       data: {
-        recipeId: recipe.id,
+        recipeId: id,
         order: count + 1,
         title: '',
         content: '',
@@ -142,27 +95,8 @@ export class RecipeService {
     user: User,
     request: RecipeCourseUpdateDto,
   ) {
-    const recipe = await this.prismaService.recipe.findUnique({
-      where: { id },
-    });
-
-    if (recipe === null) {
-      throw new NotFoundException('Recipe not found');
-    }
-
-    if (recipe.userId !== user.id) {
-      throw new ForbiddenException(
-        'You are not allowed to edit this recipe course',
-      );
-    }
-
-    const recipeCourse = await this.prismaService.recipeCourse.findUnique({
-      where: { id: courseId },
-    });
-
-    if (recipeCourse === null) {
-      throw new NotFoundException('Recipe Course not found');
-    }
+    await this.validateRecipe(id, user.id);
+    await this.validateRecipeCourse(courseId);
 
     await this.prismaService.recipeCourse.update({
       where: {
@@ -176,29 +110,10 @@ export class RecipeService {
   }
 
   async deleteCourse(id: number, courseId: number, user: User) {
-    const recipe = await this.prismaService.recipe.findUnique({
-      where: { id },
-    });
+    await this.validateRecipe(id, user.id);
+    await this.validateRecipeCourse(courseId);
 
-    if (recipe === null) {
-      throw new NotFoundException('Recipe not found');
-    }
-
-    if (recipe.userId !== user.id) {
-      throw new ForbiddenException(
-        'You are not allowed to edit this recipe course',
-      );
-    }
-
-    const recipeCourse = await this.prismaService.recipeCourse.findUnique({
-      where: { id: courseId },
-    });
-
-    if (recipeCourse === null) {
-      throw new NotFoundException('Recipe Course not found');
-    }
-
-    await this.prismaService.recipeCourse.delete({
+    const deletedRecipeCourse = await this.prismaService.recipeCourse.delete({
       where: {
         id: courseId,
       },
@@ -208,7 +123,7 @@ export class RecipeService {
       where: {
         recipeId: id,
         order: {
-          gt: recipeCourse.order,
+          gt: deletedRecipeCourse.order,
         },
       },
       data: {
@@ -217,5 +132,39 @@ export class RecipeService {
         },
       },
     });
+  }
+
+  private async validateRecipeType(id: number) {
+    const recipeType = await this.prismaService.recipeType.findUnique({
+      where: { id },
+    });
+
+    if (recipeType === null) {
+      throw new NotFoundException('Recipe type not found');
+    }
+  }
+
+  private async validateRecipe(id: number, userId: number) {
+    const recipe = await this.prismaService.recipe.findUnique({
+      where: { id },
+    });
+
+    if (recipe === null) {
+      throw new NotFoundException('Recipe not found');
+    }
+
+    if (recipe.userId !== userId) {
+      throw new ForbiddenException('You are not allowed');
+    }
+  }
+
+  private async validateRecipeCourse(id: number) {
+    const recipeCourse = await this.prismaService.recipeCourse.findUnique({
+      where: { id },
+    });
+
+    if (recipeCourse === null) {
+      throw new NotFoundException('Recipe Course not found');
+    }
   }
 }
