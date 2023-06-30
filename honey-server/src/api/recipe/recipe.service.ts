@@ -142,58 +142,34 @@ export class RecipeService {
   ) {
     await this.validateRecipe(id, user.id);
 
-    const course = await this.validateRecipeCourse(courseId);
-    const targetCourse = await this.validateRecipeCourse(targetId);
+    const { order } = await this.validateRecipeCourse(courseId);
+    const { order: targetOrder } = await this.validateRecipeCourse(targetId);
 
     await this.prismaService.$transaction(async (tx) => {
-      if (course.order < targetCourse.order) {
-        await tx.recipeCourse.updateMany({
-          where: {
-            recipeId: id,
-            AND: {
-              order: {
-                gte: course.order,
-                lte: targetCourse.order,
-              },
-              NOT: {
-                id: courseId,
-              },
-            },
-          },
-          data: {
+      await tx.recipeCourse.updateMany({
+        where: {
+          recipeId: id,
+          AND: {
             order: {
-              decrement: 1,
+              gte: Math.min(order, targetOrder),
+              lte: Math.max(order, targetOrder),
+            },
+            NOT: {
+              id: courseId,
             },
           },
-        });
-      } else if (course.order > targetCourse.order) {
-        await tx.recipeCourse.updateMany({
-          where: {
-            recipeId: id,
-            AND: {
-              order: {
-                gte: targetCourse.order,
-                lte: course.order,
-              },
-              NOT: {
-                id: courseId,
-              },
-            },
-          },
-          data: {
-            order: {
-              increment: 1,
-            },
-          },
-        });
-      }
+        },
+        data: {
+          order: order < targetOrder ? { decrement: 1 } : { increment: 1 },
+        },
+      });
 
       await tx.recipeCourse.update({
         where: {
           id: courseId,
         },
         data: {
-          order: targetCourse.order,
+          order: targetOrder,
         },
       });
     });
