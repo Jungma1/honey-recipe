@@ -17,30 +17,32 @@ export class RecipeService {
   async createRecipe(user: User, request: RecipeCreateDto) {
     await this.validateRecipeType(request.recipeTypeId);
 
-    const recipe = await this.prismaService.recipe.create({
-      data: {
-        title: request.title,
-        description: request.description,
-        userId: user.id,
-        recipeTypeId: request.recipeTypeId,
-      },
-    });
+    const findRecipe = await this.prismaService.$transaction(async (tx) => {
+      const recipe = await tx.recipe.create({
+        data: {
+          title: request.title,
+          description: request.description,
+          userId: user.id,
+          recipeTypeId: request.recipeTypeId,
+        },
+      });
 
-    await this.prismaService.recipeStat.create({
-      data: {
-        recipeId: recipe.id,
-      },
-    });
+      await tx.recipeStat.create({
+        data: {
+          recipeId: recipe.id,
+        },
+      });
 
-    const findRecipe = await this.prismaService.recipe.findUnique({
-      include: {
-        user: true,
-        recipeStat: true,
-        recipeType: true,
-      },
-      where: {
-        id: recipe.id,
-      },
+      return tx.recipe.findUnique({
+        include: {
+          user: true,
+          recipeStat: true,
+          recipeType: true,
+        },
+        where: {
+          id: recipe.id,
+        },
+      });
     });
 
     return new RecipeResponseDto(findRecipe);
@@ -113,24 +115,26 @@ export class RecipeService {
     await this.validateRecipe(id, user.id);
     await this.validateRecipeCourse(courseId);
 
-    const deletedRecipeCourse = await this.prismaService.recipeCourse.delete({
-      where: {
-        id: courseId,
-      },
-    });
+    await this.prismaService.$transaction(async (tx) => {
+      const deletedRecipeCourse = await tx.recipeCourse.delete({
+        where: {
+          id: courseId,
+        },
+      });
 
-    await this.prismaService.recipeCourse.updateMany({
-      where: {
-        recipeId: id,
-        order: {
-          gt: deletedRecipeCourse.order,
+      await tx.recipeCourse.updateMany({
+        where: {
+          recipeId: id,
+          order: {
+            gt: deletedRecipeCourse.order,
+          },
         },
-      },
-      data: {
-        order: {
-          decrement: 1,
+        data: {
+          order: {
+            decrement: 1,
+          },
         },
-      },
+      });
     });
   }
 
