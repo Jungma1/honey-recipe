@@ -67,4 +67,15 @@ export class RecipeController {
   ) {
     return this.recipeService.deleteCourse(id, courseId, user);
   }
+
+  @Patch(':id/course/:courseId/order/:targetId')
+  @UseGuards(JwtAuthGuard)
+  async updateCourseOrder(
+    @Param('id') id: number,
+    @Param('courseId') courseId: number,
+    @Param('targetId') targetId: number,
+    @AuthUser() user: User,
+  ) {
+    return this.recipeService.updateCourseOrder(id, courseId, targetId, user);
+  }
 }

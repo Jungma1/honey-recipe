@@ -134,6 +134,71 @@ export class RecipeService {
     });
   }
 
+  async updateCourseOrder(
+    id: number,
+    courseId: number,
+    targetId: number,
+    user: User,
+  ) {
+    await this.validateRecipe(id, user.id);
+
+    const course = await this.validateRecipeCourse(courseId);
+    const targetCourse = await this.validateRecipeCourse(targetId);
+
+    await this.prismaService.$transaction(async (tx) => {
+      if (course.order < targetCourse.order) {
+        await tx.recipeCourse.updateMany({
+          where: {
+            recipeId: id,
+            AND: {
+              order: {
+                gte: course.order,
+                lte: targetCourse.order,
+              },
+              NOT: {
+                id: courseId,
+              },
+            },
+          },
+          data: {
+            order: {
+              decrement: 1,
+            },
+          },
+        });
+      } else if (course.order > targetCourse.order) {
+        await tx.recipeCourse.updateMany({
+          where: {
+            recipeId: id,
+            AND: {
+              order: {
+                gte: targetCourse.order,
+                lte: course.order,
+              },
+              NOT: {
+                id: courseId,
+              },
+            },
+          },
+          data: {
+            order: {
+              increment: 1,
+            },
+          },
+        });
+      }
+
+      await tx.recipeCourse.update({
+        where: {
+          id: courseId,
+        },
+        data: {
+          order: targetCourse.order,
+        },
+      });
+    });
+  }
+
   private async validateRecipeType(id: number) {
     const recipeType = await this.prismaService.recipeType.findUnique({
       where: { id },
@@ -166,5 +231,6 @@ export class RecipeService {
     if (recipeCourse === null) {
       throw new NotFoundException('Recipe Course not found');
     }
+    return recipeCourse;
   }
 }
