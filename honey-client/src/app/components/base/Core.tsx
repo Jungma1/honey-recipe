@@ -12,7 +12,7 @@ function Core() {
     setUser(data || null);
   }, [setUser, data, isLoading]);
 
-  return null;
+  return <></>;
 }
 
 export default Core;
