@@ -3,12 +3,19 @@ import { APP_FILTER } from '@nestjs/core';
 import { AuthMiddleware } from './api/auth/auth.middleware';
 import { AuthModule } from './api/auth/auth.module';
 import { RecipeModule } from './api/recipe/recipe.module';
+import { UserModule } from './api/user/user.module';
 import { AppConfigModule } from './common/config/app-config.module';
 import { HttpExceptionFilter } from './common/exception/http-exception.filter';
 import { PrismaModule } from './common/prisma/prisma.module';
 
 @Module({
-  imports: [AppConfigModule, PrismaModule, AuthModule, RecipeModule],
+  imports: [
+    AppConfigModule,
+    PrismaModule,
+    AuthModule,
+    RecipeModule,
+    UserModule,
+  ],
   providers: [
     {
       provide: APP_FILTER,
