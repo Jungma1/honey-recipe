@@ -3,9 +3,15 @@ import { useEffect } from 'react';
 import { getProfile } from '~/apis/user';
 import { useRootStore } from '~/stores';
 
-function Core() {
+interface Props {
+  isAuth: boolean;
+}
+
+function Core({ isAuth }: Props) {
   const { setUser } = useRootStore();
-  const { data, isLoading } = useQuery(['user', 'profile'], () => getProfile());
+  const { data, isLoading } = useQuery(['user', 'profile'], () => getProfile(), {
+    enabled: isAuth,
+  });
 
   useEffect(() => {
     if (isLoading) return;
