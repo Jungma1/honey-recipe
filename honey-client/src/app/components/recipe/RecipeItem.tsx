@@ -2,19 +2,11 @@ import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { rem } from 'polished';
-import { useState } from 'react';
+import { useMotionHorizontal } from '~/hooks/useMotionHorizontal';
 import { colors } from '~/utils/colors';
 
 function RecipeItem() {
-  const [x, setX] = useState(0);
-
-  const handleMouseEnter = () => {
-    setX(10);
-  };
-
-  const handleMouseLeave = () => {
-    setX(0);
-  };
+  const { x, handleMouseEnter, handleMouseLeave } = useMotionHorizontal(10, false);
 
   return (
     <Block onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} animate={{ x }}>
