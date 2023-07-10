@@ -11,8 +11,7 @@ function ContentLayout({ children }: Props) {
 }
 
 const Block = styled.main`
-  padding: 0 ${rem(32)};
-  padding-bottom: ${rem(32)};
+  padding: ${rem(32)};
 `;
 
 export default ContentLayout;

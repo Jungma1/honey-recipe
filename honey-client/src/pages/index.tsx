@@ -7,7 +7,7 @@ import RecipeList from '~/components/recipe/RecipeList';
 import { validateTokenCookie } from '~/utils/cookie';
 import { json } from '~/utils/json';
 
-export default function Home() {
+export default function HomePage() {
   return (
     <MainLayout>
       <Header />
