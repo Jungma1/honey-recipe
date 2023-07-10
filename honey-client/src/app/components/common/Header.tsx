@@ -10,24 +10,28 @@ function Header() {
   const { user } = useRootStore();
   const router = useRouter();
 
-  const handleLogin = () => {
+  const handleClickLogo = () => {
+    router.push('/');
+  };
+
+  const handleClickLogin = () => {
     router.push('/login');
   };
 
-  const handleRecipeWrite = () => {
+  const handleClickRecipeWrite = () => {
     router.push('/recipe/write');
   };
 
   return (
     <StyledHeader>
-      <StyledLogo>KKULPI</StyledLogo>
+      <StyledLogo onClick={handleClickLogo}>KKULPI</StyledLogo>
       {user ? (
         <Wrapper>
-          <Button onClick={handleRecipeWrite}>레시피 작성</Button>
+          <Button onClick={handleClickRecipeWrite}>레시피 작성</Button>
           <Image src={user.picture} width={32} height={32} alt="" />
         </Wrapper>
       ) : (
-        <Button onClick={handleLogin}>로그인</Button>
+        <Button onClick={handleClickLogin}>로그인</Button>
       )}
     </StyledHeader>
   );
