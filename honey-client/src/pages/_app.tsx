@@ -4,7 +4,6 @@ import type { AppProps } from 'next/app';
 import { useState } from 'react';
 import Core from '~/components/base/Core';
 import GlobalStyles from '~/components/common/GlobalStyles';
-import { useRequiredLoginPageEffect } from '~/hooks/useRequiredLoginPageEffect';
 
 interface Props {
   isAuth: boolean;
@@ -22,8 +21,6 @@ export default function App({ Component, pageProps }: AppProps<Props>) {
         },
       })
   );
-
-  useRequiredLoginPageEffect();
 
   return (
     <QueryClientProvider client={queryClient}>
