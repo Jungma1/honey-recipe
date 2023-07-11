@@ -5,9 +5,11 @@ import {
 } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from '~/common/prisma/prisma.service';
+import { Response } from '~/lib/response';
 import { RecipeCourseUpdateDto } from './dto/recipe-course-update.dto';
 import { RecipeCreateDto } from './dto/recipe-create.dto';
 import { RecipeResponseDto } from './dto/recipe-response.dto';
+import { RecipeTypeResponseDto } from './dto/recipe-type-response.dto';
 import { RecipeUpdateDto } from './dto/recipe-update.dto';
 
 @Injectable()
@@ -177,6 +179,12 @@ export class RecipeService {
         },
       });
     });
+  }
+
+  async getRecipeTypes() {
+    const recipeTypes = await this.prismaService.recipeType.findMany();
+    const result = recipeTypes.map((type) => new RecipeTypeResponseDto(type));
+    return new Response(result);
   }
 
   private async validateRecipeType(id: number) {
