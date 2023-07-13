@@ -10,6 +10,7 @@ export class RecipeResponseDto {
   id: number;
   title: string;
   description: string;
+  thumbnail: string;
   recipeType: string;
   likeCount: number;
   commentCount: number;
@@ -25,6 +26,7 @@ export class RecipeResponseDto {
     this.id = recipe.id;
     this.title = recipe.title;
     this.description = recipe.description;
+    this.thumbnail = recipe.thumbnail;
     this.recipeType = recipe.recipeType.name;
     this.likeCount = recipe.recipeStat.likeCount;
     this.commentCount = recipe.recipeStat.commentCount;

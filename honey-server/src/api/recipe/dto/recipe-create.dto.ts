@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class RecipeCreateDto {
   @IsString()
@@ -7,6 +7,6 @@ export class RecipeCreateDto {
   @IsString()
   description: string;
 
-  @IsNumber()
-  recipeTypeId: number;
+  @IsString()
+  recipeTypeId: string;
 }

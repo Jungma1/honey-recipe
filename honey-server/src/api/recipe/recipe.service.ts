@@ -4,6 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
+import * as mimeTypes from 'mime-types';
+import { FileService } from '~/common/file/file.service';
 import { PrismaService } from '~/common/prisma/prisma.service';
 import { Response } from '~/lib/response';
 import { RecipeCourseUpdateDto } from './dto/recipe-course-update.dto';
@@ -14,10 +16,18 @@ import { RecipeUpdateDto } from './dto/recipe-update.dto';
 
 @Injectable()
 export class RecipeService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly fileService: FileService,
+  ) {}
 
-  async createRecipe(user: User, request: RecipeCreateDto) {
-    await this.validateRecipeType(request.recipeTypeId);
+  async createRecipe(
+    user: User,
+    request: RecipeCreateDto,
+    thumbnail: Express.Multer.File,
+  ) {
+    const parseRecipeTypeId = parseInt(request.recipeTypeId, 10);
+    await this.validateRecipeType(parseRecipeTypeId);
 
     const findRecipe = await this.prismaService.$transaction(async (tx) => {
       const recipe = await tx.recipe.create({
@@ -25,7 +35,7 @@ export class RecipeService {
           title: request.title,
           description: request.description,
           userId: user.id,
-          recipeTypeId: request.recipeTypeId,
+          recipeTypeId: parseRecipeTypeId,
         },
       });
 
@@ -34,6 +44,27 @@ export class RecipeService {
           recipeId: recipe.id,
         },
       });
+
+      if (thumbnail) {
+        const key = await this.fileService.generateKey({
+          id: user.id,
+          type: 'recipes',
+          extension: mimeTypes.extension(thumbnail.mimetype) || 'png',
+        });
+
+        await this.fileService.uploadFile(key, thumbnail.buffer);
+
+        const thumbnailUrl = await this.fileService.generateUrl(key);
+
+        await tx.recipe.update({
+          where: {
+            id: recipe.id,
+          },
+          data: {
+            thumbnail: thumbnailUrl,
+          },
+        });
+      }
 
       return tx.recipe.findUnique({
         include: {

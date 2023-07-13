@@ -7,7 +7,7 @@ import { nanoid } from 'nanoid';
 
 interface KeyPayload {
   id: number;
-  type: 'avatars';
+  type: 'avatars' | 'recipes';
   extension: string;
 }
 
@@ -51,5 +51,9 @@ export class FileService {
     const extension = mimeTypes.extension(response.headers['content-type']);
 
     return { buffer, extension };
+  }
+
+  async generateUrl(key: string) {
+    return `https://cdn.kkulpi.com/${key}`;
   }
 }
