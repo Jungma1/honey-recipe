@@ -2,7 +2,7 @@ import { GetServerSideProps } from 'next';
 import Header from '~/components/common/Header';
 import ContentLayout from '~/components/layout/ContentLayout';
 import MainLayout from '~/components/layout/MainLayout';
-import RecipeCourseAddButton from '~/components/recipe/RecipeWriteButton';
+import RecipeCourseAddButton from '~/components/recipe/RecipeCourseAddButton';
 import { validateTokenCookie } from '~/utils/cookie';
 import { json } from '~/utils/json';
 import { redirect } from '~/utils/route';

@@ -8,8 +8,8 @@ import * as mimeTypes from 'mime-types';
 import { FileService } from '~/common/file/file.service';
 import { PrismaService } from '~/common/prisma/prisma.service';
 import { RecipeCourseUpdateDto } from './dto/recipe-course-update.dto';
+import { RecipeCreateResponseDto } from './dto/recipe-create-response.dto';
 import { RecipeCreateDto } from './dto/recipe-create.dto';
-import { RecipeResponseDto } from './dto/recipe-response.dto';
 import { RecipeUpdateDto } from './dto/recipe-update.dto';
 
 @Injectable()
@@ -24,7 +24,7 @@ export class RecipeService {
     request: RecipeCreateDto,
     thumbnail: Express.Multer.File,
   ) {
-    const findRecipe = await this.prismaService.$transaction(async (tx) => {
+    const recipeId = await this.prismaService.$transaction(async (tx) => {
       const recipe = await tx.recipe.create({
         data: {
           title: request.title,
@@ -60,18 +60,10 @@ export class RecipeService {
         });
       }
 
-      return tx.recipe.findUnique({
-        include: {
-          user: true,
-          recipeStat: true,
-        },
-        where: {
-          id: recipe.id,
-        },
-      });
+      return recipe.id;
     });
 
-    return new RecipeResponseDto(findRecipe);
+    return new RecipeCreateResponseDto(recipeId);
   }
 
   async updateRecipe(id: number, user: User, request: RecipeUpdateDto) {

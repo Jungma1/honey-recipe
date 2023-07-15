@@ -44,8 +44,8 @@ const Block = styled.div`
 
   .cm-editor,
   .cm-gutter {
+    height: 100%;
     padding: ${rem(8)} 0;
-    min-height: 80px;
   }
 
   .cm-gutters {
@@ -54,7 +54,6 @@ const Block = styled.div`
 
   .cm-content {
     padding: 0;
-    min-height: 80px;
   }
 
   .cm-line {

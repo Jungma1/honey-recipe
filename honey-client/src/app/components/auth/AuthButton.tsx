@@ -55,7 +55,8 @@ const StyledButton = styled.button<{ background: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 5px;
+  border-radius: ${rem(4)};
+  border: 2px solid ${colors.gray0};
   background-color: ${(props) => props.background};
   cursor: pointer;
 `;

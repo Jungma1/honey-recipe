@@ -3,3 +3,7 @@ export interface User {
   username: string;
   picture: string;
 }
+
+export interface RecipeCreateResponse {
+  id: number;
+}

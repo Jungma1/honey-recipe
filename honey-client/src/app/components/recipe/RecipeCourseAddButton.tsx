@@ -5,7 +5,7 @@ import { rem } from 'polished';
 import { useMotionVertical } from '~/hooks/useMotionVertical';
 import { colors } from '~/utils/colors';
 
-function RecipeWriteButton() {
+function RecipeCourseAddButton() {
   const { y, handleMouseEnter, handleMouseLeave } = useMotionVertical(5);
 
   return (
@@ -23,7 +23,6 @@ const Block = styled.section`
   flex-direction: column;
   align-items: center;
   padding: ${rem(32)} 0;
-  margin-bottom: ${rem(64)};
   border: ${rem(2)} solid ${colors.gray0};
   border-radius: ${rem(5)};
   cursor: pointer;
@@ -45,4 +44,4 @@ const Text = styled.div`
   font-weight: 600;
 `;
 
-export default RecipeWriteButton;
+export default RecipeCourseAddButton;

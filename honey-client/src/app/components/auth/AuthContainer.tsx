@@ -20,7 +20,7 @@ const Block = styled.section`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${colors.secondaryDark};
+  background-color: ${colors.white};
 `;
 
 const Wrapper = styled.div`
