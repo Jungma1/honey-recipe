@@ -56,9 +56,8 @@ model Token {
 }
 
 model Recipe {
-  id           Int @id @default(autoincrement())
-  userId       Int @map("user_id")
-  recipeTypeId Int @map("recipe_type_id")
+  id     Int @id @default(autoincrement())
+  userId Int @map("user_id")
 
   title       String
   description String
@@ -66,8 +65,7 @@ model Recipe {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
 
-  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  recipeType RecipeType @relation(fields: [recipeTypeId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   recipeCourse RecipeCourse[]
   recipeStat   RecipeStat?
@@ -103,16 +101,4 @@ model RecipeCourse {
   recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 
   @@map("recipe_courses")
-}
-
-model RecipeType {
-  id Int @id @default(autoincrement())
-
-  name      String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
-
-  recipe Recipe[]
-
-  @@map("recipe_types")
 }

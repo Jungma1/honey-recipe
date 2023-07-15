@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
@@ -98,10 +97,5 @@ export class RecipeController {
     @AuthUser() user: User,
   ) {
     return this.recipeService.updateCourseOrder(id, courseId, targetId, user);
-  }
-
-  @Get('types')
-  async getRecipeTypes() {
-    return this.recipeService.getRecipeTypes();
   }
 }

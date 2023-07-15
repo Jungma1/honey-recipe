@@ -7,11 +7,9 @@ import { User } from '@prisma/client';
 import * as mimeTypes from 'mime-types';
 import { FileService } from '~/common/file/file.service';
 import { PrismaService } from '~/common/prisma/prisma.service';
-import { Response } from '~/lib/response';
 import { RecipeCourseUpdateDto } from './dto/recipe-course-update.dto';
 import { RecipeCreateDto } from './dto/recipe-create.dto';
 import { RecipeResponseDto } from './dto/recipe-response.dto';
-import { RecipeTypeResponseDto } from './dto/recipe-type-response.dto';
 import { RecipeUpdateDto } from './dto/recipe-update.dto';
 
 @Injectable()
@@ -26,16 +24,12 @@ export class RecipeService {
     request: RecipeCreateDto,
     thumbnail: Express.Multer.File,
   ) {
-    const parseRecipeTypeId = parseInt(request.recipeTypeId, 10);
-    await this.validateRecipeType(parseRecipeTypeId);
-
     const findRecipe = await this.prismaService.$transaction(async (tx) => {
       const recipe = await tx.recipe.create({
         data: {
           title: request.title,
           description: request.description,
           userId: user.id,
-          recipeTypeId: parseRecipeTypeId,
         },
       });
 
@@ -70,7 +64,6 @@ export class RecipeService {
         include: {
           user: true,
           recipeStat: true,
-          recipeType: true,
         },
         where: {
           id: recipe.id,
@@ -82,7 +75,6 @@ export class RecipeService {
   }
 
   async updateRecipe(id: number, user: User, request: RecipeUpdateDto) {
-    await this.validateRecipeType(request.recipeTypeId);
     await this.validateRecipe(id, user.id);
 
     await this.prismaService.recipe.update({
@@ -92,7 +84,6 @@ export class RecipeService {
       data: {
         title: request.title,
         description: request.description,
-        recipeTypeId: request.recipeTypeId,
       },
     });
   }
@@ -210,22 +201,6 @@ export class RecipeService {
         },
       });
     });
-  }
-
-  async getRecipeTypes() {
-    const recipeTypes = await this.prismaService.recipeType.findMany();
-    const result = recipeTypes.map((type) => new RecipeTypeResponseDto(type));
-    return new Response(result);
-  }
-
-  private async validateRecipeType(id: number) {
-    const recipeType = await this.prismaService.recipeType.findUnique({
-      where: { id },
-    });
-
-    if (recipeType === null) {
-      throw new NotFoundException('Recipe type not found');
-    }
   }
 
   private async validateRecipe(id: number, userId: number) {

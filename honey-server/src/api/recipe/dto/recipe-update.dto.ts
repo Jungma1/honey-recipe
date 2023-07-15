@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class RecipeUpdateDto {
   @IsOptional()
@@ -8,8 +8,4 @@ export class RecipeUpdateDto {
   @IsOptional()
   @IsString()
   description: string;
-
-  @IsOptional()
-  @IsNumber()
-  recipeTypeId: number;
 }

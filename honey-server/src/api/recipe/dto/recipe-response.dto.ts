@@ -1,8 +1,7 @@
-import { Recipe, RecipeStat, RecipeType, User } from '@prisma/client';
+import { Recipe, RecipeStat, User } from '@prisma/client';
 
 type RecipeRelation = Recipe & {
   user: User;
-  recipeType: RecipeType;
   recipeStat: RecipeStat;
 };
 
@@ -27,7 +26,6 @@ export class RecipeResponseDto {
     this.title = recipe.title;
     this.description = recipe.description;
     this.thumbnail = recipe.thumbnail;
-    this.recipeType = recipe.recipeType.name;
     this.likeCount = recipe.recipeStat.likeCount;
     this.commentCount = recipe.recipeStat.commentCount;
     this.user = {

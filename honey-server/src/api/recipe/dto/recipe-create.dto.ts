@@ -6,7 +6,4 @@ export class RecipeCreateDto {
 
   @IsString()
   description: string;
-
-  @IsString()
-  recipeTypeId: string;
 }
