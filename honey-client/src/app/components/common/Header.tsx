@@ -2,12 +2,14 @@ import styled from '@emotion/styled';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { rem } from 'polished';
-import { useRootStore } from '~/stores';
+import { useEffect, useState } from 'react';
+import { useUserState } from '~/stores/user';
 import { colors } from '~/utils/colors';
 import Button from '../system/Button';
 
 function Header() {
-  const { user } = useRootStore();
+  const [isClient, setIsClient] = useState(false);
+  const { user } = useUserState();
   const router = useRouter();
 
   const handleClickLogo = () => {
@@ -21,6 +23,12 @@ function Header() {
   const handleClickRecipeWrite = () => {
     router.push('/recipe/write');
   };
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) return <></>;
 
   return (
     <StyledHeader>

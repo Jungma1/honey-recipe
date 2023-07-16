@@ -1,14 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { getProfile } from '~/apis/user';
-import { useRootStore } from '~/stores';
+import { useUserState } from '~/stores/user';
 
 interface Props {
   isAuth: boolean;
 }
 
 function Core({ isAuth }: Props) {
-  const { setUser } = useRootStore();
+  const { setUser } = useUserState();
   const { data, isLoading } = useQuery(['user', 'profile'], () => getProfile(), {
     enabled: isAuth,
   });
