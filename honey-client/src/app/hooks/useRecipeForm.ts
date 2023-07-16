@@ -1,7 +1,12 @@
 import { useState } from 'react';
 
-export function useRecipeForm() {
-  const [form, setFrom] = useState({ title: '', description: '' });
+interface InitialForm {
+  title: string;
+  description: string;
+}
+
+export function useRecipeForm(initialForm?: InitialForm) {
+  const [form, setFrom] = useState(initialForm ?? { title: '', description: '' });
 
   const handleChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFrom((prev) => ({ ...prev, title: e.target.value }));

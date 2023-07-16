@@ -1,7 +1,12 @@
 import { client } from '.';
-import { RecipeCreateResponse } from './types';
+import { RecipeCreateRequest, RecipeCreateResponse } from './types';
 
-export const postRecipe = async (request: FormData) => {
-  const response = await client.post<RecipeCreateResponse>('/api/v1/recipe', request);
+export const postRecipe = async (request: RecipeCreateRequest) => {
+  const formData = new FormData();
+  formData.append('title', request.title);
+  formData.append('description', request.description);
+  if (request.thumbnail) formData.append('thumbnail', request.thumbnail);
+
+  const response = await client.post<RecipeCreateResponse>('/api/v1/recipe', formData);
   return response.data;
 };

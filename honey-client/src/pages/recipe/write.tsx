@@ -1,30 +1,24 @@
-import { useMutation } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
-import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { postRecipe } from '~/apis/recipe';
 import Header from '~/components/common/Header';
 import ContentLayout from '~/components/layout/ContentLayout';
 import MainLayout from '~/components/layout/MainLayout';
 import RecipeContent from '~/components/recipe/RecipeContent';
 import RecipeFormTemplate from '~/components/recipe/RecipeFormTemplate';
 import RecipeThumbnailSelector from '~/components/recipe/RecipeThumbnailSelector';
-import { useRecipeForm } from '~/components/recipe/hooks/useRecipeForm';
+import { useRecipeCreateMutation } from '~/hooks/mutations/recipe';
 import { useImageFileSelector } from '~/hooks/useImageFileSelector';
+import { useRecipeForm } from '~/hooks/useRecipeForm';
 import { validateTokenCookie } from '~/utils/cookie';
 import { json } from '~/utils/json';
 import { redirect } from '~/utils/route';
 
 export default function RecipeWritePage() {
-  const router = useRouter();
   const [errorMessage, setErrorMessage] = useState('');
   const { form, handleChangeTitle, handleChangeDescription } = useRecipeForm();
   const { imagePath, imageFile, handleClickImageFileSelector } = useImageFileSelector();
 
-  const postRecipeMutation = useMutation((formData: FormData) => postRecipe(formData), {
-    onSuccess: ({ id }) => {
-      router.push(`/recipe/edit?id=${id}`);
-    },
+  const recipeCreateMutation = useRecipeCreateMutation({
     onError: () => {
       setErrorMessage('레시피 작성에 실패했습니다.');
     },
@@ -43,12 +37,11 @@ export default function RecipeWritePage() {
       return;
     }
 
-    const formData = new FormData();
-    formData.append('title', form.title);
-    formData.append('description', form.description);
-    if (imageFile) formData.append('thumbnail', imageFile);
-
-    await postRecipeMutation.mutateAsync(formData);
+    await recipeCreateMutation.mutateAsync({
+      title: form.title,
+      description: form.description,
+      thumbnail: imageFile,
+    });
   };
 
   return (
