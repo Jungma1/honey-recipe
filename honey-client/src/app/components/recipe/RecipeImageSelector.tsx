@@ -5,14 +5,13 @@ import Button from '../system/Button';
 
 interface Props {
   imagePath: string;
-  imageFile: File | null;
   onClickThumbnail: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-function RecipeThumbnailSelector({ imagePath, imageFile, onClickThumbnail }: Props) {
+function RecipeImageSelector({ imagePath, onClickThumbnail }: Props) {
   return (
     <Block>
-      <AutoImage src={imageFile ? imagePath : '/test.png'} />
+      <AutoImage src={imagePath.length !== 0 ? imagePath : '/test.png'} />
       <ThumbnailButton onClick={onClickThumbnail} outlined>
         썸네일 업로드
       </ThumbnailButton>
@@ -31,4 +30,4 @@ const ThumbnailButton = styled(Button)`
   font-size: ${rem(16)};
 `;
 
-export default RecipeThumbnailSelector;
+export default RecipeImageSelector;

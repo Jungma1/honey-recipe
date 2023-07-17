@@ -1,20 +1,24 @@
 import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
+import { devtools } from 'zustand/middleware';
 import { User } from '~/apis/types';
 
 interface UserState {
   user: User | null;
+}
+
+interface UserAction {
   setUser: (user: User | null) => void;
 }
 
-export const useUserState = create<UserState>()(
-  devtools(
-    persist(
-      (set) => ({
-        user: null,
-        setUser: (user) => set({ user }),
-      }),
-      { name: 'user' }
-    )
-  )
+interface UserStore extends UserState, UserAction {}
+
+const initialState: UserState = {
+  user: null,
+};
+
+export const useUserStore = create<UserStore>()(
+  devtools((set) => ({
+    ...initialState,
+    setUser: (user) => set({ user }),
+  }))
 );

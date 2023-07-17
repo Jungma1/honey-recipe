@@ -1,47 +1,40 @@
 import { GetServerSideProps } from 'next';
-import { useState } from 'react';
 import Header from '~/components/common/Header';
 import ContentLayout from '~/components/layout/ContentLayout';
 import MainLayout from '~/components/layout/MainLayout';
-import RecipeContent from '~/components/recipe/RecipeContent';
+import RecipeEditor from '~/components/recipe/RecipeEditor';
 import RecipeFormTemplate from '~/components/recipe/RecipeFormTemplate';
-import RecipeThumbnailSelector from '~/components/recipe/RecipeThumbnailSelector';
+import RecipeImageSelector from '~/components/recipe/RecipeImageSelector';
+import { useRecipeHandler } from '~/components/recipe/hooks/useRecipeHandler';
 import { useRecipeCreateMutation } from '~/hooks/mutations/recipe';
 import { useImageFileSelector } from '~/hooks/useImageFileSelector';
-import { useRecipeForm } from '~/hooks/useRecipeForm';
+import { useRecipeStore } from '~/stores/recipe';
 import { validateTokenCookie } from '~/utils/cookie';
 import { json } from '~/utils/json';
 import { redirect } from '~/utils/route';
 
 export default function RecipeWritePage() {
-  const [errorMessage, setErrorMessage] = useState('');
-  const { form, handleChangeTitle, handleChangeDescription } = useRecipeForm();
+  const { form, errorMessage, changeErrorMessage, changeThumbnail } = useRecipeStore();
+  const { handleChangeTitle, handleChangeDescription } = useRecipeHandler();
   const { imagePath, imageFile, handleClickImageFileSelector } = useImageFileSelector();
-
-  const recipeCreateMutation = useRecipeCreateMutation({
-    onError: () => {
-      setErrorMessage('레시피 작성에 실패했습니다.');
-    },
-  });
+  const recipeCreateMutation = useRecipeCreateMutation();
 
   const handleSubmitRecipe = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!form.title) {
-      setErrorMessage('제목을 입력해주세요.');
+      changeErrorMessage('제목을 입력해주세요.');
       return;
     }
 
     if (!form.description) {
-      setErrorMessage('설명을 입력해주세요.');
+      changeErrorMessage('설명을 입력해주세요.');
       return;
     }
 
-    await recipeCreateMutation.mutateAsync({
-      title: form.title,
-      description: form.description,
-      thumbnail: imageFile,
-    });
+    changeThumbnail(imageFile);
+
+    await recipeCreateMutation.mutateAsync(form);
   };
 
   return (
@@ -53,12 +46,11 @@ export default function RecipeWritePage() {
           buttonText="레시피 작성하기"
           errorMessage={errorMessage}
         >
-          <RecipeThumbnailSelector
+          <RecipeImageSelector
             imagePath={imagePath}
-            imageFile={imageFile}
             onClickThumbnail={handleClickImageFileSelector}
           />
-          <RecipeContent
+          <RecipeEditor
             title={form.title}
             onChangeTitle={handleChangeTitle}
             onChangeDescription={handleChangeDescription}
