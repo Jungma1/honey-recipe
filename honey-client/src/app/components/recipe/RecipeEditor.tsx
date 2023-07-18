@@ -3,24 +3,37 @@ import { rem } from 'polished';
 import Editor from '../system/Editor';
 import Input from '../system/Input';
 import LabelGroup from '../system/LabelGroup';
+import RecipeImageSelector from './RecipeImageSelector';
 
 interface Props {
   title: string;
   description?: string;
+  imagePath: string | null;
+  onClickImage: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onChangeTitle: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeDescription: (value: string) => void;
 }
 
-function RecipeEditor({ title, description, onChangeTitle, onChangeDescription }: Props) {
+function RecipeEditor({
+  title,
+  description,
+  imagePath,
+  onClickImage,
+  onChangeTitle,
+  onChangeDescription,
+}: Props) {
   return (
-    <Block>
-      <LabelGroup label="제목">
-        <Input value={title} onChange={onChangeTitle} />
-      </LabelGroup>
-      <LabelGroup label="설명">
-        <Editor onChange={onChangeDescription} defaultValue={description} />
-      </LabelGroup>
-    </Block>
+    <>
+      <RecipeImageSelector imagePath={imagePath} onClickImage={onClickImage} />
+      <Block>
+        <LabelGroup label="제목">
+          <Input value={title} onChange={onChangeTitle} />
+        </LabelGroup>
+        <LabelGroup label="설명">
+          <Editor onChange={onChangeDescription} defaultValue={description} />
+        </LabelGroup>
+      </Block>
+    </>
   );
 }
 

@@ -9,7 +9,6 @@ import ContentLayout from '~/components/layout/ContentLayout';
 import MainLayout from '~/components/layout/MainLayout';
 import RecipeEditor from '~/components/recipe/RecipeEditor';
 import RecipeForm from '~/components/recipe/RecipeForm';
-import RecipeImageSelector from '~/components/recipe/RecipeImageSelector';
 import { useRecipeHandler } from '~/components/recipe/hooks/useRecipeHandler';
 import { useRecipeStore } from '~/stores/recipe';
 import { validateTokenCookie } from '~/utils/cookie';
@@ -77,9 +76,10 @@ export default function RecipeWritePage() {
           buttonText="레시피 작성하기"
           errorMessage={errorMessage}
         >
-          <RecipeImageSelector imagePath={imagePath} onClickImage={handleClickThumbnail} />
           <RecipeEditor
             title={form.title}
+            imagePath={imagePath}
+            onClickImage={handleClickThumbnail}
             onChangeTitle={handleChangeTitle}
             onChangeDescription={handleChangeDescription}
           />

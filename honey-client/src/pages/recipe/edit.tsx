@@ -10,7 +10,6 @@ import RecipeCourseAddButton from '~/components/recipe/RecipeCourseAddButton';
 import RecipeCourseForm from '~/components/recipe/RecipeCourseForm';
 import RecipeEditor from '~/components/recipe/RecipeEditor';
 import RecipeForm from '~/components/recipe/RecipeForm';
-import RecipeImageSelector from '~/components/recipe/RecipeImageSelector';
 import { validateTokenCookie } from '~/utils/cookie';
 import { upload } from '~/utils/file';
 import { json } from '~/utils/json';
@@ -101,9 +100,10 @@ export default function RecipeEditPage({
           buttonText="레시피 수정하기"
           errorMessage={errorMessage}
         >
-          <RecipeImageSelector imagePath={thumbnail} onClickImage={handleClickThumbnail} />
           <RecipeEditor
             title={form.title}
+            imagePath={thumbnail}
+            onClickImage={handleClickThumbnail}
             description={form.description}
             onChangeTitle={handleChangeTitle}
             onChangeDescription={handleChangeDescription}
