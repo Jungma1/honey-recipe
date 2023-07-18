@@ -29,13 +29,5 @@ export interface RecipeCreateResponse {
 export interface RecipeUpdateRequest {
   title: string;
   description: string;
-}
-
-export interface RecipeUpdateResponse {
-  title: string;
-  description: string;
-}
-
-export interface RecipeThumbnailUpdateResponse {
-  thumbnail: string;
+  thumbnail: File | null;
 }

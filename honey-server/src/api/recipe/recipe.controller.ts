@@ -16,7 +16,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from '@prisma/client';
 import { AuthUser } from '../auth/decorator/auth-user.decorator';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
-import { RecipeCourseUpdateRequestDto } from './dto/recipe-course-update-request.dto';
 import { RecipeCreateRequestDto } from './dto/recipe-create-request.dto';
 import { RecipeUpdateRequestDto } from './dto/recipe-update-request.dto';
 import { RecipeService } from './recipe.service';
@@ -53,29 +52,14 @@ export class RecipeController {
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('thumbnail'))
   async update(
     @Param('id') id: number,
     @AuthUser() user: User,
     @Body() request: RecipeUpdateRequestDto,
-  ) {
-    return this.recipeService.updateRecipe(id, user, request);
-  }
-
-  @Delete(':id')
-  @UseGuards(JwtAuthGuard)
-  async delete(@Param('id') id: number, @AuthUser() user: User) {
-    return this.recipeService.deleteRecipe(id, user);
-  }
-
-  @Patch(':id/thumbnail')
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('thumbnail'))
-  async updateThumbnail(
-    @Param('id') id: number,
-    @AuthUser() user: User,
     @UploadedFile(
       new ParseFilePipe({
-        fileIsRequired: true,
+        fileIsRequired: false,
         validators: [
           new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 2 }),
           new MultiFileTypeValidator({ fileTypes: ['jpg', 'jpeg', 'png'] }),
@@ -84,44 +68,12 @@ export class RecipeController {
     )
     thumbnail: Express.Multer.File,
   ) {
-    return this.recipeService.updateRecipeThumbnail(id, user, thumbnail);
+    return this.recipeService.updateRecipe(id, user, request, thumbnail);
   }
 
-  @Post(':id/course')
+  @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  async addCourse(@Param('id') id: number, @AuthUser() user: User) {
-    return this.recipeService.addCourse(id, user);
-  }
-
-  @Patch(':id/course/:courseId')
-  @UseGuards(JwtAuthGuard)
-  async updateCourse(
-    @Param('id') id: number,
-    @Param('courseId') courseId: number,
-    @AuthUser() user: User,
-    @Body() request: RecipeCourseUpdateRequestDto,
-  ) {
-    return this.recipeService.updateCourse(id, courseId, user, request);
-  }
-
-  @Delete(':id/course/:courseId')
-  @UseGuards(JwtAuthGuard)
-  async deleteCourse(
-    @Param('id') id: number,
-    @Param('courseId') courseId: number,
-    @AuthUser() user: User,
-  ) {
-    return this.recipeService.deleteCourse(id, courseId, user);
-  }
-
-  @Patch(':id/course/:courseId/order/:targetId')
-  @UseGuards(JwtAuthGuard)
-  async updateCourseOrder(
-    @Param('id') id: number,
-    @Param('courseId') courseId: number,
-    @Param('targetId') targetId: number,
-    @AuthUser() user: User,
-  ) {
-    return this.recipeService.updateCourseOrder(id, courseId, targetId, user);
+  async delete(@Param('id') id: number, @AuthUser() user: User) {
+    return this.recipeService.deleteRecipe(id, user);
   }
 }
