@@ -23,7 +23,7 @@ function RecipeEditor({
   onChangeDescription,
 }: Props) {
   return (
-    <>
+    <Section>
       <RecipeImageSelector imagePath={imagePath} onClickImage={onClickImage} />
       <Block>
         <LabelGroup label="제목">
@@ -33,9 +33,14 @@ function RecipeEditor({
           <Editor onChange={onChangeDescription} defaultValue={description} />
         </LabelGroup>
       </Block>
-    </>
+    </Section>
   );
 }
+
+const Section = styled.section`
+  display: flex;
+  gap: ${rem(32)};
+`;
 
 const Block = styled.div`
   flex: 2;

@@ -28,6 +28,7 @@ const Form = styled.form`
 
 const Content = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   gap: ${rem(32)};
 `;

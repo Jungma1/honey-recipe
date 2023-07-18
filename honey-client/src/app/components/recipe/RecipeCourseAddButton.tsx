@@ -18,7 +18,7 @@ function RecipeCourseAddButton() {
   );
 }
 
-const Block = styled.section`
+const Block = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;

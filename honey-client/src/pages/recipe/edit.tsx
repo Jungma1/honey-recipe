@@ -6,8 +6,7 @@ import { RecipeUpdateRequest } from '~/apis/types';
 import Header from '~/components/common/Header';
 import ContentLayout from '~/components/layout/ContentLayout';
 import MainLayout from '~/components/layout/MainLayout';
-import RecipeCourseAddButton from '~/components/recipe/RecipeCourseAddButton';
-import RecipeCourseForm from '~/components/recipe/RecipeCourseForm';
+import RecipeCourseEditor from '~/components/recipe/RecipeCourseEditor';
 import RecipeEditor from '~/components/recipe/RecipeEditor';
 import RecipeForm from '~/components/recipe/RecipeForm';
 import { validateTokenCookie } from '~/utils/cookie';
@@ -108,10 +107,8 @@ export default function RecipeEditPage({
             onChangeTitle={handleChangeTitle}
             onChangeDescription={handleChangeDescription}
           />
+          <RecipeCourseEditor />
         </RecipeForm>
-        <RecipeCourseForm>
-          <RecipeCourseAddButton />
-        </RecipeCourseForm>
       </ContentLayout>
     </MainLayout>
   );
