@@ -1,6 +1,6 @@
 import { IsOptional, IsString } from 'class-validator';
 
-export class RecipeCourseUpdateDto {
+export class RecipeCourseUpdateRequestDto {
   @IsOptional()
   @IsString()
   title: string;

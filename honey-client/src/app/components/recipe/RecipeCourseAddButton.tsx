@@ -12,7 +12,7 @@ function RecipeCourseAddButton() {
     <Block onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <AnimationBlock animate={{ y }}>
         <NoteAddRoundedIcon fontSize="large" />
-        <Text>새로운 레시피 추가</Text>
+        <Text>레시피 요리과정 추가</Text>
       </AnimationBlock>
     </Block>
   );

@@ -10,7 +10,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-function RecipeFormTemplate({ buttonText, errorMessage, onSubmit, children }: Props) {
+function RecipeForm({ buttonText, errorMessage, onSubmit, children }: Props) {
   return (
     <Form onSubmit={onSubmit}>
       <Content>{children}</Content>
@@ -37,4 +37,4 @@ const SubmitButton = styled(Button)`
   font-size: ${rem(18)};
 `;
 
-export default RecipeFormTemplate;
+export default RecipeForm;

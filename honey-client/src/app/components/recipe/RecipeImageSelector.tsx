@@ -4,15 +4,15 @@ import AutoImage from '../system/AutoImage';
 import Button from '../system/Button';
 
 interface Props {
-  imagePath: string;
-  onClickThumbnail: React.MouseEventHandler<HTMLButtonElement>;
+  imagePath: string | null;
+  onClickImage: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-function RecipeImageSelector({ imagePath, onClickThumbnail }: Props) {
+function RecipeImageSelector({ imagePath, onClickImage }: Props) {
   return (
     <Block>
-      <AutoImage src={imagePath.length !== 0 ? imagePath : '/test.png'} />
-      <ThumbnailButton onClick={onClickThumbnail} outlined>
+      <AutoImage src={imagePath ?? '/test.png'} />
+      <ThumbnailButton onClick={onClickImage} outlined>
         썸네일 업로드
       </ThumbnailButton>
     </Block>

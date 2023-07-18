@@ -11,6 +11,7 @@ interface RecipeState {
 }
 
 interface RecipeAction {
+  resetForm: () => void;
   changeForm: (key: keyof RecipeState['form'], value: string) => void;
   changeThumbnail: (thumbnail: File | null) => void;
   changeErrorMessage: (errorMessage: string) => void;
@@ -30,6 +31,7 @@ const initialState: RecipeState = {
 export const useRecipeStore = create<RecipeStore>()(
   devtools((set) => ({
     ...initialState,
+    resetForm: () => set(initialState),
     changeForm: (key, value) => set(({ form }) => ({ form: { ...form, [key]: value } })),
     changeThumbnail: (thumbnail) => set(({ form }) => ({ form: { ...form, thumbnail } })),
     changeErrorMessage: (errorMessage) => set({ errorMessage }),

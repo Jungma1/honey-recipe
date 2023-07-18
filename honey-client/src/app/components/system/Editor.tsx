@@ -9,18 +9,28 @@ interface Props {
   onChange: (value: string) => void;
 }
 
+const editorTheme = EditorView.theme({
+  '.cm-content': {
+    fontFamily: `Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue',
+    'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif`,
+  },
+});
+
 function Editor({ defaultValue, onChange }: Props) {
   const editorRef = useRef<HTMLDivElement>(null);
   const onChangeRef = useRef(onChange);
+  const defaultValueRef = useRef(defaultValue);
 
   useEffect(() => {
     if (!editorRef.current) return;
 
     const view = new EditorView({
-      doc: defaultValue,
+      doc: defaultValueRef.current,
       parent: editorRef.current,
       extensions: [
         minimalSetup,
+        editorTheme,
         EditorView.lineWrapping,
         EditorView.updateListener.of((value) => {
           onChangeRef.current(value.state.doc.toString());
@@ -31,7 +41,7 @@ function Editor({ defaultValue, onChange }: Props) {
     return () => {
       view.destroy();
     };
-  }, [defaultValue]);
+  }, []);
 
   return <Block ref={editorRef} />;
 }

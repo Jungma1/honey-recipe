@@ -7,10 +7,12 @@ import { User } from '@prisma/client';
 import * as mimeTypes from 'mime-types';
 import { FileService } from '~/common/file/file.service';
 import { PrismaService } from '~/common/prisma/prisma.service';
-import { RecipeCourseUpdateDto } from './dto/recipe-course-update.dto';
+import { RecipeCourseUpdateRequestDto } from './dto/recipe-course-update-request.dto';
+import { RecipeCreateRequestDto } from './dto/recipe-create-request.dto';
 import { RecipeCreateResponseDto } from './dto/recipe-create-response.dto';
-import { RecipeCreateDto } from './dto/recipe-create.dto';
-import { RecipeUpdateDto } from './dto/recipe-update.dto';
+import { RecipeResponseDto } from './dto/recipe-response.dto';
+import { RecipeUpdateRequestDto } from './dto/recipe-update-request.dto';
+import { RecipeUpdateResponseDto } from './dto/recipe-update-response.dto';
 
 @Injectable()
 export class RecipeService {
@@ -19,9 +21,21 @@ export class RecipeService {
     private readonly fileService: FileService,
   ) {}
 
+  async findOne(id: number) {
+    const recipe = await this.prismaService.recipe.findUnique({
+      include: {
+        user: true,
+        recipeStat: true,
+      },
+      where: { id },
+    });
+
+    return new RecipeResponseDto(recipe);
+  }
+
   async createRecipe(
     user: User,
-    request: RecipeCreateDto,
+    request: RecipeCreateRequestDto,
     thumbnail: Express.Multer.File,
   ) {
     const recipeId = await this.prismaService.$transaction(async (tx) => {
@@ -66,10 +80,10 @@ export class RecipeService {
     return new RecipeCreateResponseDto(recipeId);
   }
 
-  async updateRecipe(id: number, user: User, request: RecipeUpdateDto) {
+  async updateRecipe(id: number, user: User, request: RecipeUpdateRequestDto) {
     await this.validateRecipe(id, user.id);
 
-    await this.prismaService.recipe.update({
+    const updatedRecipe = await this.prismaService.recipe.update({
       where: {
         id,
       },
@@ -78,6 +92,8 @@ export class RecipeService {
         description: request.description,
       },
     });
+
+    return new RecipeUpdateResponseDto(updatedRecipe);
   }
 
   async deleteRecipe(id: number, user: User) {
@@ -86,6 +102,37 @@ export class RecipeService {
     await this.prismaService.recipe.delete({
       where: { id },
     });
+  }
+
+  async updateRecipeThumbnail(
+    id: number,
+    user: User,
+    thumbnail: Express.Multer.File,
+  ) {
+    await this.validateRecipe(id, user.id);
+
+    const updatedRecipe = await this.prismaService.$transaction(async (tx) => {
+      const key = await this.fileService.generateKey({
+        id: user.id,
+        type: 'recipes',
+        extension: mimeTypes.extension(thumbnail.mimetype) || 'png',
+      });
+
+      await this.fileService.uploadFile(key, thumbnail.buffer);
+
+      const thumbnailUrl = await this.fileService.generateUrl(key);
+
+      return tx.recipe.update({
+        where: { id },
+        data: {
+          thumbnail: thumbnailUrl,
+        },
+      });
+    });
+
+    return {
+      thumbnail: updatedRecipe.thumbnail,
+    };
   }
 
   async addCourse(id: number, user: User) {
@@ -111,7 +158,7 @@ export class RecipeService {
     id: number,
     courseId: number,
     user: User,
-    request: RecipeCourseUpdateDto,
+    request: RecipeCourseUpdateRequestDto,
   ) {
     await this.validateRecipe(id, user.id);
     await this.validateRecipeCourse(courseId);

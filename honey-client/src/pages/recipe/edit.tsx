@@ -1,26 +1,118 @@
-import { GetServerSideProps } from 'next';
+import { useMutation } from '@tanstack/react-query';
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
+import React, { useState } from 'react';
+import { getRecipe, patchRecipe, patchRecipeThumbnail } from '~/apis/recipe';
+import { RecipeUpdateRequest } from '~/apis/types';
 import Header from '~/components/common/Header';
 import ContentLayout from '~/components/layout/ContentLayout';
 import MainLayout from '~/components/layout/MainLayout';
 import RecipeCourseAddButton from '~/components/recipe/RecipeCourseAddButton';
+import RecipeCourseForm from '~/components/recipe/RecipeCourseForm';
+import RecipeEditor from '~/components/recipe/RecipeEditor';
+import RecipeForm from '~/components/recipe/RecipeForm';
+import RecipeImageSelector from '~/components/recipe/RecipeImageSelector';
 import { validateTokenCookie } from '~/utils/cookie';
+import { upload } from '~/utils/file';
 import { json } from '~/utils/json';
-import { redirect } from '~/utils/route';
+import { redirect } from '~/utils/router';
 
-export default function RecipeEditPage() {
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+  const { isAuth } = validateTokenCookie(context);
+  if (!isAuth) return redirect('/login');
+
+  if (!context.query.id) return redirect('/');
+  const id = parseInt(context.query.id as string);
+  const recipe = await getRecipe(id);
+
+  return json({ isAuth, recipe });
+};
+
+export default function RecipeEditPage({
+  recipe,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const [form, setForm] = useState({
+    title: recipe.title,
+    description: recipe.description,
+  });
+  const [thumbnail, setThumbnail] = useState(recipe.thumbnail);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const recipeUpdateMutation = useMutation(
+    (request: RecipeUpdateRequest) => patchRecipe(recipe.id, request),
+    {
+      onSuccess: ({ title, description }) => {
+        setForm({ title, description });
+      },
+      onError: () => {
+        setErrorMessage('레시피 수정에 실패했습니다.');
+      },
+    }
+  );
+
+  const recipeThumbnailUpdateMutation = useMutation(
+    (file: File) => patchRecipeThumbnail(recipe.id, file),
+    {
+      onSuccess: ({ thumbnail }) => {
+        setThumbnail(thumbnail);
+      },
+      onError: () => {
+        setErrorMessage('썸네일 업로드에 실패했습니다.');
+      },
+    }
+  );
+
+  const handleChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, title: e.target.value });
+  };
+
+  const handleChangeDescription = (value: string) => {
+    setForm({ ...form, description: value });
+  };
+
+  const handleSubmitRecipe = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!form.title) {
+      setErrorMessage('제목을 입력해주세요.');
+      return;
+    }
+
+    if (!form.description) {
+      setErrorMessage('설명을 입력해주세요.');
+      return;
+    }
+
+    await recipeUpdateMutation.mutateAsync(form);
+  };
+
+  const handleClickThumbnail = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const file = await upload();
+    if (!file) return;
+    await recipeThumbnailUpdateMutation.mutateAsync(file);
+  };
+
   return (
     <MainLayout>
       <Header />
       <ContentLayout>
-        <section>List</section>
-        <RecipeCourseAddButton />
+        <RecipeForm
+          onSubmit={handleSubmitRecipe}
+          buttonText="레시피 수정하기"
+          errorMessage={errorMessage}
+        >
+          <RecipeImageSelector imagePath={thumbnail} onClickImage={handleClickThumbnail} />
+          <RecipeEditor
+            title={form.title}
+            description={form.description}
+            onChangeTitle={handleChangeTitle}
+            onChangeDescription={handleChangeDescription}
+          />
+        </RecipeForm>
+        <RecipeCourseForm>
+          <RecipeCourseAddButton />
+        </RecipeCourseForm>
       </ContentLayout>
     </MainLayout>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { isAuth } = validateTokenCookie(context);
-  if (!isAuth) return redirect('/login');
-  return json({ isAuth });
-};

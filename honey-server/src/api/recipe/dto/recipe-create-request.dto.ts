@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-export class RecipeCreateDto {
+export class RecipeCreateRequestDto {
   @IsString()
   title: string;
 
