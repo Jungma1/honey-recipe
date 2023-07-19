@@ -81,12 +81,58 @@ export class RecipeService {
   async updateRecipe(id: number, user: User, request: RecipeUpdateRequestDto) {
     await this.validateRecipe(id, user.id);
 
-    await this.prismaService.recipe.update({
-      where: { id },
-      data: {
-        title: request.title,
-        description: request.description,
-      },
+    await this.prismaService.$transaction(async (tx) => {
+      await tx.recipe.update({
+        where: { id },
+        data: {
+          title: request.title,
+          description: request.description,
+        },
+      });
+
+      const course = request.course;
+
+      if (course.length === 0) {
+        await tx.recipeCourse.deleteMany({
+          where: { recipeId: id },
+        });
+      }
+
+      if (course.length > 0) {
+        await tx.recipeCourse.deleteMany({
+          where: {
+            recipeId: id,
+            NOT: {
+              id: {
+                in: course.map((item) => item.id).filter((id) => !!id),
+              },
+            },
+          },
+        });
+
+        for (const [index, item] of course.entries()) {
+          if (!item.id) {
+            await tx.recipeCourse.create({
+              data: {
+                recipeId: id,
+                title: item.title,
+                content: item.content,
+                order: index,
+              },
+            });
+            continue;
+          }
+
+          await tx.recipeCourse.update({
+            where: { id: item.id },
+            data: {
+              title: item.title,
+              content: item.content,
+              order: index,
+            },
+          });
+        }
+      }
     });
   }
 
