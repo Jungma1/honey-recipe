@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import { getRecipe, patchRecipe } from '~/apis/recipe';
+import { getRecipe, patchRecipe, patchRecipeThumbnail } from '~/apis/recipe';
 import { RecipeUpdateRequest } from '~/apis/types';
 import Header from '~/components/common/Header';
 import ContentLayout from '~/components/layout/ContentLayout';
@@ -33,7 +33,6 @@ export default function RecipeEditPage({
   const [form, setForm] = useState({
     title: recipe.title,
     description: recipe.description,
-    thumbnail: null as File | null,
   });
   const [thumbnail, setThumbnail] = useState(recipe.thumbnail);
   const [errorMessage, setErrorMessage] = useState('');
@@ -46,6 +45,18 @@ export default function RecipeEditPage({
       },
       onError: () => {
         setErrorMessage('레시피 수정에 실패했습니다.');
+      },
+    }
+  );
+
+  const recipeUpdateThumbnailMutation = useMutation(
+    (file: File) => patchRecipeThumbnail(recipe.id, file),
+    {
+      onSuccess: ({ thumbnail }) => {
+        setThumbnail(thumbnail);
+      },
+      onError: () => {
+        setErrorMessage('썸네일 업로드에 실패했습니다.');
       },
     }
   );
@@ -78,9 +89,7 @@ export default function RecipeEditPage({
     e.preventDefault();
     const file = await upload();
     if (!file) return;
-    const fileUrl = URL.createObjectURL(file);
-    setThumbnail(fileUrl);
-    setForm({ ...form, thumbnail: file });
+    await recipeUpdateThumbnailMutation.mutateAsync(file);
   };
 
   return (

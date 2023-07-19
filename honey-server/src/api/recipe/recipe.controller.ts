@@ -52,14 +52,29 @@ export class RecipeController {
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('thumbnail'))
   async update(
     @Param('id') id: number,
     @AuthUser() user: User,
     @Body() request: RecipeUpdateRequestDto,
+  ) {
+    return this.recipeService.updateRecipe(id, user, request);
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  async delete(@Param('id') id: number, @AuthUser() user: User) {
+    return this.recipeService.deleteRecipe(id, user);
+  }
+
+  @Patch(':id/thumbnail')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('thumbnail'))
+  async updateThumbnail(
+    @Param('id') id: number,
+    @AuthUser() user: User,
     @UploadedFile(
       new ParseFilePipe({
-        fileIsRequired: false,
+        fileIsRequired: true,
         validators: [
           new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 2 }),
           new MultiFileTypeValidator({ fileTypes: ['jpg', 'jpeg', 'png'] }),
@@ -68,12 +83,6 @@ export class RecipeController {
     )
     thumbnail: Express.Multer.File,
   ) {
-    return this.recipeService.updateRecipe(id, user, request, thumbnail);
-  }
-
-  @Delete(':id')
-  @UseGuards(JwtAuthGuard)
-  async delete(@Param('id') id: number, @AuthUser() user: User) {
-    return this.recipeService.deleteRecipe(id, user);
+    return this.recipeService.updateRecipeThumbnail(id, user, thumbnail);
   }
 }

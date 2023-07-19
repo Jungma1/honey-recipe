@@ -3,6 +3,7 @@ import {
   RecipeCreateRequest,
   RecipeCreateResponse,
   RecipeResponse,
+  RecipeThumbnailUpdateResponse,
   RecipeUpdateRequest,
 } from './types';
 
@@ -22,11 +23,17 @@ export const postRecipe = async (request: RecipeCreateRequest) => {
 };
 
 export const patchRecipe = async (id: number, request: RecipeUpdateRequest) => {
-  const formData = new FormData();
-  formData.append('title', request.title);
-  formData.append('description', request.description);
-  if (request.thumbnail) formData.append('thumbnail', request.thumbnail);
+  const response = await client.patch(`/api/v1/recipe/${id}`, request);
+  return response.data;
+};
 
-  const response = await client.patch(`/api/v1/recipe/${id}`, formData);
+export const patchRecipeThumbnail = async (id: number, thumbnail: File) => {
+  const formData = new FormData();
+  formData.append('thumbnail', thumbnail);
+
+  const response = await client.patch<RecipeThumbnailUpdateResponse>(
+    `/api/v1/recipe/${id}/thumbnail`,
+    formData
+  );
   return response.data;
 };

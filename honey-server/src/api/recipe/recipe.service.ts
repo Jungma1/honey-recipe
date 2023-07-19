@@ -78,43 +78,15 @@ export class RecipeService {
     return new RecipeCreateResponseDto(recipeId);
   }
 
-  async updateRecipe(
-    id: number,
-    user: User,
-    request: RecipeUpdateRequestDto,
-    thumbnail: Express.Multer.File,
-  ) {
+  async updateRecipe(id: number, user: User, request: RecipeUpdateRequestDto) {
     await this.validateRecipe(id, user.id);
 
-    await this.prismaService.$transaction(async (tx) => {
-      if (thumbnail) {
-        const key = await this.fileService.generateKey({
-          id,
-          type: 'recipes',
-          extension: mimeTypes.extension(thumbnail.mimetype) || 'png',
-        });
-
-        await this.fileService.uploadFile(key, thumbnail.buffer);
-
-        const thumbnailUrl = await this.fileService.generateUrl(key);
-
-        await tx.recipe.update({
-          where: { id },
-          data: {
-            title: request.title,
-            description: request.description,
-            thumbnail: thumbnailUrl,
-          },
-        });
-      }
-
-      await tx.recipe.update({
-        where: { id },
-        data: {
-          title: request.title,
-          description: request.description,
-        },
-      });
+    await this.prismaService.recipe.update({
+      where: { id },
+      data: {
+        title: request.title,
+        description: request.description,
+      },
     });
   }
 
@@ -124,6 +96,37 @@ export class RecipeService {
     await this.prismaService.recipe.delete({
       where: { id },
     });
+  }
+
+  async updateRecipeThumbnail(
+    id: number,
+    user: User,
+    thumbnail: Express.Multer.File,
+  ) {
+    await this.validateRecipe(id, user.id);
+
+    const updatedRecipe = await this.prismaService.$transaction(async (tx) => {
+      const key = await this.fileService.generateKey({
+        id,
+        type: 'recipes',
+        extension: mimeTypes.extension(thumbnail.mimetype) || 'png',
+      });
+
+      await this.fileService.uploadFile(key, thumbnail.buffer);
+
+      const thumbnailUrl = await this.fileService.generateUrl(key);
+
+      return tx.recipe.update({
+        where: { id },
+        data: {
+          thumbnail: thumbnailUrl,
+        },
+      });
+    });
+
+    return {
+      thumbnail: updatedRecipe.thumbnail,
+    };
   }
 
   private async validateRecipe(id: number, userId: number) {
