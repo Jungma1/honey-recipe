@@ -12,24 +12,24 @@ interface Props {
 
 function RecipeForm({ buttonText, errorMessage, onSubmit, children }: Props) {
   return (
-    <Form onSubmit={onSubmit}>
-      <Content>{children}</Content>
-      <RecipeErrorMessage message={errorMessage} />
-      <SubmitButton>{buttonText}</SubmitButton>
-    </Form>
+    <Section>
+      <Form onSubmit={onSubmit}>
+        {children}
+        <RecipeErrorMessage message={errorMessage} />
+        <SubmitButton>{buttonText}</SubmitButton>
+      </Form>
+    </Section>
   );
 }
+
+const Section = styled.section`
+  display: flex;
+  flex-direction: column;
+`;
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: ${rem(32)};
-`;
-
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   gap: ${rem(32)};
 `;
 

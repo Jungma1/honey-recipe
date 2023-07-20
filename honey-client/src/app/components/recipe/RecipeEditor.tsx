@@ -23,32 +23,32 @@ function RecipeEditor({
   onChangeDescription,
 }: Props) {
   return (
-    <Section>
+    <Block>
       <RecipeImageSelector imagePath={imagePath} onClickImage={onClickImage} />
-      <Block>
+      <Wrapper>
         <LabelGroup label="제목">
           <Input value={title} onChange={onChangeTitle} />
         </LabelGroup>
         <LabelGroup label="설명">
-          <Editor onChange={onChangeDescription} defaultValue={description} />
+          <Editor onChangeValue={onChangeDescription} defaultValue={description} />
         </LabelGroup>
-      </Block>
-    </Section>
+      </Wrapper>
+    </Block>
   );
 }
 
-const Section = styled.section`
+const Block = styled.div`
   display: flex;
   gap: ${rem(32)};
 `;
 
-const Block = styled.div`
+const Wrapper = styled.div`
   flex: 2;
   display: flex;
   flex-direction: column;
   gap: ${rem(32)};
 
-  div:nth-child(2) {
+  div:last-of-type {
     flex: 1;
   }
 `;

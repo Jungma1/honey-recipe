@@ -1,7 +1,6 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 export class RecipeCourseUpdateRequestDto {
-  @IsOptional()
   @IsNumber()
   id: number;
 
@@ -10,4 +9,7 @@ export class RecipeCourseUpdateRequestDto {
 
   @IsString()
   content: string;
+
+  @IsString()
+  picture: string | null;
 }

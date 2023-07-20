@@ -6,7 +6,7 @@ import { colors } from '~/utils/colors';
 
 interface Props {
   defaultValue?: string;
-  onChange: (value: string) => void;
+  onChangeValue: (value: string) => void;
 }
 
 const editorTheme = EditorView.theme({
@@ -17,14 +17,14 @@ const editorTheme = EditorView.theme({
   },
 });
 
-function Editor({ defaultValue, onChange }: Props) {
+function Editor({ defaultValue, onChangeValue, ...rest }: Props) {
   const editorRef = useRef<HTMLDivElement>(null);
-  const onChangeRef = useRef(onChange);
+  const onChangeRef = useRef(onChangeValue);
   const defaultValueRef = useRef(defaultValue);
 
   useEffect(() => {
-    onChangeRef.current = onChange;
-  }, [onChange]);
+    onChangeRef.current = onChangeValue;
+  }, [onChangeValue]);
 
   useEffect(() => {
     if (!editorRef.current) return;
@@ -47,7 +47,7 @@ function Editor({ defaultValue, onChange }: Props) {
     };
   }, []);
 
-  return <Block ref={editorRef} />;
+  return <Block ref={editorRef} {...rest} />;
 }
 
 const Block = styled.div`

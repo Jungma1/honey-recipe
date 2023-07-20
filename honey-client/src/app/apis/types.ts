@@ -17,11 +17,19 @@ export interface RecipeResponse {
   updatedAt: Date;
 }
 
+export interface RecipeCourseResponse {
+  id: number;
+  title: string;
+  content: string;
+  picture: string | null;
+}
+
 export interface RecipeCreateRequest {
   title: string;
   description: string;
   thumbnail: File | null;
 }
+
 export interface RecipeCreateResponse {
   id: number;
 }
@@ -29,8 +37,15 @@ export interface RecipeCreateResponse {
 export interface RecipeUpdateRequest {
   title: string;
   description: string;
+  thumbnail: string | null;
+  course: {
+    id: number;
+    title: string;
+    content: string;
+    picture: string | null;
+  }[];
 }
 
-export interface RecipeThumbnailUpdateResponse {
-  thumbnail: string;
+export interface ImageUploadResponse {
+  imagePath: string;
 }

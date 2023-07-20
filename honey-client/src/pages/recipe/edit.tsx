@@ -1,12 +1,15 @@
+import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
+import { rem } from 'polished';
 import React, { useState } from 'react';
-import { getRecipe, patchRecipe, patchRecipeThumbnail } from '~/apis/recipe';
+import { getRecipe, patchRecipe, postRecipeImage } from '~/apis/recipe';
 import { RecipeUpdateRequest } from '~/apis/types';
 import Header from '~/components/common/Header';
 import ContentLayout from '~/components/layout/ContentLayout';
 import MainLayout from '~/components/layout/MainLayout';
+import RecipeCourseAddButton from '~/components/recipe/RecipeCourseAddButton';
 import RecipeCourseEditor from '~/components/recipe/RecipeCourseEditor';
 import RecipeEditor from '~/components/recipe/RecipeEditor';
 import RecipeForm from '~/components/recipe/RecipeForm';
@@ -30,11 +33,12 @@ export default function RecipeEditPage({
   recipe,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<RecipeUpdateRequest>({
     title: recipe.title,
     description: recipe.description,
+    thumbnail: recipe.thumbnail,
+    course: [],
   });
-  const [thumbnail, setThumbnail] = useState(recipe.thumbnail);
   const [errorMessage, setErrorMessage] = useState('');
 
   const recipeUpdateMutation = useMutation(
@@ -50,10 +54,10 @@ export default function RecipeEditPage({
   );
 
   const recipeUpdateThumbnailMutation = useMutation(
-    (file: File) => patchRecipeThumbnail(recipe.id, file),
+    (file: File) => postRecipeImage(recipe.id, file),
     {
-      onSuccess: ({ thumbnail }) => {
-        setThumbnail(thumbnail);
+      onSuccess: ({ imagePath }) => {
+        setForm({ ...form, thumbnail: imagePath });
       },
       onError: () => {
         setErrorMessage('썸네일 업로드에 실패했습니다.');
@@ -61,15 +65,15 @@ export default function RecipeEditPage({
     }
   );
 
-  const handleChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, title: e.target.value });
   };
 
-  const handleChangeDescription = (value: string) => {
+  const onChangeDescription = (value: string) => {
     setForm({ ...form, description: value });
   };
 
-  const handleSubmitRecipe = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmitRecipe = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!form.title) {
@@ -85,11 +89,27 @@ export default function RecipeEditPage({
     await recipeUpdateMutation.mutateAsync(form);
   };
 
-  const handleClickThumbnail = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onClickThumbnail = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const file = await upload();
     if (!file) return;
     await recipeUpdateThumbnailMutation.mutateAsync(file);
+  };
+
+  const onChangeCourse = (id: number, key: string, value: string) => {
+    setForm({
+      ...form,
+      course: form.course.map((course) =>
+        course.id === id ? { ...course, [key]: value } : course
+      ),
+    });
+  };
+
+  const onClickPicture = async (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const file = await upload();
+    if (!file) return;
+    console.log(file);
   };
 
   return (
@@ -97,21 +117,37 @@ export default function RecipeEditPage({
       <Header />
       <ContentLayout>
         <RecipeForm
-          onSubmit={handleSubmitRecipe}
+          onSubmit={onSubmitRecipe}
           buttonText="레시피 수정하기"
           errorMessage={errorMessage}
         >
           <RecipeEditor
             title={form.title}
-            imagePath={thumbnail}
-            onClickImage={handleClickThumbnail}
+            imagePath={form.thumbnail}
+            onClickImage={onClickThumbnail}
             description={form.description}
-            onChangeTitle={handleChangeTitle}
-            onChangeDescription={handleChangeDescription}
+            onChangeTitle={onChangeTitle}
+            onChangeDescription={onChangeDescription}
           />
-          <RecipeCourseEditor />
+          <Block>
+            {form.course.map((course) => (
+              <RecipeCourseEditor
+                key={course.id}
+                course={course}
+                onChangeForm={onChangeCourse}
+                onClickPicture={onClickPicture}
+              />
+            ))}
+            <RecipeCourseAddButton />
+          </Block>
         </RecipeForm>
       </ContentLayout>
     </MainLayout>
   );
 }
+
+const Block = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${rem(32)};
+`;

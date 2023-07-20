@@ -66,10 +66,16 @@ export class RecipeController {
     return this.recipeService.deleteRecipe(id, user);
   }
 
-  @Patch(':id/thumbnail')
+  @Post(':id/course')
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('thumbnail'))
-  async updateThumbnail(
+  async createCourse(@Param('id') id: number, @AuthUser() user: User) {
+    return this.recipeService.createRecipeCourse(id, user);
+  }
+
+  @Patch(':id/image')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('image'))
+  async uploadImage(
     @Param('id') id: number,
     @AuthUser() user: User,
     @UploadedFile(
@@ -81,8 +87,8 @@ export class RecipeController {
         ],
       }),
     )
-    thumbnail: Express.Multer.File,
+    image: Express.Multer.File,
   ) {
-    return this.recipeService.updateRecipeThumbnail(id, user, thumbnail);
+    return this.recipeService.uploadImage(id, user, image);
   }
 }
