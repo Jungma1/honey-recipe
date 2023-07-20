@@ -23,6 +23,10 @@ function Editor({ defaultValue, onChange }: Props) {
   const defaultValueRef = useRef(defaultValue);
 
   useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
+
+  useEffect(() => {
     if (!editorRef.current) return;
 
     const view = new EditorView({
