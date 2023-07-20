@@ -72,7 +72,7 @@ export class RecipeController {
     return this.recipeService.createRecipeCourse(id, user);
   }
 
-  @Patch(':id/image')
+  @Post(':id/image')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('image'))
   async uploadImage(

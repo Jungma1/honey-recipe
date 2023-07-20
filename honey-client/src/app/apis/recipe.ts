@@ -31,6 +31,6 @@ export const postRecipeImage = async (id: number, image: File) => {
   const formData = new FormData();
   formData.append('image', image);
 
-  const response = await client.patch<ImageUploadResponse>(`/api/v1/recipe/${id}/image`, formData);
+  const response = await client.post<ImageUploadResponse>(`/api/v1/recipe/${id}/image`, formData);
   return response.data;
 };
