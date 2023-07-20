@@ -5,7 +5,7 @@ export interface User {
   username: string;
 }
 
-export interface RecipeResponse {
+export interface Recipe {
   id: number;
   title: string;
   description: string;
@@ -15,13 +15,15 @@ export interface RecipeResponse {
   user: User;
   createdAt: Date;
   updatedAt: Date;
+  course: RecipeCourse[];
 }
 
-export interface RecipeCourseResponse {
+export interface RecipeCourse {
   id: number;
   title: string;
   content: string;
   picture: string | null;
+  created: boolean;
 }
 
 export interface RecipeCreateRequest {
@@ -38,12 +40,7 @@ export interface RecipeUpdateRequest {
   title: string;
   description: string;
   thumbnail: string | null;
-  course: {
-    id: number;
-    title: string;
-    content: string;
-    picture: string | null;
-  }[];
+  course: RecipeCourse[];
 }
 
 export interface ImageUploadResponse {

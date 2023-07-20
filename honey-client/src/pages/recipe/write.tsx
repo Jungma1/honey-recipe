@@ -73,7 +73,7 @@ export default function RecipeWritePage() {
       <ContentLayout>
         <RecipeForm
           onSubmit={handleSubmitRecipe}
-          buttonText="레시피 작성하기"
+          buttonText="요리순서 작성하러 가기"
           errorMessage={errorMessage}
         >
           <RecipeEditor

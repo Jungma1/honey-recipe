@@ -1,13 +1,13 @@
 import styled from '@emotion/styled';
 import { rem } from 'polished';
-import { RecipeCourseResponse } from '~/apis/types';
+import { RecipeCourse } from '~/apis/types';
 import AutoImage from '../system/AutoImage';
 import Editor from '../system/Editor';
 import Input from '../system/Input';
 import LabelGroup from '../system/LabelGroup';
 
 interface Props {
-  course: RecipeCourseResponse;
+  course: RecipeCourse;
   onChangeForm: (id: number, key: string, value: string) => void;
   onClickPicture: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
@@ -30,7 +30,7 @@ function RecipeCourseEditor({ course, onChangeForm, onClickPicture }: Props) {
         <LabelGroup label="제목">
           <Input name="title" value={course.title} onChange={onChangeTitle} />
         </LabelGroup>
-        <LabelGroup label="본문">
+        <LabelGroup label="내용">
           <Editor onChangeValue={onChangeContent} defaultValue={course.content} />
         </LabelGroup>
       </Wrapper>

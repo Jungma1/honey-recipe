@@ -26,10 +26,10 @@ function RecipeEditor({
     <Block>
       <RecipeImageSelector imagePath={imagePath} onClickImage={onClickImage} />
       <Wrapper>
-        <LabelGroup label="제목">
+        <LabelGroup label="레시피 이름">
           <Input value={title} onChange={onChangeTitle} />
         </LabelGroup>
-        <LabelGroup label="설명">
+        <LabelGroup label="레시피 설명">
           <Editor onChangeValue={onChangeDescription} defaultValue={description} />
         </LabelGroup>
       </Wrapper>

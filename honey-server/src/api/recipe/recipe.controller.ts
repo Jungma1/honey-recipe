@@ -66,12 +66,6 @@ export class RecipeController {
     return this.recipeService.deleteRecipe(id, user);
   }
 
-  @Post(':id/course')
-  @UseGuards(JwtAuthGuard)
-  async createCourse(@Param('id') id: number, @AuthUser() user: User) {
-    return this.recipeService.createRecipeCourse(id, user);
-  }
-
   @Post(':id/image')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('image'))

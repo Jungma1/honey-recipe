@@ -7,7 +7,6 @@ import { User } from '@prisma/client';
 import * as mimeTypes from 'mime-types';
 import { FileService } from '~/common/file/file.service';
 import { PrismaService } from '~/common/prisma/prisma.service';
-import { RecipeCourseCreateResponseDto } from './dto/recipe-course-create-response.dto';
 import { RecipeCreateRequestDto } from './dto/recipe-create-request.dto';
 import { RecipeCreateResponseDto } from './dto/recipe-create-response.dto';
 import { RecipeResponseDto } from './dto/recipe-response.dto';
@@ -25,6 +24,11 @@ export class RecipeService {
       include: {
         user: true,
         recipeStat: true,
+        recipeCourse: {
+          orderBy: {
+            order: 'asc',
+          },
+        },
       },
       where: { id },
     });
@@ -108,18 +112,34 @@ export class RecipeService {
             recipeId: id,
             NOT: {
               id: {
-                in: course.map((item) => item.id),
+                in: course
+                  .filter((item) => item.created)
+                  .map((item) => item.id),
               },
             },
           },
         });
 
         for (const [index, item] of course.entries()) {
+          if (!item.created) {
+            await tx.recipeCourse.create({
+              data: {
+                recipeId: id,
+                title: item.title,
+                content: item.content,
+                picture: item.picture,
+                order: index,
+              },
+            });
+            continue;
+          }
+
           await tx.recipeCourse.update({
             where: { id: item.id },
             data: {
               title: item.title,
               content: item.content,
+              picture: item.picture,
               order: index,
             },
           });
@@ -134,27 +154,6 @@ export class RecipeService {
     await this.prismaService.recipe.delete({
       where: { id },
     });
-  }
-
-  async createRecipeCourse(id: number, user: User) {
-    await this.validateRecipe(id, user.id);
-
-    const course = await this.prismaService.$transaction(async (tx) => {
-      const count = await tx.recipeCourse.count({
-        where: { recipeId: id },
-      });
-
-      return this.prismaService.recipeCourse.create({
-        data: {
-          recipeId: id,
-          order: count + 1,
-          title: '',
-          content: '',
-        },
-      });
-    });
-
-    return new RecipeCourseCreateResponseDto(course);
   }
 
   async uploadImage(id: number, user: User, image: Express.Multer.File) {

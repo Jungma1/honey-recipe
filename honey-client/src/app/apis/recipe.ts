@@ -1,14 +1,14 @@
 import { client } from '.';
 import {
   ImageUploadResponse,
+  Recipe,
   RecipeCreateRequest,
   RecipeCreateResponse,
-  RecipeResponse,
   RecipeUpdateRequest,
 } from './types';
 
 export const getRecipe = async (id: number) => {
-  const response = await client.get<RecipeResponse>(`/api/v1/recipe/${id}`);
+  const response = await client.get<Recipe>(`/api/v1/recipe/${id}`);
   return response.data;
 };
 

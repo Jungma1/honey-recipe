@@ -37,7 +37,7 @@ export default function RecipeEditPage({
     title: recipe.title,
     description: recipe.description,
     thumbnail: recipe.thumbnail,
-    course: [],
+    course: recipe.course,
   });
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -112,6 +112,16 @@ export default function RecipeEditPage({
     console.log(file);
   };
 
+  const onClickAddCourse = async () => {
+    setForm({
+      ...form,
+      course: [
+        ...form.course,
+        { id: Math.random(), title: '', content: '', picture: null, created: false },
+      ],
+    });
+  };
+
   return (
     <MainLayout>
       <Header />
@@ -138,7 +148,7 @@ export default function RecipeEditPage({
                 onClickPicture={onClickPicture}
               />
             ))}
-            <RecipeCourseAddButton />
+            <RecipeCourseAddButton onClick={onClickAddCourse} />
           </Block>
         </RecipeForm>
       </ContentLayout>

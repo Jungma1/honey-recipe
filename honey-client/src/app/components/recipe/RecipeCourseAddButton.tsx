@@ -5,11 +5,15 @@ import { rem } from 'polished';
 import { useMotionVertical } from '~/hooks/useMotionVertical';
 import { colors } from '~/utils/colors';
 
-function RecipeCourseAddButton() {
+interface Props {
+  onClick: () => void;
+}
+
+function RecipeCourseAddButton({ onClick }: Props) {
   const { y, handleMouseEnter, handleMouseLeave } = useMotionVertical(5);
 
   return (
-    <Block onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <Block onClick={onClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <AnimationBlock animate={{ y }}>
         <NoteAddRoundedIcon fontSize="large" />
         <Text>레시피 요리과정 추가</Text>
