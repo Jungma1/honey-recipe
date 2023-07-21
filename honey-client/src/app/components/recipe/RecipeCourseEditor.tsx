@@ -9,10 +9,10 @@ import LabelGroup from '../system/LabelGroup';
 interface Props {
   course: RecipeCourse;
   onChangeForm: (id: number, key: string, value: string) => void;
-  onClickPicture: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onClickImage: (id: number) => void;
 }
 
-function RecipeCourseEditor({ course, onChangeForm, onClickPicture }: Props) {
+function RecipeCourseEditor({ course, onChangeForm, onClickImage }: Props) {
   const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChangeForm(course.id, e.target.name, e.target.value);
   };
@@ -21,10 +21,15 @@ function RecipeCourseEditor({ course, onChangeForm, onClickPicture }: Props) {
     onChangeForm(course.id, 'content', value);
   };
 
+  const onClickPicture = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    onClickImage(course.id);
+  };
+
   return (
     <Block>
       <ImageWrapper onClick={onClickPicture}>
-        <AutoImage src="/test.png" />
+        <AutoImage src={course.picture ?? '/test.png'} />
       </ImageWrapper>
       <Wrapper>
         <LabelGroup label="제목">
