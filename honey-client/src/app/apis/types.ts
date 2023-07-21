@@ -20,7 +20,6 @@ export interface Recipe {
 
 export interface RecipeCourse {
   id: number;
-  title: string;
   content: string;
   picture: string | null;
   created: boolean;

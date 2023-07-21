@@ -3,22 +3,17 @@ import { rem } from 'polished';
 import { RecipeCourse } from '~/apis/types';
 import AutoImage from '../system/AutoImage';
 import Editor from '../system/Editor';
-import Input from '../system/Input';
 import LabelGroup from '../system/LabelGroup';
 
 interface Props {
   course: RecipeCourse;
-  onChangeForm: (id: number, key: string, value: string) => void;
+  onChangeContent: (id: number, value: string) => void;
   onClickImage: (id: number) => void;
 }
 
-function RecipeCourseEditor({ course, onChangeForm, onClickImage }: Props) {
-  const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChangeForm(course.id, e.target.name, e.target.value);
-  };
-
-  const onChangeContent = (value: string) => {
-    onChangeForm(course.id, 'content', value);
+function RecipeCourseEditor({ course, onChangeContent, onClickImage }: Props) {
+  const onChangeContentValue = (value: string) => {
+    onChangeContent(course.id, value);
   };
 
   const onClickPicture = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -32,11 +27,8 @@ function RecipeCourseEditor({ course, onChangeForm, onClickImage }: Props) {
         <AutoImage src={course.picture ?? '/test.png'} />
       </ImageWrapper>
       <Wrapper>
-        <LabelGroup label="제목">
-          <Input name="title" value={course.title} onChange={onChangeTitle} />
-        </LabelGroup>
         <LabelGroup label="내용">
-          <Editor onChangeValue={onChangeContent} defaultValue={course.content} />
+          <Editor onChangeValue={onChangeContentValue} defaultValue={course.content} />
         </LabelGroup>
       </Wrapper>
     </Block>
@@ -57,8 +49,6 @@ const ImageWrapper = styled.div`
 const Wrapper = styled.div`
   flex: 2;
   display: flex;
-  flex-direction: column;
-  gap: ${rem(32)};
 
   div:last-of-type {
     flex: 1;

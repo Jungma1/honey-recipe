@@ -5,9 +5,6 @@ export class RecipeCourseUpdateRequestDto {
   id: number;
 
   @IsString()
-  title: string;
-
-  @IsString()
   content: string;
 
   @IsOptional()

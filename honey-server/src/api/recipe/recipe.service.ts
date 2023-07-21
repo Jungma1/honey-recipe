@@ -125,7 +125,6 @@ export class RecipeService {
             await tx.recipeCourse.create({
               data: {
                 recipeId: id,
-                title: item.title,
                 content: item.content,
                 picture: item.picture,
                 order: index,
@@ -137,7 +136,6 @@ export class RecipeService {
           await tx.recipeCourse.update({
             where: { id: item.id },
             data: {
-              title: item.title,
               content: item.content,
               picture: item.picture,
               order: index,

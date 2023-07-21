@@ -105,11 +105,11 @@ export default function RecipeEditPage({
     await uploadThumbnailMutation.mutateAsync(file);
   };
 
-  const onChangeCourse = (id: number, key: string, value: string) => {
+  const onChangeContent = (id: number, value: string) => {
     setForm({
       ...form,
       course: form.course.map((course) =>
-        course.id === id ? { ...course, [key]: value } : course
+        course.id === id ? { ...course, content: value } : course
       ),
     });
   };
@@ -124,10 +124,7 @@ export default function RecipeEditPage({
   const onClickAddCourse = async () => {
     setForm({
       ...form,
-      course: [
-        ...form.course,
-        { id: Math.random(), title: '', content: '', picture: null, created: false },
-      ],
+      course: [...form.course, { id: Math.random(), content: '', picture: null, created: false }],
     });
   };
 
@@ -153,7 +150,7 @@ export default function RecipeEditPage({
               <RecipeCourseEditor
                 key={course.id}
                 course={course}
-                onChangeForm={onChangeCourse}
+                onChangeContent={onChangeContent}
                 onClickImage={onClickPicture}
               />
             ))}
