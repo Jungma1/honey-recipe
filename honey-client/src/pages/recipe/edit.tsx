@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { getRecipe, patchRecipe, postRecipeImage } from '~/apis/recipe';
 import { RecipeUpdateRequest } from '~/apis/types';
 import Header from '~/components/common/Header';
+import TitleGroup from '~/components/common/TitleGroup';
 import ContentLayout from '~/components/layout/ContentLayout';
 import MainLayout from '~/components/layout/MainLayout';
 import RecipeCourseAddButton from '~/components/recipe/RecipeCourseAddButton';
@@ -128,6 +129,22 @@ export default function RecipeEditPage({
     });
   };
 
+  const onClickRemoveCourse = async (id: number) => {
+    setForm({
+      ...form,
+      course: form.course.filter((course) => course.id !== id),
+    });
+  };
+
+  const onClickRemovePicture = async (id: number) => {
+    setForm({
+      ...form,
+      course: form.course.map((course) =>
+        course.id === id ? { ...course, picture: null } : course
+      ),
+    });
+  };
+
   return (
     <MainLayout>
       <Header />
@@ -137,25 +154,32 @@ export default function RecipeEditPage({
           buttonText="레시피 수정하기"
           errorMessage={errorMessage}
         >
-          <RecipeEditor
-            title={form.title}
-            imagePath={form.thumbnail}
-            onClickImage={onClickThumbnail}
-            description={form.description}
-            onChangeTitle={onChangeTitle}
-            onChangeDescription={onChangeDescription}
-          />
-          <Block>
-            {form.course.map((course) => (
-              <RecipeCourseEditor
-                key={course.id}
-                course={course}
-                onChangeContent={onChangeContent}
-                onClickImage={onClickPicture}
-              />
-            ))}
-            <RecipeCourseAddButton onClick={onClickAddCourse} />
-          </Block>
+          <TitleGroup title="레시피 정보">
+            <RecipeEditor
+              title={form.title}
+              imagePath={form.thumbnail}
+              onClickImage={onClickThumbnail}
+              description={form.description}
+              onChangeTitle={onChangeTitle}
+              onChangeDescription={onChangeDescription}
+            />
+          </TitleGroup>
+          <TitleGroup title="레시피 과정">
+            <Block>
+              {form.course.map((course, index) => (
+                <RecipeCourseEditor
+                  key={course.id}
+                  step={index + 1}
+                  course={course}
+                  onChangeContent={onChangeContent}
+                  onClickRemove={onClickRemoveCourse}
+                  onClickImage={onClickPicture}
+                  onClickRemoveImage={onClickRemovePicture}
+                />
+              ))}
+              <RecipeCourseAddButton onClick={onClickAddCourse} />
+            </Block>
+          </TitleGroup>
         </RecipeForm>
       </ContentLayout>
     </MainLayout>

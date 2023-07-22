@@ -30,7 +30,7 @@ const Section = styled.section`
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: ${rem(32)};
+  gap: ${rem(64)};
 `;
 
 const SubmitButton = styled(Button)`

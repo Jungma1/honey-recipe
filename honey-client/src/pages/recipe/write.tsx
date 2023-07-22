@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { postRecipe } from '~/apis/recipe';
 import { RecipeCreateRequest } from '~/apis/types';
 import Header from '~/components/common/Header';
+import TitleGroup from '~/components/common/TitleGroup';
 import ContentLayout from '~/components/layout/ContentLayout';
 import MainLayout from '~/components/layout/MainLayout';
 import RecipeEditor from '~/components/recipe/RecipeEditor';
@@ -76,13 +77,15 @@ export default function RecipeWritePage() {
           buttonText="요리순서 작성하러 가기"
           errorMessage={errorMessage}
         >
-          <RecipeEditor
-            title={form.title}
-            imagePath={imagePath}
-            onClickImage={handleClickThumbnail}
-            onChangeTitle={handleChangeTitle}
-            onChangeDescription={handleChangeDescription}
-          />
+          <TitleGroup title="레시피 작성">
+            <RecipeEditor
+              title={form.title}
+              imagePath={imagePath}
+              onClickImage={handleClickThumbnail}
+              onChangeTitle={handleChangeTitle}
+              onChangeDescription={handleChangeDescription}
+            />
+          </TitleGroup>
         </RecipeForm>
       </ContentLayout>
     </MainLayout>

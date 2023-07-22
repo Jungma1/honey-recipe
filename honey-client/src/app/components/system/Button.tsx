@@ -33,7 +33,12 @@ const StyledButton = styled.button<StyledButtonProps>`
   ${(props) =>
     props.danger &&
     css`
+      color: ${colors.white};
       background-color: ${colors.danger};
+
+      :hover {
+        background-color: ${colors.danger};
+      }
     `}
 
   ${(props) =>
