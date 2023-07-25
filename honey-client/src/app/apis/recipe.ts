@@ -1,14 +1,26 @@
 import { client } from '.';
 import {
   ImageUploadResponse,
-  Recipe,
+  PaginationRecipe,
   RecipeCreateRequest,
   RecipeCreateResponse,
+  RecipeRead,
   RecipeUpdateRequest,
 } from './types';
 
+export const getRecipes = async (page: number, size: number, mode?: 'recent') => {
+  const response = await client.get<PaginationRecipe>('/api/v1/recipe', {
+    params: {
+      page,
+      size,
+      mode,
+    },
+  });
+  return { ...response.data, nextPage: page + 1 };
+};
+
 export const getRecipe = async (id: number) => {
-  const response = await client.get<Recipe>(`/api/v1/recipe/${id}`);
+  const response = await client.get<RecipeRead>(`/api/v1/recipe/${id}`);
   return response.data;
 };
 

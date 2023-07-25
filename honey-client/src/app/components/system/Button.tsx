@@ -22,7 +22,7 @@ const StyledButton = styled.button<StyledButtonProps>`
   font-size: ${rem(14)};
   font-weight: bold;
   padding: ${rem(8)} ${rem(8)};
-  border-radius: 5px;
+  border-radius: 4px;
   color: ${colors.white};
   background-color: ${colors.primary};
 

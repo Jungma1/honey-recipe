@@ -1,12 +1,14 @@
-import { Recipe, RecipeStat, User } from '@prisma/client';
+import { Recipe, RecipeCourse, RecipeStat, User } from '@prisma/client';
 import { AuthUserDto } from '~/api/auth/dto/auth-user.dto';
+import { RecipeCourseResponseDto } from './recipe-course-response.dto';
 
 type RecipeRelation = Recipe & {
   user: User;
   recipeStat: RecipeStat;
+  recipeCourse: RecipeCourse[];
 };
 
-export class RecipeResponseDto {
+export class RecipeReadResponseDto {
   id: number;
   title: string;
   description: string;
@@ -16,6 +18,7 @@ export class RecipeResponseDto {
   user: AuthUserDto;
   createdAt: string;
   updatedAt: string;
+  course: RecipeCourseResponseDto[];
 
   constructor(recipe: RecipeRelation) {
     this.id = recipe.id;
@@ -27,5 +30,8 @@ export class RecipeResponseDto {
     this.user = new AuthUserDto(recipe.user);
     this.createdAt = recipe.createdAt.toString();
     this.updatedAt = recipe.updatedAt.toString();
+    this.course = recipe.recipeCourse.map(
+      (course) => new RecipeCourseResponseDto(course),
+    );
   }
 }

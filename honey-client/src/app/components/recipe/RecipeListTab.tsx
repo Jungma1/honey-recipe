@@ -7,7 +7,7 @@ function RecipeListTab() {
   return (
     <Block>
       <StyledUl>
-        <StyledLi active>전체</StyledLi>
+        <StyledLi active>최신</StyledLi>
         <StyledLi>일간</StyledLi>
         <StyledLi>주간</StyledLi>
         <StyledLi>월간</StyledLi>

@@ -6,8 +6,10 @@ import {
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
+  ParseIntPipe,
   Patch,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -24,6 +26,15 @@ import { MultiFileTypeValidator } from './validator/multi-file-type.validator';
 @Controller('recipe')
 export class RecipeController {
   constructor(private readonly recipeService: RecipeService) {}
+
+  @Get()
+  async findAll(
+    @Query('page', ParseIntPipe) page = 1,
+    @Query('size', ParseIntPipe) size = 10,
+    @Query('mode') mode = 'recent',
+  ) {
+    return this.recipeService.findAll(page, size, mode);
+  }
 
   @Get(':id')
   async findOne(@Param('id') id: number) {

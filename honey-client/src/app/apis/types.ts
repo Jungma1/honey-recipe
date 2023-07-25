@@ -1,3 +1,12 @@
+export interface Page<T> {
+  page: number;
+  size: number;
+  totalCount: number;
+  totalPage: number;
+  isLast: boolean;
+  items: T[];
+}
+
 export interface User {
   id: number;
   handle: string;
@@ -13,9 +22,8 @@ export interface Recipe {
   likeCount: number;
   commentCount: number;
   user: User;
-  createdAt: Date;
-  updatedAt: Date;
-  course: RecipeCourse[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface RecipeCourse {
@@ -23,6 +31,10 @@ export interface RecipeCourse {
   content: string;
   picture: string | null;
   created: boolean;
+}
+
+export interface RecipeRead extends Recipe {
+  course: RecipeCourse[];
 }
 
 export interface RecipeCreateRequest {
@@ -45,3 +57,5 @@ export interface RecipeUpdateRequest {
 export interface ImageUploadResponse {
   imagePath: string;
 }
+
+export interface PaginationRecipe extends Page<Recipe> {}

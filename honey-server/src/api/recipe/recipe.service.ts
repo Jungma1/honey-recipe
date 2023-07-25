@@ -7,8 +7,10 @@ import { User } from '@prisma/client';
 import * as mimeTypes from 'mime-types';
 import { FileService } from '~/common/file/file.service';
 import { PrismaService } from '~/common/prisma/prisma.service';
+import { Page } from '~/lib/page';
 import { RecipeCreateRequestDto } from './dto/recipe-create-request.dto';
 import { RecipeCreateResponseDto } from './dto/recipe-create-response.dto';
+import { RecipeReadResponseDto } from './dto/recipe-read-response.dto';
 import { RecipeResponseDto } from './dto/recipe-response.dto';
 import { RecipeUpdateRequestDto } from './dto/recipe-update-request.dto';
 
@@ -18,6 +20,31 @@ export class RecipeService {
     private readonly prismaService: PrismaService,
     private readonly fileService: FileService,
   ) {}
+
+  async findAll(page: number, size: number, mode: string) {
+    if (mode === 'recent') {
+      return this.findRecentRecipes(page, size);
+    }
+  }
+
+  private async findRecentRecipes(page: number, size: number) {
+    const [totalCount, recipes] = await Promise.all([
+      await this.prismaService.recipe.count(),
+      await this.prismaService.recipe.findMany({
+        include: {
+          user: true,
+          recipeStat: true,
+        },
+        skip: (page - 1) * size,
+        take: size,
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+    ]);
+    const result = recipes.map((recipe) => new RecipeResponseDto(recipe));
+    return new Page(totalCount, page, size, result);
+  }
 
   async findOne(id: number) {
     const recipe = await this.prismaService.recipe.findUnique({
@@ -33,7 +60,7 @@ export class RecipeService {
       where: { id },
     });
 
-    return new RecipeResponseDto(recipe);
+    return new RecipeReadResponseDto(recipe);
   }
 
   async createRecipe(
