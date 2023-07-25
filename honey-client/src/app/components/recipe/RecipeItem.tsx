@@ -33,6 +33,7 @@ function RecipeItem({ recipe }: Props) {
       <ContentWrapper>
         <Title>{recipe.title}</Title>
         <Description>{recipe.description}</Description>
+        <EmptyBlock />
         <Footer>
           <AvatarLink href={`/@${recipe.user.handle}`}>
             <Image src={recipe.user.picture || '/test.png'} width={24} height={24} alt="" />
@@ -57,13 +58,17 @@ function RecipeItem({ recipe }: Props) {
 
 const Block = styled(motion.div)`
   display: flex;
-  gap: ${rem(16)};
+  gap: ${rem(24)};
   cursor: pointer;
 `;
 
 const ImageWrapper = styled.div`
   flex: 1;
   display: flex;
+
+  img {
+    border-radius: ${rem(8)};
+  }
 `;
 
 const ContentWrapper = styled.div`
@@ -81,20 +86,24 @@ const Title = styled.div`
 
 const Description = styled.div`
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   overflow: hidden;
   word-break: break-all;
   font-size: ${rem(16)};
   color: ${colors.gray6};
+  margin-bottom: ${rem(16)};
+`;
+
+const EmptyBlock = styled.div`
+  flex: 1;
 `;
 
 const Footer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: ${rem(48)};
 `;
 
 const AvatarLink = styled(Link)`

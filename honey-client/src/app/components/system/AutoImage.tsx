@@ -6,15 +6,15 @@ interface Props extends Omit<ImageProps, 'width' | 'height' | 'alt'> {}
 function AutoImage({ ...rest }: Props) {
   return (
     <Block>
-      <Image {...rest} style={{ objectFit: 'cover' }} fill alt="" />
+      <Image {...rest} fill priority style={{ objectFit: 'cover' }} alt="" />
     </Block>
   );
 }
 
 const Block = styled.div`
-  width: 100%;
-  height: 100%;
   position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
 `;
 
 export default AutoImage;
