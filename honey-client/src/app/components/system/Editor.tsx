@@ -58,7 +58,7 @@ const Block = styled.div`
 
   .cm-editor,
   .cm-gutter {
-    height: 100%;
+    height: 150px;
     padding: ${rem(8)} 0;
   }
 

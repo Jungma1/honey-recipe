@@ -33,7 +33,6 @@ function RecipeItem({ recipe }: Props) {
       <ContentWrapper>
         <Title>{recipe.title}</Title>
         <Description>{recipe.description}</Description>
-        <EmptyBlock />
         <Footer>
           <AvatarLink href={`/@${recipe.user.handle}`}>
             <Image src={recipe.user.picture || '/test.png'} width={24} height={24} alt="" />
@@ -91,14 +90,11 @@ const Description = styled.div`
   color: ${colors.gray6};
 `;
 
-const EmptyBlock = styled.div`
-  flex: 1;
-`;
-
 const Footer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-top: ${rem(48)};
 `;
 
 const AvatarLink = styled(Link)`

@@ -1,18 +1,20 @@
+import styled from '@emotion/styled';
 import Image, { ImageProps } from 'next/image';
 
 interface Props extends Omit<ImageProps, 'width' | 'height' | 'alt'> {}
 
 function AutoImage({ ...rest }: Props) {
   return (
-    <Image
-      {...rest}
-      width={0}
-      height={0}
-      sizes="100vw"
-      style={{ width: '100%', height: 'auto', objectFit: 'cover' }}
-      alt=""
-    />
+    <Block>
+      <Image {...rest} style={{ objectFit: 'cover' }} fill alt="" />
+    </Block>
   );
 }
+
+const Block = styled.div`
+  width: 100%;
+  height: 100%;
+  position: relative;
+`;
 
 export default AutoImage;
