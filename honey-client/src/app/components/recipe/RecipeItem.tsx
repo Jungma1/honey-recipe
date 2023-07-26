@@ -35,7 +35,7 @@ function RecipeItem({ recipe }: Props) {
         <Description>{recipe.description}</Description>
         <EmptyBlock />
         <Footer>
-          <AvatarLink href={`/@${recipe.user.handle}`}>
+          <AvatarLink href={`/@${recipe.user.handle}`} onClick={(e) => e.stopPropagation()}>
             <Image src={recipe.user.picture || '/test.png'} width={24} height={24} alt="" />
             <span>{recipe.user.username}</span>
           </AvatarLink>
