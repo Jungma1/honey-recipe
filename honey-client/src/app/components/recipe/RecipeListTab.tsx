@@ -1,17 +1,54 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { useRouter } from 'next/router';
 import { rem } from 'polished';
+import { useMemo } from 'react';
 import { colors } from '~/utils/colors';
 
-function RecipeListTab() {
+interface Props {
+  mode: string;
+}
+
+function RecipeListTab({ mode }: Props) {
+  const router = useRouter();
+  const menus = useMemo(
+    () => [
+      {
+        name: '최신',
+        mode: 'recent',
+      },
+      {
+        name: '일간',
+        mode: 'daily',
+      },
+      {
+        name: '주간',
+        mode: 'weekly',
+      },
+      {
+        name: '월간',
+        mode: 'monthly',
+      },
+    ],
+    []
+  );
+
+  const onClickTab = (e: React.MouseEvent<HTMLLIElement>, mode: string) => {
+    router.push(`/?mode=${mode}`);
+  };
+
   return (
     <Block>
       <StyledUl>
-        <StyledLi active>최신</StyledLi>
-        <StyledLi>일간</StyledLi>
-        <StyledLi>주간</StyledLi>
-        <StyledLi>월간</StyledLi>
-        <StyledLi>연간</StyledLi>
+        {menus.map((menu) => (
+          <StyledLi
+            key={menu.name}
+            isActive={menu.mode === mode}
+            onClick={(e) => onClickTab(e, menu.mode)}
+          >
+            {menu.name}
+          </StyledLi>
+        ))}
       </StyledUl>
     </Block>
   );
@@ -19,6 +56,7 @@ function RecipeListTab() {
 
 const Block = styled.nav`
   border-bottom: ${rem(2)} solid ${colors.primary};
+  margin-bottom: ${rem(32)};
 `;
 
 const StyledUl = styled.ul`
@@ -27,7 +65,7 @@ const StyledUl = styled.ul`
   text-align: center;
 `;
 
-const StyledLi = styled.li<{ active?: boolean }>`
+const StyledLi = styled.li<{ isActive: boolean }>`
   flex: 1;
   color: ${colors.gray9};
   padding: ${rem(8)} 0;
@@ -35,8 +73,8 @@ const StyledLi = styled.li<{ active?: boolean }>`
   font-weight: 600;
   cursor: pointer;
 
-  ${({ active }) =>
-    active &&
+  ${({ isActive }) =>
+    isActive &&
     css`
       color: ${colors.primary};
       margin-bottom: ${rem(-2)};

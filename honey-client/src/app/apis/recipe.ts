@@ -8,7 +8,7 @@ import {
   RecipeUpdateRequest,
 } from './types';
 
-export const getRecipes = async (page: number, size: number, mode?: 'recent') => {
+export const getRecipes = async (page: number, size: number, mode: string) => {
   const response = await client.get<PaginationRecipe>('/api/v1/recipe', {
     params: {
       page,

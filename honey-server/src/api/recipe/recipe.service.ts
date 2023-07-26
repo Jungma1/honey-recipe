@@ -25,6 +25,10 @@ export class RecipeService {
     if (mode === 'recent') {
       return this.findRecentRecipes(page, size);
     }
+
+    if (['daily', 'weekly', 'monthly'].includes(mode)) {
+      return this.findPopularRecipes(page, size, mode);
+    }
   }
 
   private async findRecentRecipes(page: number, size: number) {
@@ -42,6 +46,54 @@ export class RecipeService {
         },
       }),
     ]);
+
+    const result = recipes.map((recipe) => new RecipeResponseDto(recipe));
+    return new Page(totalCount, page, size, result);
+  }
+
+  private async findPopularRecipes(page: number, size: number, mode: string) {
+    const date = new Date();
+
+    if (mode === 'daily') {
+      date.setDate(date.getDate() - 1);
+    }
+
+    if (mode === 'weekly') {
+      date.setDate(date.getDate() - 7);
+    }
+
+    if (mode === 'monthly') {
+      date.setMonth(date.getMonth() - 1);
+    }
+
+    const [totalCount, recipes] = await Promise.all([
+      await this.prismaService.recipe.count({
+        where: {
+          createdAt: {
+            gte: date,
+          },
+        },
+      }),
+      await this.prismaService.recipe.findMany({
+        include: {
+          user: true,
+          recipeStat: true,
+        },
+        skip: (page - 1) * size,
+        take: size,
+        where: {
+          createdAt: {
+            gte: date,
+          },
+        },
+        orderBy: {
+          recipeStat: {
+            likeCount: 'desc',
+          },
+        },
+      }),
+    ]);
+
     const result = recipes.map((recipe) => new RecipeResponseDto(recipe));
     return new Page(totalCount, page, size, result);
   }
