@@ -1,15 +1,24 @@
 import styled from '@emotion/styled';
 import { rem } from 'polished';
+import { Recipe } from '~/apis/types';
+import TitleGroup from '../common/TitleGroup';
 import Slider from '../system/Slider';
+import RecipeBannerItem from './RecipeBannerItem';
 
-function RecipeBanner() {
+interface Props {
+  recipes: Recipe[];
+}
+
+function RecipeBanner({ recipes }: Props) {
   return (
     <Block>
-      <Slider itemWidth={300} itemCount={5}>
-        {Array.from({ length: 5 }, (_, i) => (
-          <div key={i}>{i}</div>
-        ))}
-      </Slider>
+      <TitleGroup title="실시간 베스트">
+        <Slider itemWidth={300} itemCount={recipes.length}>
+          {recipes.map((recipe) => (
+            <RecipeBannerItem key={recipe.id} recipe={recipe} />
+          ))}
+        </Slider>
+      </TitleGroup>
     </Block>
   );
 }

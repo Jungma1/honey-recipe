@@ -26,7 +26,7 @@ export class RecipeService {
       return this.findRecentRecipes(page, size);
     }
 
-    if (['daily', 'weekly', 'monthly'].includes(mode)) {
+    if (['daily', 'weekly', 'monthly', 'yearly'].includes(mode)) {
       return this.findPopularRecipes(page, size, mode);
     }
   }
@@ -64,6 +64,11 @@ export class RecipeService {
 
     if (mode === 'monthly') {
       date.setMonth(date.getMonth() - 1);
+    }
+
+    if (mode === 'yearly') {
+      date.setFullYear(date.getFullYear(), 0, 2);
+      date.setHours(0, 0, 0, 0);
     }
 
     const [totalCount, recipes] = await Promise.all([

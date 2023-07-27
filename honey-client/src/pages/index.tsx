@@ -20,11 +20,13 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
     return redirect('/');
   }
 
+  const bestRecipes = await getRecipes(1, 10, 'yearly');
   const recipes = await getRecipes(1, 10, mode);
-  return json({ isAuth, recipes, mode });
+  return json({ isAuth, bestRecipes, recipes, mode });
 };
 
 export default function HomePage({
+  bestRecipes,
   recipes,
   mode,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
@@ -55,7 +57,7 @@ export default function HomePage({
     <MainLayout>
       <Header />
       <ContentLayout>
-        <RecipeBanner />
+        <RecipeBanner recipes={bestRecipes.items} />
         <RecipeListTab mode={mode} />
         <RecipeList recipes={items} />
         <div ref={ref} />

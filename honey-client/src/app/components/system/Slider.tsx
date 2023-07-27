@@ -43,7 +43,6 @@ const StyledSlider = styled.div<BlockProps>`
   display: flex;
   align-items: center;
   gap: ${rem(16)};
-  cursor: pointer;
 `;
 
 export default Slider;

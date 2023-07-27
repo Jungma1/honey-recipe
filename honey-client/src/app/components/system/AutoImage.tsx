@@ -6,7 +6,14 @@ interface Props extends Omit<ImageProps, 'width' | 'height' | 'alt'> {}
 function AutoImage({ ...rest }: Props) {
   return (
     <Block>
-      <Image {...rest} fill priority style={{ objectFit: 'cover' }} alt="" />
+      <Image
+        {...rest}
+        fill
+        priority
+        sizes="(max-width: 768px) 100vw"
+        style={{ objectFit: 'cover' }}
+        alt=""
+      />
     </Block>
   );
 }
