@@ -19,6 +19,8 @@ import { upload } from '~/utils/file';
 import { json } from '~/utils/json';
 import { redirect } from '~/utils/router';
 
+interface Props extends InferGetServerSidePropsType<typeof getServerSideProps> {}
+
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
   const { isAuth } = validateTokenCookie(context);
   if (!isAuth) return redirect('/login');
@@ -30,9 +32,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
   return json({ isAuth, recipe });
 };
 
-export default function RecipeEditPage({
-  recipe,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function RecipeEditPage({ recipe }: Props) {
   const router = useRouter();
   const [form, setForm] = useState<RecipeUpdateRequest>({
     title: recipe.title,

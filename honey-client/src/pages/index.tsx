@@ -13,6 +13,8 @@ import { validateTokenCookie } from '~/utils/cookie';
 import { json } from '~/utils/json';
 import { redirect } from '~/utils/router';
 
+interface Props extends InferGetServerSidePropsType<typeof getServerSideProps> {}
+
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
   const { isAuth } = validateTokenCookie(context);
   const mode = (context.query.mode as string) || 'recent';
@@ -25,11 +27,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
   return json({ isAuth, bestRecipes, recipes, mode });
 };
 
-export default function HomePage({
-  bestRecipes,
-  recipes,
-  mode,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function HomePage({ bestRecipes, recipes, mode }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const { data, isFetching, hasNextPage, fetchNextPage } = useInfiniteQuery(
     ['recipes', mode],
