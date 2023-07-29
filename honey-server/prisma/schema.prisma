@@ -20,9 +20,11 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  tokens        Token[]
-  socialAccount SocialAccount?
-  Recipe        Recipe[]
+  tokens               Token[]
+  socialAccount        SocialAccount?
+  recipe               Recipe[]
+  recipeComment        RecipeComment[]
+  recipeCommentMention RecipeComment[] @relation("mentionUser")
 
   @@map("users")
 }
@@ -67,8 +69,9 @@ model Recipe {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  recipeCourse RecipeCourse[]
-  recipeStat   RecipeStat?
+  recipeCourse  RecipeCourse[]
+  recipeStat    RecipeStat?
+  recipeComment RecipeComment[]
 
   @@map("recipes")
 }
@@ -100,4 +103,22 @@ model RecipeCourse {
   recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 
   @@map("recipe_courses")
+}
+
+model RecipeComment {
+  id              Int  @id @default(autoincrement())
+  userId          Int  @map("user_id")
+  recipeId        Int  @map("recipe_id")
+  mentionUserId   Int? @map("mention_user_id")
+  parentCommentId Int? @map("parent_comment_id")
+
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe      Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  mentionUser User?  @relation("mentionUser", fields: [mentionUserId], references: [id])
+
+  @@map("recipe_comments")
 }
