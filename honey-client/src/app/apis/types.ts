@@ -51,7 +51,12 @@ export interface RecipeUpdateRequest {
   title: string;
   description: string;
   thumbnail: string | null;
-  course: RecipeCourse[];
+  course: {
+    id: number;
+    content: string;
+    picture: string | null;
+    created: boolean;
+  }[];
 }
 
 export interface ImageUploadResponse {

@@ -13,7 +13,7 @@ interface Props {
 
 function RecipeViewerHeader({ recipe }: Props) {
   return (
-    <Block>
+    <Section>
       <ImageWrapper>
         <Thumbnail>
           <AutoImage src={recipe.thumbnail ?? '/test.png'} />
@@ -37,11 +37,11 @@ function RecipeViewerHeader({ recipe }: Props) {
         <Title>{recipe.title}</Title>
         <Description>{recipe.description}</Description>
       </ContentWrapper>
-    </Block>
+    </Section>
   );
 }
 
-const Block = styled.div`
+const Section = styled.section`
   display: flex;
   flex-direction: column;
 `;
@@ -103,7 +103,7 @@ const Username = styled.span`
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: ${rem(80)};
+  padding-top: ${rem(80)};
   padding-bottom: ${rem(32)};
   border-bottom: 1px solid ${colors.gray0};
   gap: ${rem(16)};
@@ -118,6 +118,7 @@ const Title = styled.span`
 const Description = styled.span`
   font-size: ${rem(16)};
   color: ${colors.gray9};
+  white-space: pre-line;
 `;
 
 export default RecipeViewerHeader;

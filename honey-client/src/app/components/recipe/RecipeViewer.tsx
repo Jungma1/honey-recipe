@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { RecipeRead } from '~/apis/types';
+import RecipeCourseList from './RecipeCourseList';
 import RecipeViewerHeader from './RecipeViewerHeader';
 
 interface Props {
@@ -8,13 +9,14 @@ interface Props {
 
 function RecipeViewer({ recipe }: Props) {
   return (
-    <Section>
+    <Block>
       <RecipeViewerHeader recipe={recipe} />
-    </Section>
+      <RecipeCourseList course={recipe.course} />
+    </Block>
   );
 }
 
-const Section = styled.section`
+const Block = styled.div`
   display: flex;
   flex-direction: column;
 `;

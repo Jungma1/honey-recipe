@@ -23,9 +23,8 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
 
 export default function RecipeDetailPage({ id }: Props) {
   const router = useRouter();
-  const { data: recipe, isError, isLoading } = useQuery(['recipe', id], () => getRecipe(id));
+  const { data: recipe, isError } = useQuery(['recipe', id], () => getRecipe(id));
 
-  if (isLoading) return <></>;
   if (isError) return router.push('/');
 
   return (
