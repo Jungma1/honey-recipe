@@ -5,7 +5,7 @@ import { getRecipes } from '~/apis/recipe';
 import Header from '~/components/common/Header';
 import ContentLayout from '~/components/layout/ContentLayout';
 import MainLayout from '~/components/layout/MainLayout';
-import RecipeBanner from '~/components/recipe/RecipeBanner';
+import RecipeBannerList from '~/components/recipe/RecipeBannerList';
 import RecipeList from '~/components/recipe/RecipeList';
 import RecipeListTab from '~/components/recipe/RecipeListTab';
 import { useInfiniteScroll } from '~/hooks/useInfiniteScroll';
@@ -55,7 +55,7 @@ export default function HomePage({ bestRecipes, recipes, mode }: Props) {
     <MainLayout>
       <Header />
       <ContentLayout>
-        <RecipeBanner recipes={bestRecipes.items} />
+        <RecipeBannerList recipes={bestRecipes.items} />
         <RecipeListTab mode={mode} />
         <RecipeList recipes={items} />
         <div ref={ref} />

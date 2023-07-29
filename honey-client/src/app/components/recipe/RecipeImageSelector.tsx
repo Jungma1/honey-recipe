@@ -24,6 +24,10 @@ const Block = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${rem(32)};
+
+  img {
+    border-radius: ${rem(8)};
+  }
 `;
 
 const ThumbnailButton = styled(Button)`

@@ -9,7 +9,7 @@ interface Props {
   recipes: Recipe[];
 }
 
-function RecipeBanner({ recipes }: Props) {
+function RecipeBannerList({ recipes }: Props) {
   return (
     <Block>
       <TitleGroup title="실시간 베스트">
@@ -27,4 +27,4 @@ const Block = styled.section`
   margin-bottom: ${rem(64)};
 `;
 
-export default RecipeBanner;
+export default RecipeBannerList;

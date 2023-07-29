@@ -90,6 +90,10 @@ const ImageWrapper = styled.div`
   display: flex;
   cursor: pointer;
   position: relative;
+
+  img {
+    border-radius: ${rem(8)};
+  }
 `;
 
 const ImageRemoveIcon = styled(DisabledByDefaultRoundedIcon)`
