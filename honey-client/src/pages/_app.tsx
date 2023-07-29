@@ -4,6 +4,7 @@ import type { AppProps } from 'next/app';
 import { useState } from 'react';
 import Core from '~/components/base/Core';
 import GlobalStyles from '~/components/common/GlobalStyles';
+import ModalContainer from '~/components/system/ModalContainer';
 
 interface Props {
   isAuth: boolean;
@@ -28,6 +29,7 @@ export default function App({ Component, pageProps }: AppProps<Props>) {
         <Core isAuth={pageProps.isAuth} />
         <ReactQueryDevtools />
         <GlobalStyles />
+        <ModalContainer />
         <Component {...pageProps} />
       </Hydrate>
     </QueryClientProvider>

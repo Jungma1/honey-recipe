@@ -46,3 +46,7 @@ export const postRecipeImage = async (id: number, image: File) => {
   const response = await client.post<ImageUploadResponse>(`/api/v1/recipe/${id}/image`, formData);
   return response.data;
 };
+
+export const deleteRecipe = async (id: number) => {
+  await client.delete(`/api/v1/recipe/${id}`);
+};

@@ -6,6 +6,7 @@ import { colors } from '~/utils/colors';
 
 interface StyledButtonProps {
   danger?: boolean;
+  towTone?: boolean;
   outlined?: boolean;
 }
 
@@ -42,7 +43,7 @@ const StyledButton = styled.button<StyledButtonProps>`
     `}
 
   ${(props) =>
-    props.outlined &&
+    props.towTone &&
     css`
       color: ${colors.primary};
       background-color: ${colors.white};
@@ -50,6 +51,17 @@ const StyledButton = styled.button<StyledButtonProps>`
 
       :hover {
         background-color: ${colors.white};
+      }
+    `}
+
+    ${(props) =>
+    props.outlined &&
+    css`
+      color: ${colors.primary};
+      background: none;
+
+      :hover {
+        background-color: whitesmoke;
       }
     `}
 `;

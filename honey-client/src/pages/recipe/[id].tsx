@@ -25,13 +25,15 @@ export default function RecipeDetailPage({ id }: Props) {
   const router = useRouter();
   const { data: recipe, isError } = useQuery(['recipe', id], () => getRecipe(id));
 
-  if (isError) return router.push('/');
+  if (!recipe || isError) {
+    return router.push('/404');
+  }
 
   return (
     <MainLayout>
       <Header />
       <ContentLayout>
-        <RecipeViewer recipe={recipe!} />
+        <RecipeViewer recipe={recipe} />
       </ContentLayout>
     </MainLayout>
   );
