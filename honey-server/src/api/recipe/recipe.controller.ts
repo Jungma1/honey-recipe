@@ -18,6 +18,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from '@prisma/client';
 import { AuthUser } from '../auth/decorator/auth-user.decorator';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { RecipeCommentCreateRequestDto } from './dto/recipe-comment-create-request.dto';
 import { RecipeCreateRequestDto } from './dto/recipe-create-request.dto';
 import { RecipeUpdateRequestDto } from './dto/recipe-update-request.dto';
 import { RecipeService } from './recipe.service';
@@ -95,5 +96,15 @@ export class RecipeController {
     image: Express.Multer.File,
   ) {
     return this.recipeService.uploadImage(id, user, image);
+  }
+
+  @Post(':id/comments')
+  @UseGuards(JwtAuthGuard)
+  async createComment(
+    @Param('id') id: number,
+    @AuthUser() user: User,
+    @Body() request: RecipeCommentCreateRequestDto,
+  ) {
+    return this.recipeService.createComment(id, user, request);
   }
 }

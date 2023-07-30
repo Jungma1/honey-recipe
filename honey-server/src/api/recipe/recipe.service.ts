@@ -8,6 +8,7 @@ import * as mimeTypes from 'mime-types';
 import { FileService } from '~/common/file/file.service';
 import { PrismaService } from '~/common/prisma/prisma.service';
 import { Page } from '~/lib/page';
+import { RecipeCommentCreateRequestDto } from './dto/recipe-comment-create-request.dto';
 import { RecipeCreateRequestDto } from './dto/recipe-create-request.dto';
 import { RecipeCreateResponseDto } from './dto/recipe-create-response.dto';
 import { RecipeReadResponseDto } from './dto/recipe-read-response.dto';
@@ -31,78 +32,6 @@ export class RecipeService {
     }
   }
 
-  private async findRecentRecipes(page: number, size: number) {
-    const [totalCount, recipes] = await Promise.all([
-      await this.prismaService.recipe.count(),
-      await this.prismaService.recipe.findMany({
-        include: {
-          user: true,
-          recipeStat: true,
-        },
-        skip: (page - 1) * size,
-        take: size,
-        orderBy: {
-          createdAt: 'desc',
-        },
-      }),
-    ]);
-
-    const result = recipes.map((recipe) => new RecipeResponseDto(recipe));
-    return new Page(totalCount, page, size, result);
-  }
-
-  private async findPopularRecipes(page: number, size: number, mode: string) {
-    const date = new Date();
-
-    if (mode === 'daily') {
-      date.setDate(date.getDate() - 1);
-    }
-
-    if (mode === 'weekly') {
-      date.setDate(date.getDate() - 7);
-    }
-
-    if (mode === 'monthly') {
-      date.setMonth(date.getMonth() - 1);
-    }
-
-    if (mode === 'yearly') {
-      date.setFullYear(date.getFullYear(), 0, 2);
-      date.setHours(0, 0, 0, 0);
-    }
-
-    const [totalCount, recipes] = await Promise.all([
-      await this.prismaService.recipe.count({
-        where: {
-          createdAt: {
-            gte: date,
-          },
-        },
-      }),
-      await this.prismaService.recipe.findMany({
-        include: {
-          user: true,
-          recipeStat: true,
-        },
-        skip: (page - 1) * size,
-        take: size,
-        where: {
-          createdAt: {
-            gte: date,
-          },
-        },
-        orderBy: {
-          recipeStat: {
-            likeCount: 'desc',
-          },
-        },
-      }),
-    ]);
-
-    const result = recipes.map((recipe) => new RecipeResponseDto(recipe));
-    return new Page(totalCount, page, size, result);
-  }
-
   async findOne(id: number) {
     const recipe = await this.prismaService.recipe.findUnique({
       include: {
@@ -116,6 +45,10 @@ export class RecipeService {
       },
       where: { id },
     });
+
+    if (!recipe) {
+      throw new NotFoundException('Recipe not found');
+    }
 
     return new RecipeReadResponseDto(recipe);
   }
@@ -253,6 +186,59 @@ export class RecipeService {
     return { imagePath };
   }
 
+  async createComment(
+    id: number,
+    user: User,
+    request: RecipeCommentCreateRequestDto,
+  ) {
+    const recipe = await this.prismaService.recipe.findUnique({
+      where: { id },
+    });
+
+    if (!recipe) {
+      throw new NotFoundException('Recipe not found');
+    }
+
+    if (!request.parentCommentId) {
+      await this.prismaService.recipeComment.create({
+        data: {
+          recipeId: id,
+          userId: user.id,
+          parentCommentId: null,
+          mentionUserId: null,
+          content: request.content,
+        },
+      });
+      return;
+    }
+
+    const parentComment = await this.prismaService.recipeComment.findUnique({
+      where: {
+        id: request.parentCommentId,
+      },
+    });
+
+    if (!parentComment) {
+      throw new NotFoundException('Parent comment not found');
+    }
+
+    const isParentCommentId = !!parentComment.parentCommentId;
+    const parentCommentId = isParentCommentId
+      ? parentComment.parentCommentId
+      : parentComment.id;
+    const mentionUserId = isParentCommentId ? parentComment.userId : null;
+
+    await this.prismaService.recipeComment.create({
+      data: {
+        recipeId: id,
+        userId: user.id,
+        parentCommentId,
+        mentionUserId,
+        content: request.content,
+      },
+    });
+  }
+
   private async validateRecipe(id: number, userId: number) {
     const recipe = await this.prismaService.recipe.findUnique({
       where: { id },
@@ -265,5 +251,77 @@ export class RecipeService {
     if (recipe.userId !== userId) {
       throw new ForbiddenException('You are not allowed');
     }
+  }
+
+  private async findRecentRecipes(page: number, size: number) {
+    const [totalCount, recipes] = await Promise.all([
+      await this.prismaService.recipe.count(),
+      await this.prismaService.recipe.findMany({
+        include: {
+          user: true,
+          recipeStat: true,
+        },
+        skip: (page - 1) * size,
+        take: size,
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+    ]);
+
+    const result = recipes.map((recipe) => new RecipeResponseDto(recipe));
+    return new Page(totalCount, page, size, result);
+  }
+
+  private async findPopularRecipes(page: number, size: number, mode: string) {
+    const date = new Date();
+
+    if (mode === 'daily') {
+      date.setDate(date.getDate() - 1);
+    }
+
+    if (mode === 'weekly') {
+      date.setDate(date.getDate() - 7);
+    }
+
+    if (mode === 'monthly') {
+      date.setMonth(date.getMonth() - 1);
+    }
+
+    if (mode === 'yearly') {
+      date.setFullYear(date.getFullYear(), 0, 2);
+      date.setHours(0, 0, 0, 0);
+    }
+
+    const [totalCount, recipes] = await Promise.all([
+      await this.prismaService.recipe.count({
+        where: {
+          createdAt: {
+            gte: date,
+          },
+        },
+      }),
+      await this.prismaService.recipe.findMany({
+        include: {
+          user: true,
+          recipeStat: true,
+        },
+        skip: (page - 1) * size,
+        take: size,
+        where: {
+          createdAt: {
+            gte: date,
+          },
+        },
+        orderBy: {
+          recipeStat: {
+            likeCount: 'desc',
+          },
+        },
+      }),
+    ]);
+
+    const result = recipes.map((recipe) => new RecipeResponseDto(recipe));
+    return new Page(totalCount, page, size, result);
   }
 }
