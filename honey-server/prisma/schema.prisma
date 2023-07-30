@@ -112,9 +112,10 @@ model RecipeComment {
   mentionUserId   Int? @map("mention_user_id")
   parentCommentId Int? @map("parent_comment_id")
 
-  content   String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  content    String
+  replyCount Int      @default(0) @map("reply_count")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at")
 
   user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   recipe      Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)

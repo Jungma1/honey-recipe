@@ -19,6 +19,7 @@ import { User } from '@prisma/client';
 import { AuthUser } from '../auth/decorator/auth-user.decorator';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { RecipeCommentCreateRequestDto } from './dto/recipe-comment-create-request.dto';
+import { RecipeCommentUpdateRequestDto } from './dto/recipe-comment-update-request.dto';
 import { RecipeCreateRequestDto } from './dto/recipe-create-request.dto';
 import { RecipeUpdateRequestDto } from './dto/recipe-update-request.dto';
 import { RecipeService } from './recipe.service';
@@ -98,6 +99,19 @@ export class RecipeController {
     return this.recipeService.uploadImage(id, user, image);
   }
 
+  @Get(':id/comments')
+  async findComments(@Param('id') id: number) {
+    return this.recipeService.findComments(id);
+  }
+
+  @Get(':id/comments/:commentId')
+  async findSubComments(
+    @Param('id') id: number,
+    @Param('commentId') commentId: number,
+  ) {
+    return this.recipeService.findSubComments(id, commentId);
+  }
+
   @Post(':id/comments')
   @UseGuards(JwtAuthGuard)
   async createComment(
@@ -106,5 +120,25 @@ export class RecipeController {
     @Body() request: RecipeCommentCreateRequestDto,
   ) {
     return this.recipeService.createComment(id, user, request);
+  }
+
+  @Patch(':id/comments/:commentId')
+  @UseGuards(JwtAuthGuard)
+  async updateComment(
+    @Param('commentId') commentId: number,
+    @AuthUser() user: User,
+    @Body() request: RecipeCommentUpdateRequestDto,
+  ) {
+    return this.recipeService.updateComment(commentId, user, request);
+  }
+
+  @Delete(':id/comments/:commentId')
+  @UseGuards(JwtAuthGuard)
+  async deleteComment(
+    @Param('id') id: number,
+    @Param('commentId') commentId: number,
+    @AuthUser() user: User,
+  ) {
+    return this.recipeService.deleteComment(id, commentId, user);
   }
 }

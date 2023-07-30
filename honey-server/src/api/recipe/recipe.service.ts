@@ -9,6 +9,11 @@ import { FileService } from '~/common/file/file.service';
 import { PrismaService } from '~/common/prisma/prisma.service';
 import { Page } from '~/lib/page';
 import { RecipeCommentCreateRequestDto } from './dto/recipe-comment-create-request.dto';
+import {
+  RecipeCommentResponseDto,
+  RecipeSubCommentResponseDto,
+} from './dto/recipe-comment-response.dto';
+import { RecipeCommentUpdateRequestDto } from './dto/recipe-comment-update-request.dto';
 import { RecipeCreateRequestDto } from './dto/recipe-create-request.dto';
 import { RecipeCreateResponseDto } from './dto/recipe-create-response.dto';
 import { RecipeReadResponseDto } from './dto/recipe-read-response.dto';
@@ -186,56 +191,177 @@ export class RecipeService {
     return { imagePath };
   }
 
+  async findComments(id: number) {
+    const comments = await this.prismaService.recipeComment.findMany({
+      include: {
+        user: true,
+        mentionUser: true,
+      },
+      where: {
+        recipeId: id,
+        parentCommentId: null,
+      },
+    });
+
+    return comments.map((comment) => new RecipeCommentResponseDto(comment));
+  }
+
+  async findSubComments(id: number, commentId: number) {
+    const comments = await this.prismaService.recipeComment.findMany({
+      include: {
+        user: true,
+        mentionUser: true,
+      },
+      where: {
+        recipeId: id,
+        parentCommentId: commentId,
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+
+    return comments.map((comment) => new RecipeSubCommentResponseDto(comment));
+  }
+
   async createComment(
     id: number,
     user: User,
     request: RecipeCommentCreateRequestDto,
   ) {
-    const recipe = await this.prismaService.recipe.findUnique({
-      where: { id },
-    });
+    await this.prismaService.$transaction(async (tx) => {
+      const recipe = await tx.recipe.findUnique({
+        where: { id },
+      });
 
-    if (!recipe) {
-      throw new NotFoundException('Recipe not found');
-    }
+      if (!recipe) {
+        throw new NotFoundException('Recipe not found');
+      }
 
-    if (!request.parentCommentId) {
-      await this.prismaService.recipeComment.create({
-        data: {
+      if (!request.parentCommentId) {
+        await tx.recipeComment.create({
+          data: {
+            recipeId: id,
+            userId: user.id,
+            parentCommentId: null,
+            mentionUserId: null,
+            content: request.content,
+          },
+        });
+      } else {
+        const parentComment = await tx.recipeComment.findUnique({
+          where: {
+            id: request.parentCommentId,
+          },
+        });
+
+        if (!parentComment) {
+          throw new NotFoundException('Parent comment not found');
+        }
+
+        const isParentCommentId = !!parentComment.parentCommentId;
+        const parentCommentId = isParentCommentId
+          ? parentComment.parentCommentId
+          : parentComment.id;
+        const mentionUserId = isParentCommentId ? parentComment.userId : null;
+
+        await tx.recipeComment.create({
+          data: {
+            recipeId: id,
+            userId: user.id,
+            parentCommentId,
+            mentionUserId,
+            content: request.content,
+          },
+        });
+
+        await tx.recipeComment.update({
+          where: {
+            id: parentCommentId,
+          },
+          data: {
+            replyCount: {
+              increment: 1,
+            },
+          },
+        });
+      }
+
+      await tx.recipeStat.update({
+        where: {
           recipeId: id,
-          userId: user.id,
-          parentCommentId: null,
-          mentionUserId: null,
-          content: request.content,
+        },
+        data: {
+          commentCount: {
+            increment: 1,
+          },
         },
       });
-      return;
-    }
-
-    const parentComment = await this.prismaService.recipeComment.findUnique({
-      where: {
-        id: request.parentCommentId,
-      },
     });
+  }
 
-    if (!parentComment) {
-      throw new NotFoundException('Parent comment not found');
-    }
+  async updateComment(
+    commentId: number,
+    user: User,
+    request: RecipeCommentUpdateRequestDto,
+  ) {
+    await this.validateRecipeComment(commentId, user.id);
 
-    const isParentCommentId = !!parentComment.parentCommentId;
-    const parentCommentId = isParentCommentId
-      ? parentComment.parentCommentId
-      : parentComment.id;
-    const mentionUserId = isParentCommentId ? parentComment.userId : null;
-
-    await this.prismaService.recipeComment.create({
+    await this.prismaService.recipeComment.update({
+      where: {
+        id: commentId,
+      },
       data: {
-        recipeId: id,
-        userId: user.id,
-        parentCommentId,
-        mentionUserId,
         content: request.content,
       },
+    });
+  }
+
+  async deleteComment(id: number, commentId: number, user: User) {
+    await this.validateRecipeComment(commentId, user.id);
+
+    await this.prismaService.$transaction(async (tx) => {
+      let totalCount = 0;
+
+      const deletedComment = await tx.recipeComment.delete({
+        where: {
+          id: commentId,
+        },
+      });
+
+      if (deletedComment.parentCommentId) {
+        await tx.recipeComment.update({
+          where: {
+            id: deletedComment.parentCommentId,
+          },
+          data: {
+            replyCount: {
+              decrement: 1,
+            },
+          },
+        });
+        totalCount++;
+      }
+
+      if (!deletedComment.parentCommentId) {
+        const { count } = await tx.recipeComment.deleteMany({
+          where: {
+            parentCommentId: deletedComment.id,
+          },
+        });
+        totalCount += count + 1;
+      }
+
+      await tx.recipeStat.update({
+        where: {
+          recipeId: id,
+        },
+        data: {
+          commentCount: {
+            decrement: totalCount,
+          },
+        },
+      });
     });
   }
 
@@ -249,6 +375,20 @@ export class RecipeService {
     }
 
     if (recipe.userId !== userId) {
+      throw new ForbiddenException('You are not allowed');
+    }
+  }
+
+  private async validateRecipeComment(id: number, userId: number) {
+    const comment = await this.prismaService.recipeComment.findUnique({
+      where: { id },
+    });
+
+    if (comment === null) {
+      throw new NotFoundException('Recipe comment not found');
+    }
+
+    if (comment.userId !== userId) {
       throw new ForbiddenException('You are not allowed');
     }
   }
