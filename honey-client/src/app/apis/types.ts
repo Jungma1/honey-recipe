@@ -68,6 +68,11 @@ export interface RecipeUpdateRequest {
   }[];
 }
 
+export interface RecipeCommentCreateRequest {
+  content: string;
+  parentCommentId: number | null;
+}
+
 export interface ImageUploadResponse {
   imagePath: string;
 }

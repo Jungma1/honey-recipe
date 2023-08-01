@@ -3,6 +3,7 @@ import {
   ImageUploadResponse,
   PaginationRecipe,
   RecipeComment,
+  RecipeCommentCreateRequest,
   RecipeCreateRequest,
   RecipeCreateResponse,
   RecipeRead,
@@ -57,7 +58,7 @@ export const deleteRecipe = async (id: number) => {
   await client.delete(`/api/v1/recipe/${id}`);
 };
 
-export const postRecipeComment = async (id: number, content: string) => {
-  const response = await client.post<RecipeComment>(`/api/v1/recipe/${id}/comments`, { content });
+export const postRecipeComment = async (id: number, request: RecipeCommentCreateRequest) => {
+  const response = await client.post(`/api/v1/recipe/${id}/comments`, request);
   return response.data;
 };

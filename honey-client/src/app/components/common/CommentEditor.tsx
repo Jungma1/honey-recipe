@@ -1,11 +1,14 @@
 import styled from '@emotion/styled';
 import { EditorView, minimalSetup } from 'codemirror';
+import { AnimatePresence, motion } from 'framer-motion';
 import { rem } from 'polished';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { colors } from '~/utils/colors';
+import Button from '../system/Button';
 
 interface Props {
   defaultValue?: string;
+  onSubmit: () => void;
   onChangeValue: (value: string) => void;
 }
 
@@ -17,16 +20,19 @@ const editorTheme = EditorView.theme({
   },
 });
 
-function Editor({ defaultValue, onChangeValue, ...rest }: Props) {
+function CommentEditor({ defaultValue, onChangeValue, onSubmit }: Props) {
   const editorRef = useRef<HTMLDivElement>(null);
+  const viewRef = useRef<EditorView | null>(null);
   const onChangeRef = useRef(onChangeValue);
   const defaultValueRef = useRef(defaultValue);
+  const [isButtonVisible, setIsButtonVisible] = useState(false);
 
   useEffect(() => {
     onChangeRef.current = onChangeValue;
   }, [onChangeValue]);
 
   useEffect(() => {
+    if (viewRef.current) return;
     if (!editorRef.current) return;
 
     const view = new EditorView({
@@ -42,13 +48,47 @@ function Editor({ defaultValue, onChangeValue, ...rest }: Props) {
       ],
     });
 
+    viewRef.current = view;
+
     return () => {
       view.destroy();
+      viewRef.current = null;
     };
   }, []);
 
-  return <Block ref={editorRef} {...rest} />;
+  const onClickCancel = () => {
+    if (!viewRef.current) return;
+
+    setIsButtonVisible(false);
+
+    const transaction = viewRef.current.state.update({
+      changes: { from: 0, to: viewRef.current.state.doc.length, insert: '' },
+    });
+    viewRef.current.dispatch(transaction);
+  };
+
+  return (
+    <Container>
+      <Block ref={editorRef} onFocus={() => setIsButtonVisible(true)} />
+      <AnimatePresence>
+        {isButtonVisible && (
+          <ButtonGroup initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <StyledButton onClick={onClickCancel} outlined>
+              취소
+            </StyledButton>
+            <StyledButton onClick={onSubmit}>작성</StyledButton>
+          </ButtonGroup>
+        )}
+      </AnimatePresence>
+    </Container>
+  );
 }
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${rem(16)};
+`;
 
 const Block = styled.div`
   color: ${colors.gray9};
@@ -83,4 +123,13 @@ const Block = styled.div`
   }
 `;
 
-export default Editor;
+const ButtonGroup = styled(motion.div)`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const StyledButton = styled(Button)`
+  padding: ${rem(8)} ${rem(16)};
+`;
+
+export default CommentEditor;
