@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 import { rem } from 'polished';
 import { Recipe } from '~/apis/types';
+import Slider from '../common/Slider';
 import TitleGroup from '../common/TitleGroup';
-import Slider from '../system/Slider';
 import RecipeBannerItem from './RecipeBannerItem';
 
 interface Props {

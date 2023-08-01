@@ -2,6 +2,7 @@ import { client } from '.';
 import {
   ImageUploadResponse,
   PaginationRecipe,
+  RecipeComment,
   RecipeCreateRequest,
   RecipeCreateResponse,
   RecipeRead,
@@ -21,6 +22,11 @@ export const getRecipes = async (page: number, size: number, mode: string) => {
 
 export const getRecipe = async (id: number) => {
   const response = await client.get<RecipeRead>(`/api/v1/recipe/${id}`);
+  return response.data;
+};
+
+export const getRecipeComments = async (id: number) => {
+  const response = await client.get<RecipeComment[]>(`/api/v1/recipe/${id}/comments`);
   return response.data;
 };
 
@@ -49,4 +55,9 @@ export const postRecipeImage = async (id: number, image: File) => {
 
 export const deleteRecipe = async (id: number) => {
   await client.delete(`/api/v1/recipe/${id}`);
+};
+
+export const postRecipeComment = async (id: number, content: string) => {
+  const response = await client.post<RecipeComment>(`/api/v1/recipe/${id}/comments`, { content });
+  return response.data;
 };

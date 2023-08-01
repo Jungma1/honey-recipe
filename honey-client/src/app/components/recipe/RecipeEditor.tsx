@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 import { rem } from 'polished';
-import Editor from '../system/Editor';
+import Editor from '../common/Editor';
+import LabelGroup from '../common/LabelGroup';
 import Input from '../system/Input';
-import LabelGroup from '../system/LabelGroup';
 import RecipeImageSelector from './RecipeImageSelector';
 
 interface Props {

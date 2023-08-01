@@ -4,10 +4,10 @@ import { rem } from 'polished';
 import { useState } from 'react';
 import { RecipeCourse } from '~/apis/types';
 import { colors } from '~/utils/colors';
+import Editor from '../common/Editor';
+import LabelGroup from '../common/LabelGroup';
 import AutoImage from '../system/AutoImage';
 import Button from '../system/Button';
-import Editor from '../system/Editor';
-import LabelGroup from '../system/LabelGroup';
 
 interface Props {
   course: RecipeCourse;

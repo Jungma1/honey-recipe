@@ -4,7 +4,7 @@ import type { AppProps } from 'next/app';
 import { useState } from 'react';
 import Core from '~/components/base/Core';
 import GlobalStyles from '~/components/common/GlobalStyles';
-import ModalContainer from '~/components/system/ModalContainer';
+import ModalContainer from '~/components/common/ModalContainer';
 
 interface Props {
   isAuth: boolean;

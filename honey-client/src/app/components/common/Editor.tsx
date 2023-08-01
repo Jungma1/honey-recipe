@@ -4,7 +4,7 @@ import { rem } from 'polished';
 import { useEffect, useRef } from 'react';
 import { colors } from '~/utils/colors';
 
-interface Props {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
   defaultValue?: string;
   onChangeValue: (value: string) => void;
 }

@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { rem } from 'polished';
 import { useModalStore } from '~/stores/modal';
 import { colors } from '~/utils/colors';
-import Button from './Button';
+import Button from '../system/Button';
 
 function ModalContainer() {
   const { isOpen, title, description, onConfirm, closeModal } = useModalStore();

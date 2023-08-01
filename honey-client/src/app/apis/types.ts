@@ -33,6 +33,15 @@ export interface RecipeCourse {
   created: boolean;
 }
 
+export interface RecipeComment {
+  id: number;
+  content: string;
+  replyCount: number;
+  createdAt: string;
+  updatedAt: string;
+  user: User;
+}
+
 export interface RecipeRead extends Recipe {
   course: RecipeCourse[];
 }
