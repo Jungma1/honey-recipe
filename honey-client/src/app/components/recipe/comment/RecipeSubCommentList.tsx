@@ -21,6 +21,7 @@ const Block = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${rem(16)};
+  margin-top: ${rem(16)};
 `;
 
 export default RecipeSubCommentList;

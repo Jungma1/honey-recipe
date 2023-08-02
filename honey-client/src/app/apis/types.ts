@@ -35,6 +35,7 @@ export interface RecipeCourse {
 
 export interface RecipeComment {
   id: number;
+  parentCommentId: number | null;
   content: string;
   replyCount: number;
   createdAt: string;
@@ -71,7 +72,7 @@ export interface RecipeUpdateRequest {
 
 export interface RecipeCommentCreateRequest {
   content: string;
-  parentCommentId: number | null;
+  targetCommentId: number | null;
 }
 
 export interface ImageUploadResponse {

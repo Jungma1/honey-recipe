@@ -11,6 +11,7 @@ import Toggle from '~/components/common/Toggle';
 import AutoImage from '~/components/system/AutoImage';
 import { colors } from '~/utils/colors';
 import { formatDate, formatNumber } from '~/utils/format';
+import RecipeCommentEditor from './RecipeCommentEditor';
 import RecipeSubCommentList from './RecipeSubCommentList';
 
 interface Props {
@@ -20,6 +21,9 @@ interface Props {
 
 function RecipeCommentItem({ comment, isSubComment }: Props) {
   const router = useRouter();
+  const [rootCommentId, setRootCommentId] = useState(comment.id);
+  const [currentCommentId, setCurrentCommentId] = useState<number>();
+  const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isSubCommentOpen, setIsSubCommentOpen] = useState(false);
   const [isSubCommentLoaded, setIsSubCommentLoaded] = useState(false);
   const id = parseInt(router.query.id as string);
@@ -32,17 +36,39 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
     }
   );
 
+  const onClickReply = () => {
+    setIsReplyOpen(!isReplyOpen);
+    setCurrentCommentId(comment.id);
+
+    if (comment.parentCommentId) {
+      setRootCommentId(comment.parentCommentId);
+    }
+  };
+
+  const onClickCloseReply = () => {
+    setIsReplyOpen(false);
+  };
+
   return (
     <Block>
       <Avatar>
         <AutoImage src={comment.user.picture ?? '/profile.png'} />
       </Avatar>
       <Info>
-        <Wrapper>
-          <Username>{comment.user.username}</Username>
-          <CreatedAt>{formatDate(comment.createdAt)}</CreatedAt>
-        </Wrapper>
+        <Username>{comment.user.username}</Username>
         <Content>{comment.content}</Content>
+        <Wrapper>
+          <CreatedAt>{formatDate(comment.createdAt)}</CreatedAt>
+          <Reply onClick={onClickReply}>답글쓰기</Reply>
+        </Wrapper>
+        {isReplyOpen && (
+          <RecipeCommentEditor
+            onClose={onClickCloseReply}
+            rootCommentId={rootCommentId}
+            targetCommentId={currentCommentId}
+            isButtonVisible
+          />
+        )}
         {!isSubComment && comment.replyCount !== 0 && (
           <ReplyBlock>
             <ReplyToggle
@@ -86,22 +112,11 @@ const Info = styled.div`
   flex-direction: column;
 `;
 
-const Wrapper = styled.div`
-  display: flex;
-  align-items: flex-end;
-  gap: ${rem(8)};
-  margin-bottom: ${rem(4)};
-`;
-
 const Username = styled.span`
   color: ${colors.gray9};
   font-size: ${rem(16)};
   font-weight: 500;
-`;
-
-const CreatedAt = styled.span`
-  color: ${colors.gray9};
-  font-size: ${rem(14)};
+  margin-bottom: ${rem(4)};
 `;
 
 const Content = styled.div`
@@ -111,12 +126,28 @@ const Content = styled.div`
   margin-bottom: ${rem(8)};
 `;
 
+const Wrapper = styled.div`
+  display: flex;
+  gap: ${rem(8)};
+  margin-bottom: ${rem(8)};
+`;
+
+const CreatedAt = styled.span`
+  color: ${colors.gray9};
+  font-size: ${rem(14)};
+`;
+
+const Reply = styled.div`
+  color: ${colors.gray9};
+  font-size: ${rem(14)};
+  cursor: pointer;
+`;
+
 const ReplyBlock = styled.div`
   display: flex;
   align-items: center;
   color: ${colors.primaryDark};
   font-weight: 600;
-  margin-bottom: ${rem(8)};
 `;
 
 const ReplyToggle = styled.div`

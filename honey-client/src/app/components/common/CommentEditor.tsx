@@ -8,6 +8,8 @@ import Button from '../system/Button';
 
 interface Props {
   defaultValue?: string;
+  defaultButtonVisible?: boolean;
+  onClose?: () => void;
   onConfirm: () => void;
   onChangeValue: (value: string) => void;
 }
@@ -20,12 +22,18 @@ const editorTheme = EditorView.theme({
   },
 });
 
-function CommentEditor({ defaultValue, onChangeValue, onConfirm }: Props) {
+function CommentEditor({
+  defaultValue,
+  onChangeValue,
+  onConfirm,
+  onClose,
+  defaultButtonVisible,
+}: Props) {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const onChangeRef = useRef(onChangeValue);
   const defaultValueRef = useRef(defaultValue);
-  const [isButtonVisible, setIsButtonVisible] = useState(false);
+  const [isButtonVisible, setIsButtonVisible] = useState(defaultButtonVisible ?? false);
 
   useEffect(() => {
     onChangeRef.current = onChangeValue;
@@ -59,6 +67,7 @@ function CommentEditor({ defaultValue, onChangeValue, onConfirm }: Props) {
   const onClickCancel = () => {
     if (!viewRef.current) return;
 
+    onClose?.();
     setIsButtonVisible(false);
 
     const transaction = viewRef.current.state.update({
@@ -70,6 +79,7 @@ function CommentEditor({ defaultValue, onChangeValue, onConfirm }: Props) {
   const onClickConfirm = () => {
     onConfirm();
     onClickCancel();
+    onClose?.();
   };
 
   return (

@@ -8,25 +8,9 @@ type RecipeCommentRelation = RecipeComment & {
 
 export class RecipeCommentResponseDto {
   id: number;
+  parentCommentId: number | null;
   content: string;
   replyCount: number;
-  createdAt: string;
-  updatedAt: string;
-  user: AuthUserDto;
-
-  constructor(comment: RecipeCommentRelation) {
-    this.id = comment.id;
-    this.content = comment.content;
-    this.replyCount = comment.replyCount;
-    this.createdAt = comment.createdAt.toString();
-    this.updatedAt = comment.updatedAt.toString();
-    this.user = new AuthUserDto(comment.user);
-  }
-}
-
-export class RecipeSubCommentResponseDto {
-  id: number;
-  content: string;
   createdAt: string;
   updatedAt: string;
   user: AuthUserDto;
@@ -34,7 +18,9 @@ export class RecipeSubCommentResponseDto {
 
   constructor(comment: RecipeCommentRelation) {
     this.id = comment.id;
+    this.parentCommentId = comment.parentCommentId ?? null;
     this.content = comment.content;
+    this.replyCount = comment.replyCount;
     this.createdAt = comment.createdAt.toString();
     this.updatedAt = comment.updatedAt.toString();
     this.user = new AuthUserDto(comment.user);

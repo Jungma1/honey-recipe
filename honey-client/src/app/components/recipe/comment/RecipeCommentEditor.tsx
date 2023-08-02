@@ -6,14 +6,17 @@ import { RecipeCommentCreateRequest } from '~/apis/types';
 import CommentEditor from '~/components/common/CommentEditor';
 
 interface Props {
-  parentCommentId?: number;
+  rootCommentId?: number;
+  targetCommentId?: number;
+  isButtonVisible?: boolean;
+  onClose?: () => void;
 }
 
-function RecipeCommentEditor({ parentCommentId }: Props) {
+function RecipeCommentEditor({ isButtonVisible, rootCommentId, targetCommentId, onClose }: Props) {
   const router = useRouter();
   const [form, setForm] = useState({
     content: '',
-    parentCommentId: parentCommentId ?? null,
+    targetCommentId: targetCommentId ?? null,
   });
   const queryClient = useQueryClient();
   const id = parseInt(router?.query.id as string);
@@ -23,6 +26,10 @@ function RecipeCommentEditor({ parentCommentId }: Props) {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(['comments', id]);
+
+        if (rootCommentId) {
+          queryClient.invalidateQueries(['comment', rootCommentId]);
+        }
       },
     }
   );
@@ -38,7 +45,14 @@ function RecipeCommentEditor({ parentCommentId }: Props) {
     await postCommentMutation.mutateAsync(form);
   };
 
-  return <CommentEditor onChangeValue={onChangeText} onConfirm={onSubmitComment} />;
+  return (
+    <CommentEditor
+      onChangeValue={onChangeText}
+      onConfirm={onSubmitComment}
+      defaultButtonVisible={isButtonVisible}
+      onClose={onClose}
+    />
+  );
 }
 
 export default RecipeCommentEditor;

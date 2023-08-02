@@ -9,10 +9,7 @@ import { FileService } from '~/common/file/file.service';
 import { PrismaService } from '~/common/prisma/prisma.service';
 import { Page } from '~/lib/page';
 import { RecipeCommentCreateRequestDto } from './dto/recipe-comment-create-request.dto';
-import {
-  RecipeCommentResponseDto,
-  RecipeSubCommentResponseDto,
-} from './dto/recipe-comment-response.dto';
+import { RecipeCommentResponseDto } from './dto/recipe-comment-response.dto';
 import { RecipeCommentUpdateRequestDto } from './dto/recipe-comment-update-request.dto';
 import { RecipeCreateRequestDto } from './dto/recipe-create-request.dto';
 import { RecipeCreateResponseDto } from './dto/recipe-create-response.dto';
@@ -201,6 +198,9 @@ export class RecipeService {
         recipeId: id,
         parentCommentId: null,
       },
+      orderBy: {
+        createdAt: 'asc',
+      },
     });
 
     return comments.map((comment) => new RecipeCommentResponseDto(comment));
@@ -221,7 +221,7 @@ export class RecipeService {
       },
     });
 
-    return comments.map((comment) => new RecipeSubCommentResponseDto(comment));
+    return comments.map((comment) => new RecipeCommentResponseDto(comment));
   }
 
   async createComment(
@@ -238,7 +238,7 @@ export class RecipeService {
         throw new NotFoundException('Recipe not found');
       }
 
-      if (!request.parentCommentId) {
+      if (!request.targetCommentId) {
         await tx.recipeComment.create({
           data: {
             recipeId: id,
@@ -251,7 +251,7 @@ export class RecipeService {
       } else {
         const parentComment = await tx.recipeComment.findUnique({
           where: {
-            id: request.parentCommentId,
+            id: request.targetCommentId,
           },
         });
 
