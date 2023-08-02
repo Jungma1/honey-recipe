@@ -62,3 +62,8 @@ export const postRecipeComment = async (id: number, request: RecipeCommentCreate
   const response = await client.post(`/api/v1/recipe/${id}/comments`, request);
   return response.data;
 };
+
+export const getRecipeSubComments = async (id: number, commentId: number) => {
+  const response = await client.get<RecipeComment[]>(`/api/v1/recipe/${id}/comments/${commentId}`);
+  return response.data;
+};

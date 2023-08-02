@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { EditorView, minimalSetup } from 'codemirror';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { rem } from 'polished';
 import { useEffect, useRef, useState } from 'react';
 import { colors } from '~/utils/colors';
@@ -8,7 +8,7 @@ import Button from '../system/Button';
 
 interface Props {
   defaultValue?: string;
-  onSubmit: () => void;
+  onConfirm: () => void;
   onChangeValue: (value: string) => void;
 }
 
@@ -20,7 +20,7 @@ const editorTheme = EditorView.theme({
   },
 });
 
-function CommentEditor({ defaultValue, onChangeValue, onSubmit }: Props) {
+function CommentEditor({ defaultValue, onChangeValue, onConfirm }: Props) {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const onChangeRef = useRef(onChangeValue);
@@ -67,19 +67,22 @@ function CommentEditor({ defaultValue, onChangeValue, onSubmit }: Props) {
     viewRef.current.dispatch(transaction);
   };
 
+  const onClickConfirm = () => {
+    onConfirm();
+    onClickCancel();
+  };
+
   return (
     <Container>
       <Block ref={editorRef} onFocus={() => setIsButtonVisible(true)} />
-      <AnimatePresence>
-        {isButtonVisible && (
-          <ButtonGroup initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <StyledButton onClick={onClickCancel} outlined>
-              취소
-            </StyledButton>
-            <StyledButton onClick={onSubmit}>작성</StyledButton>
-          </ButtonGroup>
-        )}
-      </AnimatePresence>
+      {isButtonVisible && (
+        <ButtonGroup initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+          <StyledButton onClick={onClickCancel} outlined>
+            취소
+          </StyledButton>
+          <StyledButton onClick={onClickConfirm}>작성</StyledButton>
+        </ButtonGroup>
+      )}
     </Container>
   );
 }

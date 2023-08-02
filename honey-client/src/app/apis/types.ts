@@ -40,6 +40,7 @@ export interface RecipeComment {
   createdAt: string;
   updatedAt: string;
   user: User;
+  mentionUser: User | null;
 }
 
 export interface RecipeRead extends Recipe {

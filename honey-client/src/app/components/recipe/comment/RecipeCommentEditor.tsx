@@ -38,7 +38,7 @@ function RecipeCommentEditor({ parentCommentId }: Props) {
     await postCommentMutation.mutateAsync(form);
   };
 
-  return <CommentEditor onChangeValue={onChangeText} onSubmit={onSubmitComment} />;
+  return <CommentEditor onChangeValue={onChangeText} onConfirm={onSubmitComment} />;
 }
 
 export default RecipeCommentEditor;
