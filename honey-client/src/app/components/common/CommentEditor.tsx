@@ -11,7 +11,7 @@ interface Props {
   defaultButtonVisible?: boolean;
   onClose?: () => void;
   onConfirm: () => void;
-  onChangeValue: (value: string) => void;
+  onChange: (value: string) => void;
 }
 
 const editorTheme = EditorView.theme({
@@ -24,20 +24,20 @@ const editorTheme = EditorView.theme({
 
 function CommentEditor({
   defaultValue,
-  onChangeValue,
+  defaultButtonVisible,
+  onChange,
   onConfirm,
   onClose,
-  defaultButtonVisible,
 }: Props) {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
-  const onChangeRef = useRef(onChangeValue);
+  const onChangeRef = useRef(onChange);
   const defaultValueRef = useRef(defaultValue);
   const [isButtonVisible, setIsButtonVisible] = useState(defaultButtonVisible ?? false);
 
   useEffect(() => {
-    onChangeRef.current = onChangeValue;
-  }, [onChangeValue]);
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
   useEffect(() => {
     if (viewRef.current) return;

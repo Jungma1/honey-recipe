@@ -13,8 +13,7 @@ import { useModalStore } from '~/stores/modal';
 import { useUserStore } from '~/stores/user';
 import { colors } from '~/utils/colors';
 import { formatDate, formatNumber } from '~/utils/format';
-import RecipeCommentEditor from './RecipeCommentEditor';
-import RecipeCommentModifyEditor from './RecipeCommentModifyEditor';
+import RecipeSubCommentEditor from './RecipeSubCommentEditor';
 import RecipeSubCommentList from './RecipeSubCommentList';
 
 interface Props {
@@ -26,8 +25,6 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
   const router = useRouter();
   const { user } = useUserStore();
   const { openModal } = useModalStore();
-  const [content, setContent] = useState(comment.content);
-  const [rootCommentId, setRootCommentId] = useState(comment.id);
   const [replyCount, setReplyCount] = useState(comment.replyCount);
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isSubCommentOpen, setIsSubCommentOpen] = useState(false);
@@ -35,6 +32,7 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
   const [isEditMode, setIsEditMode] = useState(false);
   const id = parseInt(router.query.id as string);
   const isOwner = comment.user.id === user?.id;
+  const parentCommentId = comment.parentCommentId ?? comment.id;
   const queryClient = useQueryClient();
 
   const { data: subComments } = useQuery(
@@ -47,23 +45,13 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
 
   const { mutateAsync: deleteComment } = useMutation(deleteRecipeComment, {
     onSuccess: () => {
-      if (comment.parentCommentId) {
-        queryClient.invalidateQueries(['comment', comment.parentCommentId]);
+      if (comment.id === parentCommentId) {
+        queryClient.invalidateQueries(['comments', id]);
+      } else {
+        queryClient.invalidateQueries(['comment', parentCommentId]);
       }
     },
   });
-
-  const onClickReply = () => {
-    setIsReplyOpen(!isReplyOpen);
-
-    if (comment.parentCommentId) {
-      setRootCommentId(comment.parentCommentId);
-    }
-  };
-
-  const onClickCloseReply = () => {
-    setIsReplyOpen(false);
-  };
 
   const onClickDelete = () => {
     openModal({
@@ -76,10 +64,6 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
         });
       },
     });
-  };
-
-  const onChangeContent = (value: string) => {
-    setContent(value);
   };
 
   useEffect(() => {
@@ -96,25 +80,29 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
       <Info>
         <Username>{comment.user.username}</Username>
         {!isEditMode ? (
-          <Content>{content}</Content>
+          <Content>{comment.content}</Content>
         ) : (
-          <RecipeCommentModifyEditor
+          <RecipeSubCommentEditor
             defaultContent={comment.content}
+            parentCommentId={parentCommentId}
             targetCommentId={comment.id}
             onClose={() => setIsEditMode(false)}
-            onChangeContent={onChangeContent}
+            isEdit
           />
         )}
         <Wrapper>
           <CreatedAt>{formatDate(comment.createdAt)}</CreatedAt>
-          <Reply onClick={onClickReply}>답글쓰기</Reply>
+          <Reply onClick={() => setIsReplyOpen(!isReplyOpen)}>답글쓰기</Reply>
         </Wrapper>
         {isReplyOpen && (
-          <RecipeCommentEditor
-            onClose={onClickCloseReply}
-            rootCommentId={rootCommentId}
+          <RecipeSubCommentEditor
+            parentCommentId={parentCommentId}
             targetCommentId={comment.id}
-            isButtonVisible
+            onLoaded={() => {
+              setIsSubCommentLoaded(true);
+              setIsSubCommentOpen(true);
+            }}
+            onClose={() => setIsReplyOpen(false)}
           />
         )}
         {!isSubComment && replyCount !== 0 && (
@@ -134,7 +122,9 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
             </ReplyToggle>
           </ReplyBlock>
         )}
-        {isSubCommentOpen && subComments && <RecipeSubCommentList subComments={subComments} />}
+        {isSubCommentOpen && replyCount !== 0 && subComments && (
+          <RecipeSubCommentList subComments={subComments} />
+        )}
       </Info>
       {isOwner && (
         <Interaction>

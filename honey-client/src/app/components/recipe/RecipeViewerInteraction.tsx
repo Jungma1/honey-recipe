@@ -24,7 +24,7 @@ function RecipeViewerInteraction({ isOwner, recipeId }: Props) {
       description: '정말 삭제하시겠습니까?',
       onConfirm: async () => {
         await deleteRecipe(recipeId);
-        router.back();
+        router.push('/');
       },
     });
   };

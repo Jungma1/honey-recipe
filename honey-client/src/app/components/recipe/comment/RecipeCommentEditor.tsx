@@ -4,52 +4,33 @@ import { useState } from 'react';
 import { postRecipeComment } from '~/apis/recipe';
 import CommentEditor from '~/components/common/CommentEditor';
 
-interface Props {
-  rootCommentId?: number;
-  targetCommentId?: number;
-  isButtonVisible?: boolean;
-  onClose?: () => void;
-}
-
-function RecipeCommentEditor({ isButtonVisible, rootCommentId, targetCommentId, onClose }: Props) {
+function RecipeCommentEditor() {
   const router = useRouter();
-  const [form, setForm] = useState({
-    content: '',
-    targetCommentId: targetCommentId ?? null,
-  });
-  const queryClient = useQueryClient();
+  const [content, setContent] = useState('');
   const id = parseInt(router?.query.id as string);
+  const queryClient = useQueryClient();
 
-  const { mutateAsync: createRecipeComment } = useMutation(postRecipeComment, {
+  const { mutateAsync: createComment } = useMutation(postRecipeComment, {
     onSuccess: () => {
-      if (rootCommentId) {
-        queryClient.invalidateQueries(['comment', rootCommentId]);
-      }
+      queryClient.invalidateQueries(['comments', id]);
     },
   });
 
-  const onChangeText = (value: string) => {
-    setForm({
-      ...form,
-      content: value,
-    });
+  const onChangeContent = (value: string) => {
+    setContent(value);
   };
 
   const onSubmitComment = async () => {
-    await createRecipeComment({
+    await createComment({
       id,
-      request: form,
+      request: {
+        content,
+        targetCommentId: null,
+      },
     });
   };
 
-  return (
-    <CommentEditor
-      onChangeValue={onChangeText}
-      onConfirm={onSubmitComment}
-      defaultButtonVisible={isButtonVisible}
-      onClose={onClose}
-    />
-  );
+  return <CommentEditor onChange={onChangeContent} onConfirm={onSubmitComment} />;
 }
 
 export default RecipeCommentEditor;
