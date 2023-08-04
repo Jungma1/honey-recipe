@@ -67,3 +67,20 @@ export const getRecipeSubComments = async (id: number, commentId: number) => {
   const response = await client.get<RecipeComment[]>(`/api/v1/recipe/${id}/comments/${commentId}`);
   return response.data;
 };
+
+export const patchRecipeComment = async ({
+  id,
+  commentId,
+  content,
+}: {
+  id: number;
+  commentId: number;
+  content: string;
+}) => {
+  const response = await client.patch(`/api/v1/recipe/${id}/comments/${commentId}`, { content });
+  return response.data;
+};
+
+export const deleteRecipeComment = async ({ id, commentId }: { id: number; commentId: number }) => {
+  await client.delete(`/api/v1/recipe/${id}/comments/${commentId}`);
+};
