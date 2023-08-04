@@ -43,19 +43,16 @@ export default function RecipeEditPage({ recipe }: Props) {
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
 
-  const recipeUpdateMutation = useMutation(
-    (request: RecipeUpdateRequest) => patchRecipe(recipe.id, request),
-    {
-      onSuccess: () => {
-        router.push(`/recipe/${recipe.id}`);
-      },
-      onError: () => {
-        setErrorMessage('레시피 수정에 실패했습니다.');
-      },
-    }
-  );
+  const { mutateAsync: updateRecipe } = useMutation(patchRecipe, {
+    onSuccess: () => {
+      router.push(`/recipe/${recipe.id}`);
+    },
+    onError: () => {
+      setErrorMessage('레시피 수정에 실패했습니다.');
+    },
+  });
 
-  const uploadThumbnailMutation = useMutation((file: File) => postRecipeImage(recipe.id, file), {
+  const { mutateAsync: uploadThumbnail } = useMutation(postRecipeImage, {
     onSuccess: ({ imagePath }) => {
       setForm({ ...form, thumbnail: imagePath });
     },
@@ -64,7 +61,7 @@ export default function RecipeEditPage({ recipe }: Props) {
     },
   });
 
-  const uploadPictureMutation = useMutation((file: File) => postRecipeImage(recipe.id, file), {
+  const { mutateAsync: uploadPicture } = useMutation(postRecipeImage, {
     onSuccess: ({ imagePath }) => {
       setForm({
         ...form,
@@ -96,14 +93,20 @@ export default function RecipeEditPage({ recipe }: Props) {
       return;
     }
 
-    await recipeUpdateMutation.mutateAsync(form);
+    await updateRecipe({
+      id: recipe.id,
+      request: form,
+    });
   };
 
   const onClickThumbnail = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const file = await upload();
     if (!file) return;
-    await uploadThumbnailMutation.mutateAsync(file);
+    await uploadThumbnail({
+      id: recipe.id,
+      image: file,
+    });
   };
 
   const onChangeContent = (id: number, value: string) => {
@@ -119,7 +122,10 @@ export default function RecipeEditPage({ recipe }: Props) {
     const file = await upload();
     if (!file) return;
     setSelectedCourseId(id);
-    await uploadPictureMutation.mutateAsync(file);
+    await uploadPicture({
+      id: recipe.id,
+      image: file,
+    });
   };
 
   const onClickAddCourse = async () => {

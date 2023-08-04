@@ -31,22 +31,28 @@ export const getRecipeComments = async (id: number) => {
   return response.data;
 };
 
-export const postRecipe = async (request: RecipeCreateRequest) => {
+export const postRecipe = async ({ title, description, thumbnail }: RecipeCreateRequest) => {
   const formData = new FormData();
-  formData.append('title', request.title);
-  formData.append('description', request.description);
-  if (request.thumbnail) formData.append('thumbnail', request.thumbnail);
+  formData.append('title', title);
+  formData.append('description', description);
+  if (thumbnail) formData.append('thumbnail', thumbnail);
 
   const response = await client.post<RecipeCreateResponse>('/api/v1/recipe', formData);
   return response.data;
 };
 
-export const patchRecipe = async (id: number, request: RecipeUpdateRequest) => {
+export const patchRecipe = async ({
+  id,
+  request,
+}: {
+  id: number;
+  request: RecipeUpdateRequest;
+}) => {
   const response = await client.patch(`/api/v1/recipe/${id}`, request);
   return response.data;
 };
 
-export const postRecipeImage = async (id: number, image: File) => {
+export const postRecipeImage = async ({ id, image }: { id: number; image: File }) => {
   const formData = new FormData();
   formData.append('image', image);
 
@@ -58,7 +64,13 @@ export const deleteRecipe = async (id: number) => {
   await client.delete(`/api/v1/recipe/${id}`);
 };
 
-export const postRecipeComment = async (id: number, request: RecipeCommentCreateRequest) => {
+export const postRecipeComment = async ({
+  id,
+  request,
+}: {
+  id: number;
+  request: RecipeCommentCreateRequest;
+}) => {
   const response = await client.post(`/api/v1/recipe/${id}/comments`, request);
   return response.data;
 };

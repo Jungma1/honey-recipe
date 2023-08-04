@@ -3,7 +3,6 @@ import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { postRecipe } from '~/apis/recipe';
-import { RecipeCreateRequest } from '~/apis/types';
 import Header from '~/components/common/Header';
 import TitleGroup from '~/components/common/TitleGroup';
 import ContentLayout from '~/components/layout/ContentLayout';
@@ -29,7 +28,7 @@ export default function RecipeWritePage() {
   const { form, errorMessage, changeErrorMessage, changeThumbnail, resetForm } = useRecipeStore();
   const { handleChangeTitle, handleChangeDescription } = useRecipeHandler();
 
-  const recipeCreateMutation = useMutation((request: RecipeCreateRequest) => postRecipe(request), {
+  const { mutateAsync: createRecipe } = useMutation(postRecipe, {
     onSuccess: ({ id }) => {
       router.push(`/recipe/edit?id=${id}`);
     },
@@ -51,7 +50,7 @@ export default function RecipeWritePage() {
       return;
     }
 
-    await recipeCreateMutation.mutateAsync(form);
+    await createRecipe(form);
     resetForm();
   };
 

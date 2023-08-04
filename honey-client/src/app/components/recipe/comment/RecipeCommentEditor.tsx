@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { postRecipeComment } from '~/apis/recipe';
-import { RecipeCommentCreateRequest } from '~/apis/types';
 import CommentEditor from '~/components/common/CommentEditor';
 
 interface Props {
@@ -21,18 +20,15 @@ function RecipeCommentEditor({ isButtonVisible, rootCommentId, targetCommentId, 
   const queryClient = useQueryClient();
   const id = parseInt(router?.query.id as string);
 
-  const postCommentMutation = useMutation(
-    (request: RecipeCommentCreateRequest) => postRecipeComment(id, request),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['comments', id]);
+  const { mutateAsync: createRecipeComment } = useMutation(postRecipeComment, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['comments', id]);
 
-        if (rootCommentId) {
-          queryClient.invalidateQueries(['comment', rootCommentId]);
-        }
-      },
-    }
-  );
+      if (rootCommentId) {
+        queryClient.invalidateQueries(['comment', rootCommentId]);
+      }
+    },
+  });
 
   const onChangeText = (value: string) => {
     setForm({
@@ -42,7 +38,10 @@ function RecipeCommentEditor({ isButtonVisible, rootCommentId, targetCommentId, 
   };
 
   const onSubmitComment = async () => {
-    await postCommentMutation.mutateAsync(form);
+    await createRecipeComment({
+      id,
+      request: form,
+    });
   };
 
   return (
