@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { patchRecipeComment } from '~/apis/recipe';
@@ -6,33 +6,28 @@ import CommentEditor from '~/components/common/CommentEditor';
 
 interface Props {
   defaultContent: string;
-  rootCommentId: number | null;
   targetCommentId: number;
   onClose: () => void;
+  onChangeContent: (value: string) => void;
 }
 
 function RecipeCommentModifyEditor({
   defaultContent,
-  rootCommentId,
   targetCommentId,
   onClose,
+  onChangeContent,
 }: Props) {
   const router = useRouter();
   const [content, setContent] = useState(defaultContent);
   const id = parseInt(router?.query.id as string);
-  const queryClient = useQueryClient();
 
   const { mutateAsync: updateComment } = useMutation(patchRecipeComment, {
     onSuccess: () => {
-      if (rootCommentId) {
-        queryClient.invalidateQueries(['comment', rootCommentId]);
-      } else {
-        queryClient.invalidateQueries(['comments', id]);
-      }
+      onChangeContent(content);
     },
   });
 
-  const onChangeContent = (value: string) => {
+  const onChangeValue = (value: string) => {
     setContent(value);
   };
 
@@ -47,7 +42,7 @@ function RecipeCommentModifyEditor({
   return (
     <CommentEditor
       defaultValue={content}
-      onChangeValue={onChangeContent}
+      onChangeValue={onChangeValue}
       onConfirm={onSubmitComment}
       onClose={onClose}
       defaultButtonVisible

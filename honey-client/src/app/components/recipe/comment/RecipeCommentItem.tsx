@@ -4,7 +4,7 @@ import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRound
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { rem } from 'polished';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { deleteRecipeComment, getRecipeSubComments } from '~/apis/recipe';
 import { RecipeComment } from '~/apis/types';
 import Toggle from '~/components/common/Toggle';
@@ -26,7 +26,9 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
   const router = useRouter();
   const { user } = useUserStore();
   const { openModal } = useModalStore();
+  const [content, setContent] = useState(comment.content);
   const [rootCommentId, setRootCommentId] = useState(comment.id);
+  const [replyCount, setReplyCount] = useState(comment.replyCount);
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isSubCommentOpen, setIsSubCommentOpen] = useState(false);
   const [isSubCommentLoaded, setIsSubCommentLoaded] = useState(false);
@@ -45,8 +47,6 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
 
   const { mutateAsync: deleteComment } = useMutation(deleteRecipeComment, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['comments', id]);
-
       if (comment.parentCommentId) {
         queryClient.invalidateQueries(['comment', comment.parentCommentId]);
       }
@@ -68,7 +68,7 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
   const onClickDelete = () => {
     openModal({
       title: '댓글 삭제',
-      description: '정말 댓글을 삭제하시겠습니까?',
+      description: '정말 삭제하시겠습니까?',
       onConfirm: async () => {
         await deleteComment({
           id,
@@ -78,6 +78,16 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
     });
   };
 
+  const onChangeContent = (value: string) => {
+    setContent(value);
+  };
+
+  useEffect(() => {
+    if (subComments) {
+      setReplyCount(subComments.length);
+    }
+  }, [subComments]);
+
   return (
     <Block>
       <Avatar>
@@ -86,13 +96,13 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
       <Info>
         <Username>{comment.user.username}</Username>
         {!isEditMode ? (
-          <Content>{comment.content}</Content>
+          <Content>{content}</Content>
         ) : (
           <RecipeCommentModifyEditor
             defaultContent={comment.content}
-            rootCommentId={comment.parentCommentId ?? null}
             targetCommentId={comment.id}
             onClose={() => setIsEditMode(false)}
+            onChangeContent={onChangeContent}
           />
         )}
         <Wrapper>
@@ -107,7 +117,7 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
             isButtonVisible
           />
         )}
-        {!isSubComment && comment.replyCount !== 0 && (
+        {!isSubComment && replyCount !== 0 && (
           <ReplyBlock>
             <ReplyToggle
               onClick={() => {
@@ -115,7 +125,7 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
                 setIsSubCommentOpen(!isSubCommentOpen);
               }}
             >
-              <span>{formatNumber(comment.replyCount)}개의 답글</span>
+              <span>{formatNumber(replyCount)}개의 답글</span>
               <Toggle
                 isValue={isSubCommentOpen}
                 onComponent={<KeyboardArrowDownRoundedIcon />}

@@ -22,8 +22,6 @@ function RecipeCommentEditor({ isButtonVisible, rootCommentId, targetCommentId, 
 
   const { mutateAsync: createRecipeComment } = useMutation(postRecipeComment, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['comments', id]);
-
       if (rootCommentId) {
         queryClient.invalidateQueries(['comment', rootCommentId]);
       }
