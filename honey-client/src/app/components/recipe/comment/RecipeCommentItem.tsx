@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRounded';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { rem } from 'polished';
 import { useEffect, useState } from 'react';
@@ -80,7 +81,14 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
       <Info>
         <Username>{comment.user.username}</Username>
         {!isEditMode ? (
-          <Content>{comment.content}</Content>
+          <Content>
+            {comment.mentionUser && (
+              <MentionLink href={`/@${comment.mentionUser.handle}`}>
+                {comment.mentionUser.username}
+              </MentionLink>
+            )}
+            <span>{comment.content}</span>
+          </Content>
         ) : (
           <RecipeSubCommentEditor
             defaultContent={comment.content}
@@ -168,6 +176,12 @@ const Content = styled.div`
   color: ${colors.gray9};
   font-size: ${rem(16)};
   white-space: pre-line;
+`;
+
+const MentionLink = styled(Link)`
+  color: ${colors.primaryDark};
+  font-weight: bold;
+  margin-right: ${rem(4)};
 `;
 
 const Wrapper = styled.div`
