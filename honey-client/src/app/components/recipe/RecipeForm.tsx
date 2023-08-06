@@ -1,21 +1,18 @@
 import styled from '@emotion/styled';
 import { rem } from 'polished';
 import Button from '../system/Button';
-import RecipeErrorMessage from './RecipeErrorMessage';
 
 interface Props {
   buttonText: string;
-  errorMessage: string;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   children: React.ReactNode;
 }
 
-function RecipeForm({ buttonText, errorMessage, onSubmit, children }: Props) {
+function RecipeForm({ buttonText, onSubmit, children }: Props) {
   return (
     <Section>
       <Form onSubmit={onSubmit}>
         {children}
-        <RecipeErrorMessage message={errorMessage} />
         <SubmitButton>{buttonText}</SubmitButton>
       </Form>
     </Section>

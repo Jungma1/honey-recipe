@@ -2,6 +2,7 @@ import { DehydratedState, Hydrate, QueryClient, QueryClientProvider } from '@tan
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { AppProps } from 'next/app';
 import { useState } from 'react';
+import { Toaster } from 'react-hot-toast';
 import Core from '~/components/base/Core';
 import GlobalStyles from '~/components/common/GlobalStyles';
 import ModalContainer from '~/components/common/ModalContainer';
@@ -30,6 +31,7 @@ export default function App({ Component, pageProps }: AppProps<Props>) {
         <Core isAuth={pageProps.isAuth} />
         <ReactQueryDevtools />
         <GlobalStyles />
+        <Toaster position="top-right" />
         <ModalContainer />
         <Component {...pageProps} />
       </Hydrate>

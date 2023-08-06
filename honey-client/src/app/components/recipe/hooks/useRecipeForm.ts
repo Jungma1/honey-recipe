@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { postRecipeImage } from '~/apis/recipe';
 import { RecipeRead, RecipeRequest } from '~/apis/types';
 import { upload } from '~/utils/file';
@@ -11,7 +12,6 @@ export function useRecipeForm(recipe?: RecipeRead) {
     thumbnail: recipe?.thumbnail ?? null,
     course: recipe?.course ?? [],
   });
-  const [errorMessage, setErrorMessage] = useState('');
   const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
 
   const { mutateAsync: uploadImage } = useMutation(postRecipeImage, {
@@ -28,9 +28,7 @@ export function useRecipeForm(recipe?: RecipeRead) {
         setForm({ ...form, thumbnail: imagePath });
       }
     },
-    onError: () => {
-      setErrorMessage('이미지 업로드에 실패했습니다.');
-    },
+    onError: () => {},
   });
 
   const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,10 +85,22 @@ export function useRecipeForm(recipe?: RecipeRead) {
     await uploadImage(file);
   };
 
+  const validationForm = () => {
+    if (!form.title) {
+      toast.error('레시피 제목을 입력해주세요.');
+      return false;
+    }
+
+    if (!form.description) {
+      toast.error('레시피 설명을 입력해주세요.');
+      return false;
+    }
+    return true;
+  };
+
   return {
     form,
-    errorMessage,
-    setErrorMessage,
+    validationForm,
     onChangeTitle,
     onChangeDescription,
     onChangeContent,

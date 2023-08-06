@@ -35,8 +35,7 @@ export default function RecipeEditPage({ recipe }: Props) {
   const router = useRouter();
   const {
     form,
-    errorMessage,
-    setErrorMessage,
+    validationForm,
     onChangeTitle,
     onChangeDescription,
     onChangeContent,
@@ -51,21 +50,12 @@ export default function RecipeEditPage({ recipe }: Props) {
     onSuccess: () => {
       router.push(`/recipe/${recipe.id}`);
     },
-    onError: () => {
-      setErrorMessage('레시피 수정에 실패했습니다.');
-    },
   });
 
   const onSubmitRecipe = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (!form.title) {
-      return setErrorMessage('제목을 입력해주세요.');
-    }
-
-    if (!form.description) {
-      return setErrorMessage('설명을 입력해주세요.');
-    }
+    const isValid = validationForm();
+    if (!isValid) return;
 
     await updateRecipe({
       id: recipe.id,
@@ -77,11 +67,7 @@ export default function RecipeEditPage({ recipe }: Props) {
     <MainLayout>
       <Header />
       <ContentLayout>
-        <RecipeForm
-          onSubmit={onSubmitRecipe}
-          buttonText="레시피 수정하기"
-          errorMessage={errorMessage}
-        >
+        <RecipeForm onSubmit={onSubmitRecipe} buttonText="레시피 수정하기">
           <TitleGroup title="레시피 정보">
             <RecipeEditor
               title={form.title}
