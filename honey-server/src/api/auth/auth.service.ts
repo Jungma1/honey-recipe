@@ -88,7 +88,7 @@ export class AuthService {
 
         const key = await this.fileService.generateKey({
           id: findUser.id,
-          type: 'avatars',
+          type: 'avatar',
           extension: extension || 'png',
         });
 

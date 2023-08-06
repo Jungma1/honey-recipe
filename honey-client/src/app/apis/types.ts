@@ -48,26 +48,15 @@ export interface RecipeRead extends Recipe {
   course: RecipeCourse[];
 }
 
-export interface RecipeCreateRequest {
+export interface RecipeRequest {
   title: string;
   description: string;
-  thumbnail: File | null;
+  thumbnail: string | null;
+  course: RecipeCourse[];
 }
 
 export interface RecipeCreateResponse {
   id: number;
-}
-
-export interface RecipeUpdateRequest {
-  title: string;
-  description: string;
-  thumbnail: string | null;
-  course: {
-    id: number;
-    content: string;
-    picture: string | null;
-    created: boolean;
-  }[];
 }
 
 export interface RecipeCommentCreateRequest {

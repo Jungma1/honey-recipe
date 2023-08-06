@@ -11,7 +11,7 @@ export class RecipeUpdateRequestDto {
 
   @IsOptional()
   @IsString()
-  thumbnail: string | null;
+  thumbnail: string;
 
   @ValidateNested({ each: true })
   @Type(() => RecipeCourseUpdateRequestDto)

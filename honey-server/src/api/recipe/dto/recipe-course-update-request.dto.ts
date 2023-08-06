@@ -9,7 +9,7 @@ export class RecipeCourseUpdateRequestDto {
 
   @IsOptional()
   @IsString()
-  picture: string | null;
+  picture: string;
 
   @IsBoolean()
   created: boolean;

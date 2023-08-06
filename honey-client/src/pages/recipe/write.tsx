@@ -1,18 +1,19 @@
+import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
 import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { rem } from 'polished';
 import { postRecipe } from '~/apis/recipe';
 import Header from '~/components/common/Header';
 import TitleGroup from '~/components/common/TitleGroup';
 import ContentLayout from '~/components/layout/ContentLayout';
 import MainLayout from '~/components/layout/MainLayout';
+import RecipeCourseAddButton from '~/components/recipe/RecipeCourseAddButton';
+import RecipeCourseEditor from '~/components/recipe/RecipeCourseEditor';
 import RecipeEditor from '~/components/recipe/RecipeEditor';
 import RecipeForm from '~/components/recipe/RecipeForm';
-import { useRecipeHandler } from '~/components/recipe/hooks/useRecipeHandler';
-import { useRecipeStore } from '~/stores/recipe';
+import { useRecipe } from '~/components/recipe/hooks/useRecipe';
 import { validateTokenCookie } from '~/utils/cookie';
-import { upload } from '~/utils/file';
 import { json } from '~/utils/json';
 import { redirect } from '~/utils/router';
 
@@ -24,69 +25,85 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
 
 export default function RecipeWritePage() {
   const router = useRouter();
-  const [imagePath, setImagePath] = useState<string | null>(null);
-  const { form, errorMessage, changeErrorMessage, changeThumbnail, resetForm } = useRecipeStore();
-  const { handleChangeTitle, handleChangeDescription } = useRecipeHandler();
+  const {
+    form,
+    errorMessage,
+    setErrorMessage,
+    onChangeTitle,
+    onChangeDescription,
+    onChangeContent,
+    onClickAddCourse,
+    onClickRemoveCourse,
+    onClickRemovePicture,
+    onClickThumbnail,
+    onClickPicture,
+  } = useRecipe();
 
   const { mutateAsync: createRecipe } = useMutation(postRecipe, {
     onSuccess: ({ id }) => {
-      router.push(`/recipe/edit?id=${id}`);
+      router.push(`/recipe/${id}`);
     },
     onError: () => {
-      changeErrorMessage('레시피 작성에 실패했습니다.');
+      setErrorMessage('레시피 작성에 실패했습니다.');
     },
   });
 
-  const handleSubmitRecipe = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmitRecipe = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!form.title) {
-      changeErrorMessage('제목을 입력해주세요.');
-      return;
+      return setErrorMessage('제목을 입력해주세요.');
     }
 
     if (!form.description) {
-      changeErrorMessage('설명을 입력해주세요.');
-      return;
+      return setErrorMessage('설명을 입력해주세요.');
     }
 
     await createRecipe(form);
-    resetForm();
   };
-
-  const handleClickThumbnail = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const file = await upload();
-    if (!file) return;
-    const fileURL = URL.createObjectURL(file);
-    setImagePath(fileURL);
-    changeThumbnail(file);
-  };
-
-  useEffect(() => {
-    resetForm();
-  }, [resetForm, router.asPath]);
 
   return (
     <MainLayout>
       <Header />
       <ContentLayout>
         <RecipeForm
-          onSubmit={handleSubmitRecipe}
-          buttonText="요리순서 작성하러 가기"
+          onSubmit={onSubmitRecipe}
+          buttonText="레시피 작성하기"
           errorMessage={errorMessage}
         >
-          <TitleGroup title="레시피 작성">
+          <TitleGroup title="레시피 정보">
             <RecipeEditor
               title={form.title}
-              imagePath={imagePath}
-              onClickImage={handleClickThumbnail}
-              onChangeTitle={handleChangeTitle}
-              onChangeDescription={handleChangeDescription}
+              imagePath={form.thumbnail}
+              onClickImage={onClickThumbnail}
+              onChangeTitle={onChangeTitle}
+              onChangeDescription={onChangeDescription}
             />
+          </TitleGroup>
+          <TitleGroup title="레시피 과정">
+            <Block>
+              {form.course.map((course, index) => (
+                <RecipeCourseEditor
+                  key={course.id}
+                  step={index + 1}
+                  course={course}
+                  onChangeContent={onChangeContent}
+                  onClickRemove={onClickRemoveCourse}
+                  onClickImage={onClickPicture}
+                  onClickRemoveImage={onClickRemovePicture}
+                />
+              ))}
+              <RecipeCourseAddButton onClick={onClickAddCourse} />
+            </Block>
           </TitleGroup>
         </RecipeForm>
       </ContentLayout>
     </MainLayout>
   );
 }
+
+const Block = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${rem(32)};
+`;

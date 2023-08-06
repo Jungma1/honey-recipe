@@ -7,7 +7,7 @@ import { nanoid } from 'nanoid';
 
 interface KeyPayload {
   id: number;
-  type: 'avatars' | 'recipes';
+  type: 'avatar' | 'recipe';
   extension: string;
 }
 
@@ -42,7 +42,7 @@ export class FileService {
   }
 
   async generateKey({ id, type, extension }: KeyPayload) {
-    return `${type}/${id}/${nanoid()}.${extension}`;
+    return `images/${type}/${id}/${nanoid()}.${extension}`;
   }
 
   async generateFile(url: string) {

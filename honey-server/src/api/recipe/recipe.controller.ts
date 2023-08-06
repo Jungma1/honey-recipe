@@ -45,22 +45,11 @@ export class RecipeController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('thumbnail'))
   async create(
     @AuthUser() user: User,
     @Body() request: RecipeCreateRequestDto,
-    @UploadedFile(
-      new ParseFilePipe({
-        fileIsRequired: false,
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 2 }),
-          new MultiFileTypeValidator({ fileTypes: ['jpg', 'jpeg', 'png'] }),
-        ],
-      }),
-    )
-    thumbnail: Express.Multer.File,
   ) {
-    return this.recipeService.createRecipe(user, request, thumbnail);
+    return this.recipeService.createRecipe(user, request);
   }
 
   @Patch(':id')
@@ -77,26 +66,6 @@ export class RecipeController {
   @UseGuards(JwtAuthGuard)
   async delete(@Param('id') id: number, @AuthUser() user: User) {
     return this.recipeService.deleteRecipe(id, user);
-  }
-
-  @Post(':id/image')
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('image'))
-  async uploadImage(
-    @Param('id') id: number,
-    @AuthUser() user: User,
-    @UploadedFile(
-      new ParseFilePipe({
-        fileIsRequired: true,
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 2 }),
-          new MultiFileTypeValidator({ fileTypes: ['jpg', 'jpeg', 'png'] }),
-        ],
-      }),
-    )
-    image: Express.Multer.File,
-  ) {
-    return this.recipeService.uploadImage(id, user, image);
   }
 
   @Get(':id/comments')
@@ -140,5 +109,24 @@ export class RecipeController {
     @AuthUser() user: User,
   ) {
     return this.recipeService.deleteComment(id, commentId, user);
+  }
+
+  @Post('image')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('image'))
+  async uploadImage(
+    @AuthUser() user: User,
+    @UploadedFile(
+      new ParseFilePipe({
+        fileIsRequired: true,
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 2 }),
+          new MultiFileTypeValidator({ fileTypes: ['jpg', 'jpeg', 'png'] }),
+        ],
+      }),
+    )
+    image: Express.Multer.File,
+  ) {
+    return this.recipeService.uploadImage(user, image);
   }
 }

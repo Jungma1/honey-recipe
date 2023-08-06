@@ -4,10 +4,9 @@ import {
   PaginationRecipe,
   RecipeComment,
   RecipeCommentCreateRequest,
-  RecipeCreateRequest,
   RecipeCreateResponse,
   RecipeRead,
-  RecipeUpdateRequest,
+  RecipeRequest,
 } from './types';
 
 export const getRecipes = async (page: number, size: number, mode: string) => {
@@ -31,32 +30,26 @@ export const getRecipeComments = async (id: number) => {
   return response.data;
 };
 
-export const postRecipe = async ({ title, description, thumbnail }: RecipeCreateRequest) => {
-  const formData = new FormData();
-  formData.append('title', title);
-  formData.append('description', description);
-  if (thumbnail) formData.append('thumbnail', thumbnail);
-
-  const response = await client.post<RecipeCreateResponse>('/api/v1/recipe', formData);
+export const postRecipe = async ({ title, description, thumbnail, course }: RecipeRequest) => {
+  const response = await client.post<RecipeCreateResponse>('/api/v1/recipe', {
+    title,
+    description,
+    thumbnail,
+    course,
+  });
   return response.data;
 };
 
-export const patchRecipe = async ({
-  id,
-  request,
-}: {
-  id: number;
-  request: RecipeUpdateRequest;
-}) => {
+export const patchRecipe = async ({ id, request }: { id: number; request: RecipeRequest }) => {
   const response = await client.patch(`/api/v1/recipe/${id}`, request);
   return response.data;
 };
 
-export const postRecipeImage = async ({ id, image }: { id: number; image: File }) => {
+export const postRecipeImage = async (image: File) => {
   const formData = new FormData();
   formData.append('image', image);
 
-  const response = await client.post<ImageUploadResponse>(`/api/v1/recipe/${id}/image`, formData);
+  const response = await client.post<ImageUploadResponse>(`/api/v1/recipe/image`, formData);
   return response.data;
 };
 

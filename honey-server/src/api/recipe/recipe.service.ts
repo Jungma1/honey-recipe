@@ -55,16 +55,13 @@ export class RecipeService {
     return new RecipeReadResponseDto(recipe);
   }
 
-  async createRecipe(
-    user: User,
-    request: RecipeCreateRequestDto,
-    thumbnail: Express.Multer.File,
-  ) {
+  async createRecipe(user: User, request: RecipeCreateRequestDto) {
     const recipeId = await this.prismaService.$transaction(async (tx) => {
       const recipe = await tx.recipe.create({
         data: {
           title: request.title,
           description: request.description,
+          thumbnail: request.thumbnail,
           userId: user.id,
         },
       });
@@ -75,23 +72,13 @@ export class RecipeService {
         },
       });
 
-      if (thumbnail) {
-        const key = await this.fileService.generateKey({
-          id: recipe.id,
-          type: 'recipes',
-          extension: mimeTypes.extension(thumbnail.mimetype) || 'png',
-        });
-
-        await this.fileService.uploadFile(key, thumbnail.buffer);
-
-        const thumbnailUrl = await this.fileService.generateUrl(key);
-
-        await tx.recipe.update({
-          where: {
-            id: recipe.id,
-          },
+      for (const [index, item] of request.course.entries()) {
+        await tx.recipeCourse.create({
           data: {
-            thumbnail: thumbnailUrl,
+            recipeId: recipe.id,
+            content: item.content,
+            picture: item.picture,
+            order: index,
           },
         });
       }
@@ -173,12 +160,10 @@ export class RecipeService {
     });
   }
 
-  async uploadImage(id: number, user: User, image: Express.Multer.File) {
-    await this.validateRecipe(id, user.id);
-
+  async uploadImage(user: User, image: Express.Multer.File) {
     const key = await this.fileService.generateKey({
-      id,
-      type: 'recipes',
+      id: user.id,
+      type: 'recipe',
       extension: mimeTypes.extension(image.mimetype) || 'png',
     });
 
