@@ -4,7 +4,7 @@ import { postRecipeImage } from '~/apis/recipe';
 import { RecipeRead, RecipeRequest } from '~/apis/types';
 import { upload } from '~/utils/file';
 
-export function useRecipe(recipe?: RecipeRead) {
+export function useRecipeForm(recipe?: RecipeRead) {
   const [form, setForm] = useState<RecipeRequest>({
     title: recipe?.title ?? '',
     description: recipe?.description ?? '',

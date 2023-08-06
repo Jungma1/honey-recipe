@@ -12,7 +12,7 @@ import RecipeCourseAddButton from '~/components/recipe/RecipeCourseAddButton';
 import RecipeCourseEditor from '~/components/recipe/RecipeCourseEditor';
 import RecipeEditor from '~/components/recipe/RecipeEditor';
 import RecipeForm from '~/components/recipe/RecipeForm';
-import { useRecipe } from '~/components/recipe/hooks/useRecipe';
+import { useRecipeForm } from '~/components/recipe/hooks/useRecipeForm';
 import { validateTokenCookie } from '~/utils/cookie';
 import { json } from '~/utils/json';
 import { redirect } from '~/utils/router';
@@ -37,7 +37,7 @@ export default function RecipeWritePage() {
     onClickRemovePicture,
     onClickThumbnail,
     onClickPicture,
-  } = useRecipe();
+  } = useRecipeForm();
 
   const { mutateAsync: createRecipe } = useMutation(postRecipe, {
     onSuccess: ({ id }) => {
