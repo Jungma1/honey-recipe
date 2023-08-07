@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
-import { GetServerSidePropsContext } from 'next';
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { rem } from 'polished';
 import { withSSR } from '~/apis';
@@ -18,13 +18,15 @@ import { useRecipeForm } from '~/components/recipe/hooks/useRecipeForm';
 import { json } from '~/utils/json';
 import { redirect } from '~/utils/router';
 
+interface Props extends InferGetServerSidePropsType<typeof getServerSideProps> {}
+
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
   const user = await withSSR(() => getProfile(), context);
   if (!user) return redirect('/login');
   return json({ user });
 };
 
-export default function RecipeWritePage() {
+export default function RecipeWritePage({ user }: Props) {
   const router = useRouter();
   const {
     form,
@@ -54,7 +56,7 @@ export default function RecipeWritePage() {
 
   return (
     <MainLayout>
-      <Header />
+      <Header user={user} />
       <ContentLayout>
         <RecipeForm onSubmit={onSubmitRecipe} buttonText="레시피 작성하기">
           <TitleGroup title="레시피 정보">

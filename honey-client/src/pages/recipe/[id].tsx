@@ -12,7 +12,6 @@ import RecipeCourseList from '~/components/recipe/RecipeCourseList';
 import RecipeViewerHeader from '~/components/recipe/RecipeViewerHeader';
 import RecipeViewerInteraction from '~/components/recipe/RecipeViewerInteraction';
 import RecipeCommentList from '~/components/recipe/comment/RecipeCommentList';
-import { useUserStore } from '~/stores/user';
 import { json } from '~/utils/json';
 
 interface Props extends InferGetServerSidePropsType<typeof getServerSideProps> {}
@@ -28,9 +27,8 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
   return json({ user, id, dehydratedState: dehydrate(queryClient) });
 };
 
-export default function RecipeDetailPage({ id }: Props) {
+export default function RecipeDetailPage({ user, id }: Props) {
   const router = useRouter();
-  const { user } = useUserStore();
 
   const [{ data: recipe, isError }, { data: comments }] = useQueries({
     queries: [
@@ -47,7 +45,7 @@ export default function RecipeDetailPage({ id }: Props) {
 
   return (
     <MainLayout>
-      <Header />
+      <Header user={user} />
       <ContentLayout>
         <Block>
           <RecipeViewerHeader recipe={recipe} />

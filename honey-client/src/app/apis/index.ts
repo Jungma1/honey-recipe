@@ -11,6 +11,8 @@ export const withSSR = async <T>(fn: () => Promise<T>, context: GetServerSidePro
 
   if (!currentAccessToken) {
     const currentRefreshToken = context.req.cookies['refresh_token'];
+    if (!currentRefreshToken) return null;
+
     try {
       const response = await client.post('/api/v1/auth/refresh', null, {
         headers: {
