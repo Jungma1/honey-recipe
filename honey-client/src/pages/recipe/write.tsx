@@ -3,7 +3,9 @@ import { useMutation } from '@tanstack/react-query';
 import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 import { rem } from 'polished';
+import { withCookie } from '~/apis';
 import { postRecipe } from '~/apis/recipe';
+import { getProfile } from '~/apis/user';
 import Header from '~/components/common/Header';
 import TitleGroup from '~/components/common/TitleGroup';
 import ContentLayout from '~/components/layout/ContentLayout';
@@ -13,14 +15,13 @@ import RecipeCourseEditor from '~/components/recipe/RecipeCourseEditor';
 import RecipeEditor from '~/components/recipe/RecipeEditor';
 import RecipeForm from '~/components/recipe/RecipeForm';
 import { useRecipeForm } from '~/components/recipe/hooks/useRecipeForm';
-import { validateTokenCookie } from '~/utils/cookie';
 import { json } from '~/utils/json';
 import { redirect } from '~/utils/router';
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  const { isAuth } = validateTokenCookie(context);
-  if (!isAuth) return redirect('/login');
-  return json({ isAuth });
+  const user = await withCookie(() => getProfile(), context);
+  if (!user) return redirect('/login');
+  return json({ user });
 };
 
 export default function RecipeWritePage() {

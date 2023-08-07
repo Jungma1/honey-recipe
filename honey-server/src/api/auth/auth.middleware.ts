@@ -3,11 +3,13 @@ import { NextFunction, Request, Response } from 'express';
 import { AppConfigService } from '~/common/config/app-config.service';
 import { setTokenCookies } from '~/lib/cookies';
 import { AuthService } from './auth.service';
+import { RefreshTokenPayload, TokenService } from './token.service';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
   constructor(
     private readonly authService: AuthService,
+    private readonly tokenService: TokenService,
     private readonly appConfigService: AppConfigService,
   ) {}
 
@@ -24,7 +26,9 @@ export class AuthMiddleware implements NestMiddleware {
     }
 
     if (!accessToken && refreshToken) {
-      const tokens = await this.authService.refreshToken(refreshToken);
+      const { tokenId, counter } =
+        await this.tokenService.verifyToken<RefreshTokenPayload>(refreshToken);
+      const tokens = await this.authService.refreshToken(tokenId, counter);
       const domain = this.appConfigService.domain;
 
       setTokenCookies(res, tokens, domain);

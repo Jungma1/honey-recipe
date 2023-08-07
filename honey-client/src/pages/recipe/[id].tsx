@@ -2,7 +2,9 @@ import styled from '@emotion/styled';
 import { QueryClient, dehydrate, useQueries } from '@tanstack/react-query';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
+import { withCookie } from '~/apis';
 import { getRecipe, getRecipeComments } from '~/apis/recipe';
+import { getProfile } from '~/apis/user';
 import Header from '~/components/common/Header';
 import ContentLayout from '~/components/layout/ContentLayout';
 import MainLayout from '~/components/layout/MainLayout';
@@ -11,20 +13,19 @@ import RecipeViewerHeader from '~/components/recipe/RecipeViewerHeader';
 import RecipeViewerInteraction from '~/components/recipe/RecipeViewerInteraction';
 import RecipeCommentList from '~/components/recipe/comment/RecipeCommentList';
 import { useUserStore } from '~/stores/user';
-import { validateTokenCookie } from '~/utils/cookie';
 import { json } from '~/utils/json';
 
 interface Props extends InferGetServerSidePropsType<typeof getServerSideProps> {}
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  const { isAuth } = validateTokenCookie(context);
+  const user = await withCookie(() => getProfile(), context);
   const queryClient = new QueryClient();
   const id = parseInt(context.params?.id as string);
 
   await queryClient.prefetchQuery(['recipe', id], () => getRecipe(id));
   await queryClient.prefetchQuery(['comments', id], () => getRecipeComments(id));
 
-  return json({ isAuth, id, dehydratedState: dehydrate(queryClient) });
+  return json({ user, id, dehydratedState: dehydrate(queryClient) });
 };
 
 export default function RecipeDetailPage({ id }: Props) {

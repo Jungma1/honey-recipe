@@ -17,6 +17,7 @@ import { AuthUser } from './decorator/auth-user.decorator';
 import { AuthUserDto } from './dto/auth-user.dto';
 import { GoogleGuard } from './guard/google.guard';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
+import { RefreshTokenGuard } from './guard/refresh-token.guard';
 import { OAuthUser } from './interface/oauth-user.interface';
 
 @Controller('auth')
@@ -36,6 +37,13 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   async profile(@AuthUser() user: User) {
     return new AuthUserDto(user);
+  }
+
+  @Post('refresh')
+  @UseGuards(RefreshTokenGuard)
+  async refresh(@Req() req: Request) {
+    const tokens = req.user as { accessToken: string; refreshToken: string };
+    return tokens;
   }
 
   @Get('oauth/google')

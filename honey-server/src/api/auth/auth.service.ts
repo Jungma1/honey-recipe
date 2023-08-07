@@ -116,11 +116,8 @@ export class AuthService {
     }
   }
 
-  async refreshToken(token: string) {
+  async refreshToken(tokenId: number, counter: number) {
     try {
-      const { tokenId, counter } =
-        await this.tokenService.verifyToken<RefreshTokenPayload>(token);
-
       const findToken = await this.prismaService.token.findUnique({
         where: {
           id: tokenId,

@@ -1,12 +1,13 @@
 import { GetServerSidePropsContext } from 'next';
+import { withCookie } from '~/apis';
+import { getProfile } from '~/apis/user';
 import AuthContainer from '~/components/auth/AuthContainer';
 import MainLayout from '~/components/layout/MainLayout';
-import { validateTokenCookie } from '~/utils/cookie';
 import { json } from '~/utils/json';
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  const { isAuth } = validateTokenCookie(context);
-  return json({ isAuth });
+  const user = await withCookie(() => getProfile(), context);
+  return json({ user });
 };
 
 export default function LoginPage() {

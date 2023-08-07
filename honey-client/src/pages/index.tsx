@@ -1,7 +1,9 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import { useCallback, useMemo, useRef } from 'react';
+import { withCookie } from '~/apis';
 import { getRecipes } from '~/apis/recipe';
+import { getProfile } from '~/apis/user';
 import Header from '~/components/common/Header';
 import ContentLayout from '~/components/layout/ContentLayout';
 import MainLayout from '~/components/layout/MainLayout';
@@ -9,14 +11,13 @@ import RecipeBannerList from '~/components/recipe/RecipeBannerList';
 import RecipeList from '~/components/recipe/RecipeList';
 import RecipeListTab from '~/components/recipe/RecipeListTab';
 import { useInfiniteScroll } from '~/hooks/useInfiniteScroll';
-import { validateTokenCookie } from '~/utils/cookie';
 import { json } from '~/utils/json';
 import { redirect } from '~/utils/router';
 
 interface Props extends InferGetServerSidePropsType<typeof getServerSideProps> {}
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  const { isAuth } = validateTokenCookie(context);
+  const user = await withCookie(() => getProfile(), context);
   const mode = (context.query.mode as string) || 'recent';
   if (!['recent', 'daily', 'weekly', 'monthly'].includes(mode)) {
     return redirect('/');
@@ -24,7 +25,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
 
   const bestRecipes = await getRecipes(1, 10, 'yearly');
   const recipes = await getRecipes(1, 10, mode);
-  return json({ isAuth, bestRecipes, recipes, mode });
+  return json({ user, bestRecipes, recipes, mode });
 };
 
 export default function HomePage({ bestRecipes, recipes, mode }: Props) {
