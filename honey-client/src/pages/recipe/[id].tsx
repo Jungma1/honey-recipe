@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { QueryClient, dehydrate, useQueries } from '@tanstack/react-query';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
-import { withCookie } from '~/apis';
+import { withSSR } from '~/apis';
 import { getRecipe, getRecipeComments } from '~/apis/recipe';
 import { getProfile } from '~/apis/user';
 import Header from '~/components/common/Header';
@@ -18,7 +18,7 @@ import { json } from '~/utils/json';
 interface Props extends InferGetServerSidePropsType<typeof getServerSideProps> {}
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  const user = await withCookie(() => getProfile(), context);
+  const user = await withSSR(() => getProfile(), context);
   const queryClient = new QueryClient();
   const id = parseInt(context.params?.id as string);
 

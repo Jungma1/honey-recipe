@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import { useCallback, useMemo, useRef } from 'react';
-import { withCookie } from '~/apis';
+import { withSSR } from '~/apis';
 import { getRecipes } from '~/apis/recipe';
 import { getProfile } from '~/apis/user';
 import Header from '~/components/common/Header';
@@ -17,7 +17,7 @@ import { redirect } from '~/utils/router';
 interface Props extends InferGetServerSidePropsType<typeof getServerSideProps> {}
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  const user = await withCookie(() => getProfile(), context);
+  const user = await withSSR(() => getProfile(), context);
   const mode = (context.query.mode as string) || 'recent';
   if (!['recent', 'daily', 'weekly', 'monthly'].includes(mode)) {
     return redirect('/');

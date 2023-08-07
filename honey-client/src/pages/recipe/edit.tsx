@@ -4,7 +4,7 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { rem } from 'polished';
 import React from 'react';
-import { withCookie } from '~/apis';
+import { withSSR } from '~/apis';
 import { getRecipe, patchRecipe } from '~/apis/recipe';
 import { getProfile } from '~/apis/user';
 import Header from '~/components/common/Header';
@@ -22,12 +22,14 @@ import { redirect } from '~/utils/router';
 interface Props extends InferGetServerSidePropsType<typeof getServerSideProps> {}
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  const user = await withCookie(() => getProfile(), context);
+  const user = await withSSR(() => getProfile(), context);
   if (!user) return redirect('/login');
 
   if (!context.query.id) return redirect('/');
   const id = parseInt(context.query.id as string);
   const recipe = await getRecipe(id);
+
+  if (recipe.user.id !== user.id) return redirect('/404');
 
   return json({ user, recipe });
 };

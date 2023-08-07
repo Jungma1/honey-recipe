@@ -6,7 +6,7 @@ export const client = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 
-export const withCookie = async <T>(fn: () => Promise<T>, context: GetServerSidePropsContext) => {
+export const withSSR = async <T>(fn: () => Promise<T>, context: GetServerSidePropsContext) => {
   let currentAccessToken = context.req.cookies['access_token'];
 
   if (!currentAccessToken) {

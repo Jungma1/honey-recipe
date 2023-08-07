@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 import { rem } from 'polished';
-import { withCookie } from '~/apis';
+import { withSSR } from '~/apis';
 import { postRecipe } from '~/apis/recipe';
 import { getProfile } from '~/apis/user';
 import Header from '~/components/common/Header';
@@ -19,7 +19,7 @@ import { json } from '~/utils/json';
 import { redirect } from '~/utils/router';
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  const user = await withCookie(() => getProfile(), context);
+  const user = await withSSR(() => getProfile(), context);
   if (!user) return redirect('/login');
   return json({ user });
 };
