@@ -13,6 +13,7 @@ export class RecipeReadResponseDto {
   title: string;
   description: string;
   thumbnail: string | null;
+  isPrivate: boolean;
   likeCount: number;
   commentCount: number;
   user: AuthUserDto;
@@ -25,6 +26,7 @@ export class RecipeReadResponseDto {
     this.title = recipe.title;
     this.description = recipe.description;
     this.thumbnail = recipe.thumbnail || null;
+    this.isPrivate = recipe.isPrivate;
     this.likeCount = recipe.recipeStat.likeCount;
     this.commentCount = recipe.recipeStat.commentCount;
     this.user = new AuthUserDto(recipe.user);

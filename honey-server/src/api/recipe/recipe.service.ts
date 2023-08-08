@@ -24,18 +24,18 @@ export class RecipeService {
     private readonly fileService: FileService,
   ) {}
 
-  async findAll(page: number, size: number, mode: string) {
+  async findAll(page: number, size: number, mode: string, userId: number) {
     if (mode === 'recent') {
-      return this.findRecentRecipes(page, size);
+      return this.findRecentRecipes(page, size, userId);
     }
 
     if (['daily', 'weekly', 'monthly', 'yearly'].includes(mode)) {
-      return this.findPopularRecipes(page, size, mode);
+      return this.findPopularRecipes(page, size, mode, userId);
     }
   }
 
-  async findOne(id: number) {
-    const recipe = await this.prismaService.recipe.findUnique({
+  async findOne(id: number, userId: number) {
+    const recipe = await this.prismaService.recipe.findFirst({
       include: {
         user: true,
         recipeStat: true,
@@ -45,7 +45,11 @@ export class RecipeService {
           },
         },
       },
-      where: { id },
+      where: {
+        id,
+        isPrivate: !userId ? false : undefined,
+        userId: userId ? userId : undefined,
+      },
     });
 
     if (!recipe) {
@@ -62,6 +66,7 @@ export class RecipeService {
           title: request.title,
           description: request.description,
           thumbnail: request.thumbnail,
+          isPrivate: request.isPrivate,
           userId: user.id,
         },
       });
@@ -99,6 +104,7 @@ export class RecipeService {
           title: request.title,
           description: request.description,
           thumbnail: request.thumbnail,
+          isPrivate: request.isPrivate,
         },
       });
 
@@ -378,13 +384,17 @@ export class RecipeService {
     }
   }
 
-  private async findRecentRecipes(page: number, size: number) {
+  private async findRecentRecipes(page: number, size: number, userId: number) {
     const [totalCount, recipes] = await Promise.all([
-      await this.prismaService.recipe.count(),
-      await this.prismaService.recipe.findMany({
+      this.prismaService.recipe.count(),
+      this.prismaService.recipe.findMany({
         include: {
           user: true,
           recipeStat: true,
+        },
+        where: {
+          isPrivate: !userId ? false : undefined,
+          userId: userId ? userId : undefined,
         },
         skip: (page - 1) * size,
         take: size,
@@ -398,7 +408,12 @@ export class RecipeService {
     return new Page(totalCount, page, size, result);
   }
 
-  private async findPopularRecipes(page: number, size: number, mode: string) {
+  private async findPopularRecipes(
+    page: number,
+    size: number,
+    mode: string,
+    userId: number,
+  ) {
     const date = new Date();
 
     if (mode === 'daily') {
@@ -419,14 +434,16 @@ export class RecipeService {
     }
 
     const [totalCount, recipes] = await Promise.all([
-      await this.prismaService.recipe.count({
+      this.prismaService.recipe.count({
         where: {
           createdAt: {
             gte: date,
           },
+          isPrivate: !userId ? false : undefined,
+          userId: userId ? userId : undefined,
         },
       }),
-      await this.prismaService.recipe.findMany({
+      this.prismaService.recipe.findMany({
         include: {
           user: true,
           recipeStat: true,
@@ -437,6 +454,8 @@ export class RecipeService {
           createdAt: {
             gte: date,
           },
+          isPrivate: !userId ? false : undefined,
+          userId: userId ? userId : undefined,
         },
         orderBy: {
           recipeStat: {

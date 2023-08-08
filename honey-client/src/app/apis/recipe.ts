@@ -9,8 +9,11 @@ import {
   RecipeRequest,
 } from './types';
 
-export const getRecipes = async (page: number, size: number, mode: string) => {
+export const getRecipes = async (page: number, size: number, mode: string, userId?: number) => {
   const response = await client.get<PaginationRecipe>('/api/v1/recipe', {
+    data: {
+      userId,
+    },
     params: {
       page,
       size,
@@ -20,8 +23,12 @@ export const getRecipes = async (page: number, size: number, mode: string) => {
   return { ...response.data, nextPage: page + 1 };
 };
 
-export const getRecipe = async (id: number) => {
-  const response = await client.get<RecipeRead>(`/api/v1/recipe/${id}`);
+export const getRecipe = async (id: number, userId?: number) => {
+  const response = await client.get<RecipeRead>(`/api/v1/recipe/${id}`, {
+    data: {
+      userId,
+    },
+  });
   return response.data;
 };
 

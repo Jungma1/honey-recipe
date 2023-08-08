@@ -39,6 +39,7 @@ export default function RecipeWritePage({ user }: Props) {
     onClickRemovePicture,
     onClickThumbnail,
     onClickPicture,
+    onClickIsPrivate,
   } = useRecipeForm();
 
   const { mutateAsync: createRecipe } = useMutation(postRecipe, {
@@ -63,9 +64,11 @@ export default function RecipeWritePage({ user }: Props) {
             <RecipeEditor
               title={form.title}
               imagePath={form.thumbnail}
+              isPrivate={form.isPrivate}
               onClickImage={onClickThumbnail}
               onChangeTitle={onChangeTitle}
               onChangeDescription={onChangeDescription}
+              onClickIsPrivate={onClickIsPrivate}
             />
           </TitleGroup>
           <TitleGroup title="레시피 과정">

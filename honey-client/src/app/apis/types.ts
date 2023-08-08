@@ -19,6 +19,7 @@ export interface Recipe {
   title: string;
   description: string;
   thumbnail: string | null;
+  isPrivate: boolean;
   likeCount: number;
   commentCount: number;
   user: User;
@@ -52,6 +53,7 @@ export interface RecipeRequest {
   title: string;
   description: string;
   thumbnail: string | null;
+  isPrivate: boolean;
   course: RecipeCourse[];
 }
 

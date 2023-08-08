@@ -10,6 +10,7 @@ export function useRecipeForm(recipe?: RecipeRead) {
     title: recipe?.title ?? '',
     description: recipe?.description ?? '',
     thumbnail: recipe?.thumbnail ?? null,
+    isPrivate: recipe?.isPrivate ?? false,
     course: recipe?.course ?? [],
   });
   const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
@@ -37,6 +38,11 @@ export function useRecipeForm(recipe?: RecipeRead) {
 
   const onChangeDescription = (value: string) => {
     setForm({ ...form, description: value });
+  };
+
+  const onClickIsPrivate = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setForm({ ...form, isPrivate: !form.isPrivate });
   };
 
   const onChangeContent = (id: number, value: string) => {
@@ -109,5 +115,6 @@ export function useRecipeForm(recipe?: RecipeRead) {
     onClickRemovePicture,
     onClickThumbnail,
     onClickPicture,
+    onClickIsPrivate,
   };
 }

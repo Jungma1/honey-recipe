@@ -20,6 +20,7 @@ import { AuthUser } from '../auth/decorator/auth-user.decorator';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { RecipeCommentCreateRequestDto } from './dto/recipe-comment-create-request.dto';
 import { RecipeCommentUpdateRequestDto } from './dto/recipe-comment-update-request.dto';
+import { RecipeConditionRequestDto } from './dto/recipe-condition-request.dto';
 import { RecipeCreateRequestDto } from './dto/recipe-create-request.dto';
 import { RecipeUpdateRequestDto } from './dto/recipe-update-request.dto';
 import { RecipeService } from './recipe.service';
@@ -34,13 +35,17 @@ export class RecipeController {
     @Query('page', ParseIntPipe) page = 1,
     @Query('size', ParseIntPipe) size = 10,
     @Query('mode') mode = 'recent',
+    @Body() request: RecipeConditionRequestDto,
   ) {
-    return this.recipeService.findAll(page, size, mode);
+    return this.recipeService.findAll(page, size, mode, request.userId);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number) {
-    return this.recipeService.findOne(id);
+  async findOne(
+    @Param('id') id: number,
+    @Body() request: RecipeConditionRequestDto,
+  ) {
+    return this.recipeService.findOne(id, request.userId);
   }
 
   @Post()

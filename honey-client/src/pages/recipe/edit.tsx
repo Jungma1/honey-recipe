@@ -27,7 +27,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
 
   if (!context.query.id) return redirect('/');
   const id = parseInt(context.query.id as string);
-  const recipe = await getRecipe(id);
+  const recipe = await getRecipe(id, user.id);
 
   if (recipe.user.id !== user.id) return redirect('/404');
 
@@ -47,6 +47,7 @@ export default function RecipeEditPage({ user, recipe }: Props) {
     onClickRemovePicture,
     onClickThumbnail,
     onClickPicture,
+    onClickIsPrivate,
   } = useRecipeForm(recipe);
 
   const { mutateAsync: updateRecipe } = useMutation(patchRecipe, {
@@ -75,10 +76,12 @@ export default function RecipeEditPage({ user, recipe }: Props) {
             <RecipeEditor
               title={form.title}
               imagePath={form.thumbnail}
+              isPrivate={form.isPrivate}
               onClickImage={onClickThumbnail}
               description={form.description}
               onChangeTitle={onChangeTitle}
               onChangeDescription={onChangeDescription}
+              onClickIsPrivate={onClickIsPrivate}
             />
           </TitleGroup>
           <TitleGroup title="레시피 과정">

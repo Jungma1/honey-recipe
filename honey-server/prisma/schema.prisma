@@ -64,6 +64,7 @@ model Recipe {
   title       String
   description String
   thumbnail   String?
+  isPrivate   Boolean  @default(false) @map("is_private")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
 
