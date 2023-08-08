@@ -39,6 +39,7 @@ export default function RecipeWritePage({ user }: Props) {
     onClickRemovePicture,
     onClickThumbnail,
     onClickPicture,
+    onClickIsPublic,
     onClickIsPrivate,
   } = useRecipeForm();
 
@@ -68,6 +69,7 @@ export default function RecipeWritePage({ user }: Props) {
               onClickImage={onClickThumbnail}
               onChangeTitle={onChangeTitle}
               onChangeDescription={onChangeDescription}
+              onClickIsPublic={onClickIsPublic}
               onClickIsPrivate={onClickIsPrivate}
             />
           </TitleGroup>

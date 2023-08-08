@@ -40,9 +40,14 @@ export function useRecipeForm(recipe?: RecipeRead) {
     setForm({ ...form, description: value });
   };
 
+  const onClickIsPublic = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setForm({ ...form, isPrivate: false });
+  };
+
   const onClickIsPrivate = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setForm({ ...form, isPrivate: !form.isPrivate });
+    setForm({ ...form, isPrivate: true });
   };
 
   const onChangeContent = (id: number, value: string) => {
@@ -115,6 +120,7 @@ export function useRecipeForm(recipe?: RecipeRead) {
     onClickRemovePicture,
     onClickThumbnail,
     onClickPicture,
+    onClickIsPublic,
     onClickIsPrivate,
   };
 }

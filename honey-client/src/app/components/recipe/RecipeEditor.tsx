@@ -14,6 +14,7 @@ interface Props {
   onClickImage: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onChangeTitle: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeDescription: (value: string) => void;
+  onClickIsPublic: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onClickIsPrivate: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
@@ -25,6 +26,7 @@ function RecipeEditor({
   onClickImage,
   onChangeTitle,
   onChangeDescription,
+  onClickIsPublic,
   onClickIsPrivate,
 }: Props) {
   return (
@@ -45,7 +47,7 @@ function RecipeEditor({
         <LineContent>
           <LabelGroup label="레시피 공개 설정">
             <ButtonGroup>
-              <Button onClick={onClickIsPrivate} towTone={isPrivate}>
+              <Button onClick={onClickIsPublic} towTone={isPrivate}>
                 공개
               </Button>
               <Button onClick={onClickIsPrivate} towTone={!isPrivate}>

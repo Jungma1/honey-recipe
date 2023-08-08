@@ -54,7 +54,7 @@ const Block = styled.div`
   color: ${colors.gray9};
   font-size: ${rem(16)};
   border-radius: ${rem(4)};
-  border: 1px solid ${colors.gray4};
+  border: 1px solid ${colors.gray2};
 
   .cm-editor,
   .cm-gutter {
