@@ -23,12 +23,8 @@ export const getRecipes = async (page: number, size: number, mode: string, userI
   return { ...response.data, nextPage: page + 1 };
 };
 
-export const getRecipe = async (id: number, userId?: number) => {
-  const response = await client.get<RecipeRead>(`/api/v1/recipe/${id}`, {
-    data: {
-      userId,
-    },
-  });
+export const getRecipe = async (id: number) => {
+  const response = await client.get<RecipeRead>(`/api/v1/recipe/${id}`);
   return response.data;
 };
 

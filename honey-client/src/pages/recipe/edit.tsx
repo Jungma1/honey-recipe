@@ -27,8 +27,8 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
 
   if (!context.query.id) return redirect('/');
   const id = parseInt(context.query.id as string);
-  const recipe = await getRecipe(id, user.id);
 
+  const recipe = await getRecipe(id);
   if (recipe.user.id !== user.id) return redirect('/404');
 
   return json({ user, recipe });

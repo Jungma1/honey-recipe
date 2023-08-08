@@ -34,8 +34,8 @@ export class RecipeService {
     }
   }
 
-  async findOne(id: number, userId: number) {
-    const recipe = await this.prismaService.recipe.findFirst({
+  async findOne(id: number) {
+    const recipe = await this.prismaService.recipe.findUnique({
       include: {
         user: true,
         recipeStat: true,
@@ -47,8 +47,6 @@ export class RecipeService {
       },
       where: {
         id,
-        isPrivate: !userId ? false : undefined,
-        userId: userId ? userId : undefined,
       },
     });
 
@@ -386,7 +384,12 @@ export class RecipeService {
 
   private async findRecentRecipes(page: number, size: number, userId: number) {
     const [totalCount, recipes] = await Promise.all([
-      this.prismaService.recipe.count(),
+      this.prismaService.recipe.count({
+        where: {
+          isPrivate: !userId ? false : undefined,
+          userId: userId ? userId : undefined,
+        },
+      }),
       this.prismaService.recipe.findMany({
         include: {
           user: true,
