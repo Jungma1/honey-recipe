@@ -33,13 +33,8 @@ export const getRecipeComments = async (id: number) => {
   return response.data;
 };
 
-export const postRecipe = async ({ title, description, thumbnail, course }: RecipeRequest) => {
-  const response = await client.post<RecipeCreateResponse>('/api/v1/recipe', {
-    title,
-    description,
-    thumbnail,
-    course,
-  });
+export const postRecipe = async ({ request }: { request: RecipeRequest }) => {
+  const response = await client.post<RecipeCreateResponse>('/api/v1/recipe', request);
   return response.data;
 };
 

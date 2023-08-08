@@ -53,7 +53,9 @@ export default function RecipeWritePage({ user }: Props) {
     e.preventDefault();
     const isValid = validationForm();
     if (!isValid) return;
-    await createRecipe(form);
+    await createRecipe({
+      request: form,
+    });
   };
 
   return (
