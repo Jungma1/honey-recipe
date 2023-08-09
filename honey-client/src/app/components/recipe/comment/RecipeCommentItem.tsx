@@ -46,6 +46,8 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
 
   const { mutateAsync: deleteComment } = useMutation(deleteRecipeComment, {
     onSuccess: () => {
+      queryClient.invalidateQueries(['recipe', id]);
+
       if (comment.id === parentCommentId) {
         queryClient.invalidateQueries(['comments', id]);
       } else {
