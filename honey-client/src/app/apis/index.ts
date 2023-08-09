@@ -36,5 +36,8 @@ export const withSSR = async <T>(fn: () => Promise<T>, context: GetServerSidePro
   if (currentAccessToken) {
     client.defaults.headers['Authorization'] = `Bearer ${currentAccessToken}`;
   }
-  return fn();
+
+  const response = await fn();
+  client.defaults.headers['Authorization'] = '';
+  return response;
 };
