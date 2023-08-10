@@ -7,6 +7,8 @@ export const client = axios.create({
 });
 
 export const withSSR = async <T>(fn: () => Promise<T>, context: GetServerSidePropsContext) => {
+  client.defaults.headers['Authorization'] = '';
+
   let currentAccessToken = context.req.cookies['access_token'];
 
   if (!currentAccessToken) {
@@ -37,7 +39,5 @@ export const withSSR = async <T>(fn: () => Promise<T>, context: GetServerSidePro
     client.defaults.headers['Authorization'] = `Bearer ${currentAccessToken}`;
   }
 
-  const response = await fn();
-  client.defaults.headers['Authorization'] = '';
-  return response;
+  return fn();
 };
