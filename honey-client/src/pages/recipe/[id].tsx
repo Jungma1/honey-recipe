@@ -10,6 +10,7 @@ import MainLayout from '~/components/layout/MainLayout';
 import RecipeCourseList from '~/components/recipe/RecipeCourseList';
 import RecipeViewerHeader from '~/components/recipe/RecipeViewerHeader';
 import RecipeViewerInteraction from '~/components/recipe/RecipeViewerInteraction';
+import RecipeViewerReaction from '~/components/recipe/RecipeViewerReaction';
 import RecipeCommentList from '~/components/recipe/comment/RecipeCommentList';
 import { json } from '~/utils/json';
 import { redirect } from '~/utils/router';
@@ -38,15 +39,18 @@ export default function RecipeDetailPage({ user, id, recipe, isOwner }: Props) {
     ],
   });
 
+  if (!data || !comments) return <></>;
+
   return (
     <MainLayout>
       <Header user={user} />
       <ContentLayout>
         <Block>
-          <RecipeViewerHeader recipe={data!} />
-          <RecipeViewerInteraction isOwner={isOwner} recipeId={recipe.id} />
-          <RecipeCourseList course={data!.course} />
-          <RecipeCommentList comments={comments!} commentCount={data!.commentCount} />
+          <RecipeViewerHeader recipe={data} />
+          <RecipeViewerInteraction isOwner={isOwner} recipeId={data.id} />
+          <RecipeCourseList course={data.course} />
+          <RecipeViewerReaction isLiked={data.isLiked} recipeId={data.id} />
+          <RecipeCommentList comments={comments} commentCount={data.commentCount} />
         </Block>
       </ContentLayout>
     </MainLayout>

@@ -20,6 +20,7 @@ export interface Recipe {
   description: string;
   thumbnail: string | null;
   isPrivate: boolean;
+  isLiked: boolean;
   likeCount: number;
   commentCount: number;
   user: User;

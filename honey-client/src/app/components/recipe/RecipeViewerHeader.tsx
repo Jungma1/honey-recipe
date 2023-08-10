@@ -13,7 +13,7 @@ interface Props {
 
 function RecipeViewerHeader({ recipe }: Props) {
   return (
-    <Section>
+    <Block>
       <ImageWrapper>
         <Thumbnail>
           <AutoImage src={recipe.thumbnail ?? '/test.png'} />
@@ -37,11 +37,11 @@ function RecipeViewerHeader({ recipe }: Props) {
         <Title>{recipe.title}</Title>
         <Description>{recipe.description}</Description>
       </ContentWrapper>
-    </Section>
+    </Block>
   );
 }
 
-const Section = styled.section`
+const Block = styled.div`
   display: flex;
   flex-direction: column;
 `;

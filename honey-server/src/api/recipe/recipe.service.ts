@@ -34,7 +34,7 @@ export class RecipeService {
     }
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, user: User) {
     const recipe = await this.prismaService.recipe.findUnique({
       include: {
         user: true,
@@ -44,6 +44,13 @@ export class RecipeService {
             order: 'asc',
           },
         },
+        recipeLike: user.id
+          ? {
+              where: {
+                userId: user.id,
+              },
+            }
+          : false,
       },
       where: {
         id,

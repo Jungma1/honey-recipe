@@ -41,8 +41,8 @@ export class RecipeController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number) {
-    return this.recipeService.findOne(id);
+  async findOne(@Param('id') id: number, @AuthUser() user: User) {
+    return this.recipeService.findOne(id, user);
   }
 
   @Post()

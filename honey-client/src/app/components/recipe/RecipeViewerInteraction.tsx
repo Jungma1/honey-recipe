@@ -32,14 +32,14 @@ function RecipeViewerInteraction({ isOwner, recipeId }: Props) {
   if (!isOwner) return <></>;
 
   return (
-    <Section>
+    <Block>
       <Text onClick={onClickEdit}>수정</Text>
       <Text onClick={onClickDelete}>삭제</Text>
-    </Section>
+    </Block>
   );
 }
 
-const Section = styled.section`
+const Block = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: ${rem(8)};

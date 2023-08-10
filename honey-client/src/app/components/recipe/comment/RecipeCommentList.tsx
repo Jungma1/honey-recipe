@@ -12,19 +12,19 @@ interface Props {
 
 function RecipeCommentList({ comments, commentCount }: Props) {
   return (
-    <Section>
+    <Block>
       <CommentCount>댓글 {commentCount.toLocaleString()}개</CommentCount>
       <RecipeCommentEditor />
-      <Block>
+      <Wrapper>
         {comments.map((comment) => (
           <RecipeCommentItem key={comment.id} comment={comment} />
         ))}
-      </Block>
-    </Section>
+      </Wrapper>
+    </Block>
   );
 }
 
-const Section = styled.section`
+const Block = styled.div`
   display: flex;
   flex-direction: column;
   padding-top: ${rem(16)};
@@ -37,7 +37,7 @@ const CommentCount = styled.div`
   font-weight: 600;
 `;
 
-const Block = styled.div`
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: ${rem(32)};

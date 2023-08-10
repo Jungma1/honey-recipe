@@ -9,15 +9,15 @@ interface Props {
 
 function RecipeCourseList({ course }: Props) {
   return (
-    <Section>
+    <Block>
       {course.map((item, index) => (
         <RecipeCourseItem key={item.id} step={index} course={item} />
       ))}
-    </Section>
+    </Block>
   );
 }
 
-const Section = styled.section`
+const Block = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${rem(48)};

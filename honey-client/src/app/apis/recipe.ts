@@ -87,3 +87,11 @@ export const patchRecipeComment = async ({
 export const deleteRecipeComment = async ({ id, commentId }: { id: number; commentId: number }) => {
   await client.delete(`/api/v1/recipes/${id}/comments/${commentId}`);
 };
+
+export const postRecipeLike = async ({ id }: { id: number }) => {
+  await client.post(`/api/v1/recipes/${id}/likes`);
+};
+
+export const deleteRecipeLike = async ({ id }: { id: number }) => {
+  await client.delete(`/api/v1/recipes/${id}/likes`);
+};
