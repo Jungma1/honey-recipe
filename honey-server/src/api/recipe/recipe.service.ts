@@ -354,6 +354,66 @@ export class RecipeService {
     });
   }
 
+  async likeRecipe(id: number, user: User) {
+    const recipe = await this.prismaService.recipe.findUnique({
+      where: { id },
+    });
+
+    if (!recipe) {
+      throw new NotFoundException('Recipe not found');
+    }
+
+    await this.prismaService.$transaction(async (tx) => {
+      await tx.recipeLike.create({
+        data: {
+          recipeId: id,
+          userId: user.id,
+        },
+      });
+
+      await tx.recipeStat.update({
+        where: {
+          recipeId: id,
+        },
+        data: {
+          likeCount: {
+            increment: 1,
+          },
+        },
+      });
+    });
+  }
+
+  async unlikeRecipe(id: number, user: User) {
+    const recipe = await this.prismaService.recipe.findUnique({
+      where: { id },
+    });
+
+    if (!recipe) {
+      throw new NotFoundException('Recipe not found');
+    }
+
+    await this.prismaService.$transaction(async (tx) => {
+      await tx.recipeLike.deleteMany({
+        where: {
+          recipeId: id,
+          userId: user.id,
+        },
+      });
+
+      await tx.recipeStat.update({
+        where: {
+          recipeId: id,
+        },
+        data: {
+          likeCount: {
+            decrement: 1,
+          },
+        },
+      });
+    });
+  }
+
   private async validateRecipe(id: number, userId: number) {
     const recipe = await this.prismaService.recipe.findUnique({
       where: { id },

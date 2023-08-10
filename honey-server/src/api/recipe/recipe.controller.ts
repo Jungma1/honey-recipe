@@ -113,6 +113,18 @@ export class RecipeController {
     return this.recipeService.deleteComment(id, commentId, user);
   }
 
+  @Post(':id/likes')
+  @UseGuards(JwtAuthGuard)
+  async likeRecipe(@Param('id') id: number, @AuthUser() user: User) {
+    return this.recipeService.likeRecipe(id, user);
+  }
+
+  @Delete(':id/likes')
+  @UseGuards(JwtAuthGuard)
+  async unlikeRecipe(@Param('id') id: number, @AuthUser() user: User) {
+    return this.recipeService.unlikeRecipe(id, user);
+  }
+
   @Post('image')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('image'))
