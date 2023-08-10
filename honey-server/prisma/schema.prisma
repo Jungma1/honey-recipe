@@ -25,6 +25,7 @@ model User {
   recipe               Recipe[]
   recipeComment        RecipeComment[]
   recipeCommentMention RecipeComment[] @relation("mentionUser")
+  recipeLike           RecipeLike[]
 
   @@map("users")
 }
@@ -73,6 +74,7 @@ model Recipe {
   recipeCourse  RecipeCourse[]
   recipeStat    RecipeStat?
   recipeComment RecipeComment[]
+  recipeLike    RecipeLike[]
 
   @@map("recipes")
 }
@@ -123,4 +125,18 @@ model RecipeComment {
   mentionUser User?  @relation("mentionUser", fields: [mentionUserId], references: [id])
 
   @@map("recipe_comments")
+}
+
+model RecipeLike {
+  id       Int @id @default(autoincrement())
+  recipeId Int @map("recipe_id")
+  userId   Int @map("user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("recipe_likes")
 }
