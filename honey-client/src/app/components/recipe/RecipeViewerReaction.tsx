@@ -30,6 +30,7 @@ function RecipeViewerReaction({ isLiked, recipeId }: Props) {
       setIsLikedState(true);
     },
   });
+
   const { mutateAsync: unlikeRecipe } = useMutation(deleteRecipeLike, {
     onSuccess: () => {
       setIsLikedState(false);
