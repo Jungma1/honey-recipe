@@ -125,6 +125,18 @@ export class RecipeController {
     return this.recipeService.unlikeRecipe(id, user);
   }
 
+  @Post(':id/bookmarks')
+  @UseGuards(JwtAuthGuard)
+  async bookmarkRecipe(@Param('id') id: number, @AuthUser() user: User) {
+    return this.recipeService.bookmarkRecipe(id, user);
+  }
+
+  @Delete(':id/bookmarks')
+  @UseGuards(JwtAuthGuard)
+  async unBookmarkRecipe(@Param('id') id: number, @AuthUser() user: User) {
+    return this.recipeService.unBookmarkRecipe(id, user);
+  }
+
   @Post('image')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('image'))

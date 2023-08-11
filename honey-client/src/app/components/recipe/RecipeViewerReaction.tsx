@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
+import BookmarkAddedRoundedIcon from '@mui/icons-material/BookmarkAddedRounded';
 import BookmarkBorderRoundedIcon from '@mui/icons-material/BookmarkBorderRounded';
-import BookmarkRoundedIcon from '@mui/icons-material/BookmarkRounded';
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import { useMutation } from '@tanstack/react-query';
@@ -8,7 +8,12 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { rem } from 'polished';
 import { useState } from 'react';
-import { deleteRecipeLike, postRecipeLike } from '~/apis/recipe';
+import {
+  deleteRecipeBookmark,
+  deleteRecipeLike,
+  postRecipeBookmark,
+  postRecipeLike,
+} from '~/apis/recipe';
 import { useModalStore } from '~/stores/modal';
 import { useUserStore } from '~/stores/user';
 import { colors } from '~/utils/colors';
@@ -16,14 +21,16 @@ import Toggle from '../common/Toggle';
 
 interface Props {
   isLiked: boolean;
+  isBookmarked: boolean;
   recipeId: number;
 }
 
-function RecipeViewerReaction({ isLiked, recipeId }: Props) {
+function RecipeViewerReaction({ isLiked, isBookmarked, recipeId }: Props) {
   const router = useRouter();
   const { user } = useUserStore();
   const { openModal } = useModalStore();
   const [isLikedState, setIsLikedState] = useState(isLiked);
+  const [isBookmarkedState, setIsBookmarkedState] = useState(isBookmarked);
 
   const { mutateAsync: likeRecipe } = useMutation(postRecipeLike, {
     onSuccess: () => {
@@ -34,6 +41,18 @@ function RecipeViewerReaction({ isLiked, recipeId }: Props) {
   const { mutateAsync: unlikeRecipe } = useMutation(deleteRecipeLike, {
     onSuccess: () => {
       setIsLikedState(false);
+    },
+  });
+
+  const { mutateAsync: bookmarkRecipe } = useMutation(postRecipeBookmark, {
+    onSuccess: () => {
+      setIsBookmarkedState(true);
+    },
+  });
+
+  const { mutateAsync: unBookmarkRecipe } = useMutation(deleteRecipeBookmark, {
+    onSuccess: () => {
+      setIsBookmarkedState(false);
     },
   });
 
@@ -60,6 +79,29 @@ function RecipeViewerReaction({ isLiked, recipeId }: Props) {
     }
   };
 
+  const onClickBookmark = async () => {
+    if (!user) {
+      openModal({
+        title: '로그인이 필요합니다.',
+        description: '로그인 페이지로 이동하시겠습니까?',
+        onConfirm: () => {
+          router.push('/login');
+        },
+      });
+      return;
+    }
+
+    if (isBookmarkedState) {
+      await unBookmarkRecipe({
+        id: recipeId,
+      });
+    } else {
+      await bookmarkRecipe({
+        id: recipeId,
+      });
+    }
+  };
+
   return (
     <Block>
       <IconBlock
@@ -73,11 +115,15 @@ function RecipeViewerReaction({ isLiked, recipeId }: Props) {
           offComponent={<StyledLikeOutlineIcon />}
         />
       </IconBlock>
-      <IconBlock>
+      <IconBlock
+        onClick={onClickBookmark}
+        initial={{ scale: 1 }}
+        whileTap={isBookmarked ? {} : { scale: 2 }}
+      >
         <Toggle
-          isValue={false}
-          onComponent={<BookmarkRoundedIcon />}
-          offComponent={<BookmarkBorderRoundedIcon />}
+          isValue={isBookmarkedState}
+          onComponent={<StyledBookmarkFillIcon />}
+          offComponent={<StyledBookmarkOutlineIcon />}
         />
       </IconBlock>
     </Block>
@@ -101,6 +147,14 @@ const StyledLikeFillIcon = styled(FavoriteRoundedIcon)`
 `;
 
 const StyledLikeOutlineIcon = styled(FavoriteBorderRoundedIcon)`
+  color: ${colors.gray5};
+`;
+
+const StyledBookmarkFillIcon = styled(BookmarkAddedRoundedIcon)`
+  color: ${colors.primary};
+`;
+
+const StyledBookmarkOutlineIcon = styled(BookmarkBorderRoundedIcon)`
   color: ${colors.gray5};
 `;
 

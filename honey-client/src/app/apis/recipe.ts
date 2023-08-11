@@ -95,3 +95,11 @@ export const postRecipeLike = async ({ id }: { id: number }) => {
 export const deleteRecipeLike = async ({ id }: { id: number }) => {
   await client.delete(`/api/v1/recipes/${id}/likes`);
 };
+
+export const postRecipeBookmark = async ({ id }: { id: number }) => {
+  await client.post(`/api/v1/recipes/${id}/bookmarks`);
+};
+
+export const deleteRecipeBookmark = async ({ id }: { id: number }) => {
+  await client.delete(`/api/v1/recipes/${id}/bookmarks`);
+};

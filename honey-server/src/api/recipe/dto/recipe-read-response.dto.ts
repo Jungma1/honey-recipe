@@ -1,5 +1,6 @@
 import {
   Recipe,
+  RecipeBookmark,
   RecipeCourse,
   RecipeLike,
   RecipeStat,
@@ -13,6 +14,7 @@ type RecipeRelation = Recipe & {
   recipeStat: RecipeStat;
   recipeCourse: RecipeCourse[];
   recipeLike: RecipeLike[];
+  recipeBookmark: RecipeBookmark[];
 };
 
 export class RecipeReadResponseDto {
@@ -22,6 +24,7 @@ export class RecipeReadResponseDto {
   thumbnail: string | null;
   isPrivate: boolean;
   isLiked: boolean;
+  isBookmarked: boolean;
   likeCount: number;
   commentCount: number;
   user: AuthUserDto;
@@ -36,6 +39,7 @@ export class RecipeReadResponseDto {
     this.thumbnail = recipe.thumbnail || null;
     this.isPrivate = recipe.isPrivate;
     this.isLiked = recipe.recipeLike?.length > 0;
+    this.isBookmarked = recipe.recipeBookmark?.length > 0;
     this.likeCount = recipe.recipeStat.likeCount;
     this.commentCount = recipe.recipeStat.commentCount;
     this.user = new AuthUserDto(recipe.user);

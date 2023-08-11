@@ -44,13 +44,8 @@ export class RecipeService {
             order: 'asc',
           },
         },
-        recipeLike: user.id
-          ? {
-              where: {
-                userId: user.id,
-              },
-            }
-          : false,
+        recipeLike: user.id ? { where: { userId: user.id } } : false,
+        recipeBookmark: user.id ? { where: { userId: user.id } } : false,
       },
       where: {
         id,
@@ -418,6 +413,40 @@ export class RecipeService {
           },
         },
       });
+    });
+  }
+
+  async bookmarkRecipe(id: number, user: User) {
+    const recipe = await this.prismaService.recipe.findUnique({
+      where: { id },
+    });
+
+    if (!recipe) {
+      throw new NotFoundException('Recipe not found');
+    }
+
+    await this.prismaService.recipeBookmark.create({
+      data: {
+        recipeId: id,
+        userId: user.id,
+      },
+    });
+  }
+
+  async unBookmarkRecipe(id: number, user: User) {
+    const recipe = await this.prismaService.recipe.findUnique({
+      where: { id },
+    });
+
+    if (!recipe) {
+      throw new NotFoundException('Recipe not found');
+    }
+
+    await this.prismaService.recipeBookmark.deleteMany({
+      where: {
+        recipeId: id,
+        userId: user.id,
+      },
     });
   }
 

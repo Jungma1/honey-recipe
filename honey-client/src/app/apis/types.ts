@@ -21,6 +21,7 @@ export interface Recipe {
   thumbnail: string | null;
   isPrivate: boolean;
   isLiked: boolean;
+  isBookmarked: boolean;
   likeCount: number;
   commentCount: number;
   user: User;
