@@ -7,38 +7,39 @@ interface Props {
   provider: 'google' | 'kakao' | 'naver';
 }
 
-const iconMap = {
-  google: GoogleIcon,
-  kakao: KakaoIcon,
-  naver: NaverIcon,
-};
-
-const iconBackgroundMap = {
-  google: colors.white,
-  kakao: 'yellow',
-  naver: '#00B06F',
-};
-
-const iconTextMap = {
-  google: '구글',
-  kakao: '카카오',
-  naver: '네이버',
+const providerObject = {
+  google: {
+    icon: GoogleIcon,
+    fontColor: colors.gray9,
+    background: colors.white,
+    text: '구글',
+  },
+  kakao: {
+    icon: KakaoIcon,
+    fontColor: colors.gray9,
+    background: 'yellow',
+    text: '카카오',
+  },
+  naver: {
+    icon: NaverIcon,
+    fontColor: colors.white,
+    background: '#02bb6b',
+    text: '네이버',
+  },
 };
 
 function AuthButton({ provider }: Props) {
   const host = process.env.NEXT_PUBLIC_API_URL;
   const path = `${host}/api/v1/auth/oauth/${provider}`;
-  const Icon = iconMap[provider];
-  const iconBackground = iconBackgroundMap[provider];
-  const iconText = iconTextMap[provider];
+  const { icon: Icon, background, fontColor, text } = providerObject[provider];
 
   return (
     <Anchor href={path}>
-      <StyledButton background={iconBackground}>
+      <StyledButton background={background}>
         <IconWrapper>
           <Icon />
         </IconWrapper>
-        <Text>{iconText} 로그인</Text>
+        <Text fontColor={fontColor}>{text} 로그인</Text>
       </StyledButton>
     </Anchor>
   );
@@ -67,9 +68,10 @@ const IconWrapper = styled.div`
   display: flex;
 `;
 
-const Text = styled.strong`
+const Text = styled.strong<{ fontColor: string }>`
   color: ${colors.gray9};
   font-size: ${rem(18)};
+  color: ${(props) => props.fontColor};
 `;
 
 export default AuthButton;
