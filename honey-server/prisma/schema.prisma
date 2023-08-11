@@ -24,8 +24,9 @@ model User {
   socialAccount        SocialAccount?
   recipe               Recipe[]
   recipeComment        RecipeComment[]
-  recipeCommentMention RecipeComment[] @relation("mentionUser")
+  recipeCommentMention RecipeComment[]  @relation("mentionUser")
   recipeLike           RecipeLike[]
+  recipeBookmark       RecipeBookmark[]
 
   @@map("users")
 }
@@ -71,10 +72,11 @@ model Recipe {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  recipeCourse  RecipeCourse[]
-  recipeStat    RecipeStat?
-  recipeComment RecipeComment[]
-  recipeLike    RecipeLike[]
+  recipeCourse   RecipeCourse[]
+  recipeStat     RecipeStat?
+  recipeComment  RecipeComment[]
+  recipeLike     RecipeLike[]
+  recipeBookmark RecipeBookmark[]
 
   @@map("recipes")
 }
@@ -139,4 +141,18 @@ model RecipeLike {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("recipe_likes")
+}
+
+model RecipeBookmark {
+  id       Int @id @default(autoincrement())
+  recipeId Int @map("recipe_id")
+  userId   Int @map("user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("recipe_bookmarks")
 }
