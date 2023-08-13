@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { rem } from 'polished';
 import { Recipe } from '~/apis/types';
 import Slider from '../common/Slider';
+import SliderItem from '../common/SliderItem';
 import TitleGroup from '../common/TitleGroup';
 import RecipeBannerItem from './RecipeBannerItem';
 
@@ -15,7 +16,9 @@ function RecipeBannerList({ recipes }: Props) {
       <TitleGroup title="실시간 베스트">
         <Slider itemWidth={300} itemCount={recipes.length}>
           {recipes.map((recipe) => (
-            <RecipeBannerItem key={recipe.id} recipe={recipe} />
+            <SliderItem itemWidth={300} key={recipe.id}>
+              <RecipeBannerItem recipe={recipe} />
+            </SliderItem>
           ))}
         </Slider>
       </TitleGroup>

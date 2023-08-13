@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import { rem } from 'polished';
 import React from 'react';
 import { useCarousel } from '~/hooks/useCarousel';
-import SliderItem from './SliderItem';
 
 interface BlockProps {
   itemWidth: number;
@@ -26,9 +25,7 @@ function Slider({ children, itemWidth, itemCount }: Props) {
       onMouseMove={handleMouseMove}
     >
       <StyledSlider itemWidth={itemWidth} itemCount={itemCount}>
-        {React.Children.map(children, (child) => (
-          <SliderItem itemWidth={itemWidth} component={child} />
-        ))}
+        {children}
       </StyledSlider>
     </Block>
   );

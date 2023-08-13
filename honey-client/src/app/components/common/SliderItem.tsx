@@ -6,11 +6,11 @@ interface BlockProps {
 }
 
 interface Props extends BlockProps {
-  component: React.ReactNode;
+  children: React.ReactNode;
 }
 
-function SliderItem({ itemWidth, component }: Props) {
-  return <Block itemWidth={itemWidth}>{component}</Block>;
+function SliderItem({ itemWidth, children }: Props) {
+  return <Block itemWidth={itemWidth}>{children}</Block>;
 }
 
 const Block = styled.div<BlockProps>`
