@@ -6,7 +6,7 @@ import { colors } from '~/utils/colors';
 
 interface StyledButtonProps {
   danger?: boolean;
-  towTone?: boolean;
+  twoTone?: boolean;
   outlined?: boolean;
 }
 
@@ -43,7 +43,7 @@ const StyledButton = styled.button<StyledButtonProps>`
     `}
 
   ${(props) =>
-    props.towTone &&
+    props.twoTone &&
     css`
       color: ${colors.primary};
       background-color: ${colors.white};

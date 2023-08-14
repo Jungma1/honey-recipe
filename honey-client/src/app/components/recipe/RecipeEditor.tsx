@@ -47,10 +47,10 @@ function RecipeEditor({
         <LineContent>
           <LabelGroup label="레시피 공개 설정">
             <ButtonGroup>
-              <Button onClick={onClickIsPublic} towTone={isPrivate}>
+              <Button onClick={onClickIsPublic} twoTone={isPrivate}>
                 공개
               </Button>
-              <Button onClick={onClickIsPrivate} towTone={!isPrivate}>
+              <Button onClick={onClickIsPrivate} twoTone={!isPrivate}>
                 비공개
               </Button>
             </ButtonGroup>

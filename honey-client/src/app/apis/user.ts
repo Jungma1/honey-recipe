@@ -1,5 +1,5 @@
 import { client } from '.';
-import { User } from './types';
+import { ImageUploadResponse, User } from './types';
 
 export const getProfile = async () => {
   try {
@@ -12,4 +12,12 @@ export const getProfile = async () => {
 
 export const postLogout = async () => {
   await client.post('/api/v1/auth/logout');
+};
+
+export const patchProfilePicture = async (image: File) => {
+  const formData = new FormData();
+  formData.append('image', image);
+
+  const response = await client.patch<ImageUploadResponse>('/api/v1/users/picture', formData);
+  return response.data;
 };

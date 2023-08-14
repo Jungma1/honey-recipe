@@ -16,6 +16,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from '@prisma/client';
+import { MultiFileTypeValidator } from '~/common/validator/multi-file-type.validator';
 import { AuthUser } from '../auth/decorator/auth-user.decorator';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { RecipeCommentCreateRequestDto } from './dto/recipe-comment-create-request.dto';
@@ -24,7 +25,6 @@ import { RecipeConditionRequestDto } from './dto/recipe-condition-request.dto';
 import { RecipeCreateRequestDto } from './dto/recipe-create-request.dto';
 import { RecipeUpdateRequestDto } from './dto/recipe-update-request.dto';
 import { RecipeService } from './recipe.service';
-import { MultiFileTypeValidator } from './validator/multi-file-type.validator';
 
 @Controller('recipes')
 export class RecipeController {

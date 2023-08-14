@@ -12,7 +12,7 @@ function RecipeImageSelector({ imagePath, onClickImage }: Props) {
   return (
     <Block>
       <AutoImage src={imagePath ?? '/test.png'} />
-      <ThumbnailButton onClick={onClickImage} towTone>
+      <ThumbnailButton onClick={onClickImage} twoTone>
         썸네일 업로드
       </ThumbnailButton>
     </Block>
