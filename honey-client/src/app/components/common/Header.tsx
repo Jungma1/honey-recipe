@@ -2,9 +2,11 @@ import styled from '@emotion/styled';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { rem } from 'polished';
+import { useState } from 'react';
 import { User } from '~/apis/types';
 import { colors } from '~/utils/colors';
 import Button from '../system/Button';
+import HeaderMenu from './HeaderMenu';
 
 interface Props {
   user: User | null;
@@ -12,29 +14,35 @@ interface Props {
 
 function Header({ user }: Props) {
   const router = useRouter();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const handleClickLogo = () => {
+  const onClickLogo = () => {
     router.push('/');
   };
 
-  const handleClickLogin = () => {
+  const onClickLogin = () => {
     router.push('/login');
   };
 
-  const handleClickRecipeWrite = () => {
+  const onClickRecipeWrite = () => {
     router.push('/recipe/write');
+  };
+
+  const onClickOpenMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
   };
 
   return (
     <StyledHeader>
-      <StyledLogo onClick={handleClickLogo}>KKULPI</StyledLogo>
+      <StyledLogo onClick={onClickLogo}>KKULPI</StyledLogo>
       {user ? (
         <Wrapper>
-          <Button onClick={handleClickRecipeWrite}>레시피 작성</Button>
-          <Image src={user.picture} width={32} height={32} alt="" />
+          <Button onClick={onClickRecipeWrite}>레시피 작성</Button>
+          <Image src={user.picture} width={32} height={32} alt="" onClick={onClickOpenMenu} />
+          <HeaderMenu isOpen={isMenuOpen} />
         </Wrapper>
       ) : (
-        <Button onClick={handleClickLogin}>로그인</Button>
+        <Button onClick={onClickLogin}>로그인</Button>
       )}
     </StyledHeader>
   );
@@ -46,21 +54,23 @@ const StyledHeader = styled.header`
   justify-content: space-between;
   align-items: center;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 4px;
-  cursor: pointer;
 `;
 
 const StyledLogo = styled.div`
   font-size: 1.25rem;
   font-weight: bold;
   color: ${colors.gray9};
+  cursor: pointer;
 `;
 
 const Wrapper = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
-  gap: ${rem(16)};
 
   img {
+    cursor: pointer;
+    margin-left: ${rem(16)};
     border-radius: 5px;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px;
   }

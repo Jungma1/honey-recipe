@@ -9,3 +9,7 @@ export const getProfile = async () => {
     return null;
   }
 };
+
+export const postLogout = async () => {
+  await client.post('/api/v1/auth/logout');
+};
