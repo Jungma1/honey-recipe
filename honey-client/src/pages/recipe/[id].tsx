@@ -31,7 +31,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
   return json({ user, id, recipe, isOwner, dehydratedState: dehydrate(queryClient) });
 };
 
-export default function RecipeDetailPage({ user, id, recipe, isOwner }: Props) {
+export default function RecipeDetailPage({ id, recipe, isOwner }: Props) {
   const [{ data }, { data: comments }] = useQueries({
     queries: [
       { queryKey: ['recipe', id], queryFn: () => getRecipe(id), initialData: recipe },
@@ -43,7 +43,7 @@ export default function RecipeDetailPage({ user, id, recipe, isOwner }: Props) {
 
   return (
     <MainLayout>
-      <Header user={user} />
+      <Header />
       <ContentLayout>
         <Block>
           <RecipeViewerHeader recipe={data} />

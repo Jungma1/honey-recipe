@@ -28,7 +28,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
   return json({ user, bestRecipes, recipes, mode });
 };
 
-export default function HomePage({ user, bestRecipes, recipes, mode }: Props) {
+export default function HomePage({ bestRecipes, recipes, mode }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const { data, isFetching, hasNextPage, fetchNextPage } = useInfiniteQuery(
     ['recipes', mode],
@@ -54,7 +54,7 @@ export default function HomePage({ user, bestRecipes, recipes, mode }: Props) {
 
   return (
     <MainLayout>
-      <Header user={user} />
+      <Header />
       <ContentLayout>
         <RecipeBannerList recipes={bestRecipes.items} />
         <RecipeListTab mode={mode} />

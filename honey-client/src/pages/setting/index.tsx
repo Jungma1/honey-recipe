@@ -19,7 +19,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
 export default function SettingPage({ user }: Props) {
   return (
     <MainLayout>
-      <Header user={user} />
+      <Header />
       <ContentLayout>
         <Setting profile={user} />
       </ContentLayout>

@@ -3,17 +3,14 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { rem } from 'polished';
 import { useState } from 'react';
-import { User } from '~/apis/types';
+import { useUserStore } from '~/stores/user';
 import { colors } from '~/utils/colors';
 import Button from '../system/Button';
 import HeaderMenu from './HeaderMenu';
 
-interface Props {
-  user: User | null;
-}
-
-function Header({ user }: Props) {
+function Header() {
   const router = useRouter();
+  const { user } = useUserStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const onClickLogo = () => {

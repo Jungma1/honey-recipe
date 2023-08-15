@@ -1,5 +1,5 @@
 import { client } from '.';
-import { ImageUploadResponse, User } from './types';
+import { ImageUploadResponse, User, UserUpdateRequest } from './types';
 
 export const getProfile = async () => {
   try {
@@ -8,6 +8,10 @@ export const getProfile = async () => {
   } catch (error) {
     return null;
   }
+};
+
+export const patchProfile = async ({ request }: { request: UserUpdateRequest }) => {
+  await client.patch('/api/v1/users', request);
 };
 
 export const postLogout = async () => {

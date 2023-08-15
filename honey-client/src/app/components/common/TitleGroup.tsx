@@ -24,7 +24,6 @@ function TitleGroup({ children, title }: Props) {
 const Block = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${rem(32)};
 `;
 
 const Title = styled.div`
@@ -35,6 +34,7 @@ const Title = styled.div`
   font-size: ${rem(20)};
   padding-bottom: ${rem(8)};
   border-bottom: 2px solid ${colors.primary};
+  margin-bottom: ${rem(32)};
 `;
 
 export default TitleGroup;

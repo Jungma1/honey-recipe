@@ -20,7 +20,7 @@ export class UserService {
         },
       });
 
-      if (exist) {
+      if (exist && exist.id !== user.id) {
         throw new ConflictException('handle already exists');
       }
     }

@@ -34,7 +34,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
   return json({ user, recipe });
 };
 
-export default function RecipeEditPage({ user, recipe }: Props) {
+export default function RecipeEditPage({ recipe }: Props) {
   const router = useRouter();
   const {
     form,
@@ -70,7 +70,7 @@ export default function RecipeEditPage({ user, recipe }: Props) {
 
   return (
     <MainLayout>
-      <Header user={user} />
+      <Header />
       <ContentLayout>
         <RecipeForm onSubmit={onSubmitRecipe} buttonText="레시피 수정하기">
           <TitleGroup title="레시피 정보">
