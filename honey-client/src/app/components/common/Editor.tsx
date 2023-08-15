@@ -55,6 +55,11 @@ const Block = styled.div`
   font-size: ${rem(16)};
   border-radius: ${rem(4)};
   border: 1px solid ${colors.gray2};
+  cursor: text;
+
+  :focus-within {
+    border-color: ${colors.primary};
+  }
 
   .cm-editor,
   .cm-gutter {

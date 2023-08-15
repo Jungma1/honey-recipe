@@ -109,6 +109,10 @@ const Block = styled.div`
   border-radius: ${rem(4)};
   border: 1px solid ${colors.gray2};
 
+  :focus-within {
+    border-color: ${colors.primary};
+  }
+
   .cm-editor,
   .cm-gutter {
     height: 100%;
