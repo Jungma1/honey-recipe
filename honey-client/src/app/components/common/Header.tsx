@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { rem } from 'polished';
 import { useState } from 'react';
+import { defaultProfileImage } from '~/static';
 import { useUserStore } from '~/stores/user';
 import { colors } from '~/utils/colors';
 import Button from '../system/Button';
@@ -35,7 +36,13 @@ function Header() {
       {user ? (
         <Wrapper>
           <Button onClick={onClickRecipeWrite}>레시피 작성</Button>
-          <Image src={user.picture} width={32} height={32} alt="" onClick={onClickOpenMenu} />
+          <Image
+            src={user.picture ?? defaultProfileImage}
+            width={32}
+            height={32}
+            alt=""
+            onClick={onClickOpenMenu}
+          />
           <HeaderMenu isOpen={isMenuOpen} />
         </Wrapper>
       ) : (

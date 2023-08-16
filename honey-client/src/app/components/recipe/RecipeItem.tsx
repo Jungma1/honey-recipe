@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import { rem } from 'polished';
 import { Recipe } from '~/apis/types';
 import { useMotionHorizontal } from '~/hooks/useMotionHorizontal';
+import { defaultPictureImage, defaultProfileImage } from '~/static';
 import { colors } from '~/utils/colors';
 import { formatDate, formatNumber } from '~/utils/format';
 import AutoImage from '../system/AutoImage';
@@ -28,7 +29,7 @@ function RecipeItem({ recipe }: Props) {
       onClick={(e) => router.push(`/recipe/${recipe.id}`)}
     >
       <ImageWrapper>
-        <AutoImage src={recipe.thumbnail ?? '/test.png'} />
+        <AutoImage src={recipe.thumbnail ?? defaultPictureImage} />
       </ImageWrapper>
       <ContentWrapper>
         <Title>{recipe.title}</Title>
@@ -36,7 +37,7 @@ function RecipeItem({ recipe }: Props) {
         <EmptyBlock />
         <Footer>
           <AvatarLink href={`/@${recipe.user.handle}`} onClick={(e) => e.stopPropagation()}>
-            <Image src={recipe.user.picture || '/test.png'} width={24} height={24} alt="" />
+            <Image src={recipe.user.picture || defaultProfileImage} width={24} height={24} alt="" />
             <span>{recipe.user.username}</span>
           </AvatarLink>
           <StatBlock>

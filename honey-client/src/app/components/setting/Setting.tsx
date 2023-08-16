@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { User } from '~/apis/types';
 import { patchProfile, patchProfilePicture } from '~/apis/user';
+import { defaultProfileImage } from '~/static';
 import { useUserStore } from '~/stores/user';
 import { colors } from '~/utils/colors';
 import { upload } from '~/utils/file';
@@ -81,7 +82,7 @@ function Setting({ profile }: Props) {
       <TitleGroup title="프로필 이미지">
         <ImageWrapper>
           <ImageLeft>
-            <AutoImage src={picture ?? '/test.png'} />
+            <AutoImage src={picture ?? defaultProfileImage} />
           </ImageLeft>
           <ImageRight>
             <StyledButton onClick={onClickPicture} twoTone>

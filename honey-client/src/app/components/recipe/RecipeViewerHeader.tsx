@@ -3,6 +3,7 @@ import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import Image from 'next/image';
 import { rem } from 'polished';
 import { RecipeRead } from '~/apis/types';
+import { defaultPictureImage, defaultProfileImage } from '~/static';
 import { colors } from '~/utils/colors';
 import { formatNumber } from '~/utils/format';
 import AutoImage from '../system/AutoImage';
@@ -16,7 +17,7 @@ function RecipeViewerHeader({ recipe }: Props) {
     <Block>
       <ImageWrapper>
         <Thumbnail>
-          <AutoImage src={recipe.thumbnail ?? '/test.png'} />
+          <AutoImage src={recipe.thumbnail ?? defaultPictureImage} />
         </Thumbnail>
         <Avatar>
           <LikeCount>
@@ -24,7 +25,7 @@ function RecipeViewerHeader({ recipe }: Props) {
             <span>{formatNumber(recipe.likeCount)}</span>
           </LikeCount>
           <Image
-            src={recipe.user.picture ?? '/test.png'}
+            src={recipe.user.picture ?? defaultProfileImage}
             width={128}
             height={128}
             priority

@@ -10,6 +10,7 @@ import { deleteRecipeComment, getRecipeSubComments } from '~/apis/recipe';
 import { RecipeComment } from '~/apis/types';
 import Toggle from '~/components/common/Toggle';
 import AutoImage from '~/components/system/AutoImage';
+import { defaultProfileImage } from '~/static';
 import { useModalStore } from '~/stores/modal';
 import { useUserStore } from '~/stores/user';
 import { colors } from '~/utils/colors';
@@ -78,7 +79,7 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
   return (
     <Block>
       <Avatar>
-        <AutoImage src={comment.user.picture ?? '/profile.png'} />
+        <AutoImage src={comment.user.picture ?? defaultProfileImage} />
       </Avatar>
       <Info>
         <Username>{comment.user.username}</Username>

@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { rem } from 'polished';
+import { defaultPictureImage } from '~/static';
 import AutoImage from '../system/AutoImage';
 import Button from '../system/Button';
 
@@ -11,7 +12,7 @@ interface Props {
 function RecipeImageSelector({ imagePath, onClickImage }: Props) {
   return (
     <Block>
-      <AutoImage src={imagePath ?? '/test.png'} />
+      <AutoImage src={imagePath ?? defaultPictureImage} />
       <ThumbnailButton onClick={onClickImage} twoTone>
         썸네일 업로드
       </ThumbnailButton>

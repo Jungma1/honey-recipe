@@ -3,6 +3,7 @@ import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultR
 import { rem } from 'polished';
 import { useState } from 'react';
 import { RecipeCourse } from '~/apis/types';
+import { defaultPictureImage } from '~/static';
 import { colors } from '~/utils/colors';
 import Editor from '../common/Editor';
 import LabelGroup from '../common/LabelGroup';
@@ -56,7 +57,7 @@ function RecipeCourseEditor({
           onMouseOver={() => setIsHover(true)}
           onMouseOut={() => setIsHover(false)}
         >
-          <AutoImage src={course.picture ?? '/test.png'} />
+          <AutoImage src={course.picture ?? defaultPictureImage} />
           {isHover && <ImageRemoveIcon onClick={onClickRemovePicture} />}
         </ImageWrapper>
         <EditorWrapper>
