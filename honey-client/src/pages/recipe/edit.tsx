@@ -39,16 +39,16 @@ export default function RecipeEditPage({ recipe }: Props) {
   const {
     form,
     validationForm,
-    onChangeTitle,
-    onChangeDescription,
-    onChangeContent,
-    onClickAddCourse,
-    onClickRemoveCourse,
-    onClickRemovePicture,
-    onClickThumbnail,
-    onClickPicture,
-    onClickIsPublic,
-    onClickIsPrivate,
+    handleChangeTitle,
+    handleChangeDescription,
+    handleChangeContent,
+    handleClickAddCourse,
+    handleClickRemoveCourse,
+    handleClickRemovePicture,
+    handleClickThumbnail,
+    handleClickPicture,
+    handleClickIsPublic,
+    handleClickIsPrivate,
   } = useRecipeForm(recipe);
 
   const { mutateAsync: updateRecipe } = useMutation(patchRecipe, {
@@ -57,7 +57,7 @@ export default function RecipeEditPage({ recipe }: Props) {
     },
   });
 
-  const onSubmitRecipe = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitRecipe = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const isValid = validationForm();
     if (!isValid) return;
@@ -72,18 +72,18 @@ export default function RecipeEditPage({ recipe }: Props) {
     <MainLayout>
       <Header />
       <ContentLayout>
-        <RecipeForm onSubmit={onSubmitRecipe} buttonText="레시피 수정하기">
+        <RecipeForm onSubmit={handleSubmitRecipe} buttonText="레시피 수정하기">
           <TitleGroup title="레시피 정보">
             <RecipeEditor
               title={form.title}
               imagePath={form.thumbnail}
               isPrivate={form.isPrivate}
-              onClickImage={onClickThumbnail}
+              onClickImage={handleClickThumbnail}
               description={form.description}
-              onChangeTitle={onChangeTitle}
-              onChangeDescription={onChangeDescription}
-              onClickIsPublic={onClickIsPublic}
-              onClickIsPrivate={onClickIsPrivate}
+              onChangeTitle={handleChangeTitle}
+              onChangeDescription={handleChangeDescription}
+              onClickIsPublic={handleClickIsPublic}
+              onClickIsPrivate={handleClickIsPrivate}
             />
           </TitleGroup>
           <TitleGroup title="레시피 과정">
@@ -93,13 +93,13 @@ export default function RecipeEditPage({ recipe }: Props) {
                   key={course.id}
                   step={index + 1}
                   course={course}
-                  onChangeContent={onChangeContent}
-                  onClickRemove={onClickRemoveCourse}
-                  onClickImage={onClickPicture}
-                  onClickRemoveImage={onClickRemovePicture}
+                  onChangeContent={handleChangeContent}
+                  onClickRemove={handleClickRemoveCourse}
+                  onClickImage={handleClickPicture}
+                  onClickRemoveImage={handleClickRemovePicture}
                 />
               ))}
-              <RecipeCourseAddButton onClick={onClickAddCourse} />
+              <RecipeCourseAddButton onClick={handleClickAddCourse} />
             </Block>
           </TitleGroup>
         </RecipeForm>

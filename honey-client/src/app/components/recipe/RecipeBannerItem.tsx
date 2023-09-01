@@ -15,22 +15,22 @@ function RecipeBannerItem({ recipe }: Props) {
   const [isMove, setIsMove] = useState(false);
   const [isClick, setIsClick] = useState(false);
 
-  const onClickItem = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleClickItem = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isMove) {
       router.push(`/recipe/${recipe.id}`);
     }
     setIsMove(false);
   };
 
-  const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsClick(true);
   };
 
-  const onMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsClick(false);
   };
 
-  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isClick) {
       setIsMove(true);
     }
@@ -38,10 +38,10 @@ function RecipeBannerItem({ recipe }: Props) {
 
   return (
     <Block
-      onClick={onClickItem}
-      onMouseMove={onMouseMove}
-      onMouseDown={onMouseDown}
-      onMouseUp={onMouseUp}
+      onClick={handleClickItem}
+      onMouseMove={handleMouseMove}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
     >
       <Wrapper>
         <ProfileWrapper>

@@ -29,21 +29,21 @@ function RecipeCourseEditor({
 }: Props) {
   const [isHover, setIsHover] = useState(false);
 
-  const onChangeContentValue = (value: string) => {
+  const handleChangeContentValue = (value: string) => {
     onChangeContent(course.id, value);
   };
 
-  const onClickPicture = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleClickPicture = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     onClickImage(course.id);
   };
 
-  const onClickRemoveCourse = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClickRemoveCourse = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     onClickRemove(course.id);
   };
 
-  const onClickRemovePicture = (e: React.MouseEvent<SVGSVGElement>) => {
+  const handleClickRemovePicture = (e: React.MouseEvent<SVGSVGElement>) => {
     e.preventDefault();
     e.stopPropagation();
     onClickRemoveImage(course.id);
@@ -53,20 +53,20 @@ function RecipeCourseEditor({
     <Block>
       <Wrapper>
         <ImageWrapper
-          onClick={onClickPicture}
+          onClick={handleClickPicture}
           onMouseOver={() => setIsHover(true)}
           onMouseOut={() => setIsHover(false)}
         >
           <AutoImage src={course.picture ?? defaultPictureImage} />
-          {isHover && <ImageRemoveIcon onClick={onClickRemovePicture} />}
+          {isHover && <ImageRemoveIcon onClick={handleClickRemovePicture} />}
         </ImageWrapper>
         <EditorWrapper>
           <LabelGroup label={`Step ${step}`}>
-            <Editor onChangeValue={onChangeContentValue} defaultValue={course.content} />
+            <Editor onChangeValue={handleChangeContentValue} defaultValue={course.content} />
           </LabelGroup>
         </EditorWrapper>
       </Wrapper>
-      <Button onClick={onClickRemoveCourse} danger>
+      <Button onClick={handleClickRemoveCourse} danger>
         Step {step} 지우기
       </Button>
     </Block>

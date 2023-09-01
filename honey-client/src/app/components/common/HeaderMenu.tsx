@@ -13,7 +13,7 @@ function HeaderMenu({ isOpen }: Props) {
   const router = useRouter();
   const { user } = useUserStore();
 
-  const onClickLogout = async () => {
+  const handleClickLogout = async () => {
     try {
       await postLogout();
       router.push('/');
@@ -26,7 +26,7 @@ function HeaderMenu({ isOpen }: Props) {
     <Block>
       <MenuItem onClick={() => router.push(`/@${user?.handle}`)}>내 레시피</MenuItem>
       <MenuItem onClick={() => router.push('/setting')}>설정</MenuItem>
-      <MenuItem onClick={onClickLogout}>로그아웃</MenuItem>
+      <MenuItem onClick={handleClickLogout}>로그아웃</MenuItem>
     </Block>
   );
 }

@@ -8,7 +8,7 @@ import Button from '../system/Button';
 function ModalContainer() {
   const { isOpen, title, description, onConfirm, closeModal } = useModalStore();
 
-  const onClickConfirm = () => {
+  const handleClickConfirm = () => {
     closeModal();
     onConfirm();
   };
@@ -31,7 +31,7 @@ function ModalContainer() {
                 <StyledButton onClick={closeModal} outlined>
                   취소
                 </StyledButton>
-                <StyledButton onClick={onClickConfirm}>확인</StyledButton>
+                <StyledButton onClick={handleClickConfirm}>확인</StyledButton>
               </ButtonGroup>
             </ModalBlock>
           </Block>

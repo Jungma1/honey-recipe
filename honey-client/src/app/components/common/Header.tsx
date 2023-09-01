@@ -14,39 +14,39 @@ function Header() {
   const { user } = useUserStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const onClickLogo = () => {
+  const handleClickLogo = () => {
     router.push('/');
   };
 
-  const onClickLogin = () => {
+  const handleClickLogin = () => {
     router.push('/login');
   };
 
-  const onClickRecipeWrite = () => {
+  const handleClickRecipeWrite = () => {
     router.push('/recipe/write');
   };
 
-  const onClickOpenMenu = () => {
+  const handleClickOpenMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   return (
     <StyledHeader>
-      <StyledLogo onClick={onClickLogo}>KKULPI</StyledLogo>
+      <StyledLogo onClick={handleClickLogo}>KKULPI</StyledLogo>
       {user ? (
         <Wrapper>
-          <Button onClick={onClickRecipeWrite}>레시피 작성</Button>
+          <Button onClick={handleClickRecipeWrite}>레시피 작성</Button>
           <Image
             src={user.picture ?? defaultProfileImage}
             width={32}
             height={32}
             alt=""
-            onClick={onClickOpenMenu}
+            onClick={handleClickOpenMenu}
           />
           <HeaderMenu isOpen={isMenuOpen} />
         </Wrapper>
       ) : (
-        <Button onClick={onClickLogin}>로그인</Button>
+        <Button onClick={handleClickLogin}>로그인</Button>
       )}
     </StyledHeader>
   );

@@ -64,7 +64,7 @@ function CommentEditor({
     };
   }, []);
 
-  const onClickCancel = () => {
+  const handleClickCancel = () => {
     if (!viewRef.current) return;
 
     onClose?.();
@@ -76,9 +76,9 @@ function CommentEditor({
     viewRef.current.dispatch(transaction);
   };
 
-  const onClickConfirm = () => {
+  const handleClickConfirm = () => {
     onConfirm();
-    onClickCancel();
+    handleClickCancel();
     onClose?.();
   };
 
@@ -87,10 +87,10 @@ function CommentEditor({
       <Block ref={editorRef} onFocus={() => setIsButtonVisible(true)} />
       {isButtonVisible && (
         <ButtonGroup initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <StyledButton onClick={onClickCancel} outlined>
+          <StyledButton onClick={handleClickCancel} outlined>
             취소
           </StyledButton>
-          <StyledButton onClick={onClickConfirm}>작성</StyledButton>
+          <StyledButton onClick={handleClickConfirm}>작성</StyledButton>
         </ButtonGroup>
       )}
     </Container>

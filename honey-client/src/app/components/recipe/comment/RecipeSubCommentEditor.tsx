@@ -47,14 +47,14 @@ function RecipeSubCommentEditor({
     },
   });
 
-  const onChangeContent = (value: string) => {
+  const handleChangeContent = (value: string) => {
     setForm({
       ...form,
       content: value,
     });
   };
 
-  const onSubmitComment = async () => {
+  const handleSubmitComment = async () => {
     if (!isEdit) {
       await createComment({
         id,
@@ -75,8 +75,8 @@ function RecipeSubCommentEditor({
   return (
     <CommentEditor
       defaultValue={form.content}
-      onChange={onChangeContent}
-      onConfirm={onSubmitComment}
+      onChange={handleChangeContent}
+      onConfirm={handleSubmitComment}
       onClose={onClose}
       defaultButtonVisible={true}
     />

@@ -14,11 +14,11 @@ function RecipeViewerInteraction({ isOwner, recipeId }: Props) {
   const router = useRouter();
   const { openModal } = useModalStore();
 
-  const onClickEdit = () => {
+  const handleClickEdit = () => {
     router.push(`/recipe/edit?id=${recipeId}`);
   };
 
-  const onClickDelete = () => {
+  const handleClickDelete = () => {
     openModal({
       title: '레시피 삭제',
       description: '정말 삭제하시겠습니까?',
@@ -33,8 +33,8 @@ function RecipeViewerInteraction({ isOwner, recipeId }: Props) {
 
   return (
     <Block>
-      <Text onClick={onClickEdit}>수정</Text>
-      <Text onClick={onClickDelete}>삭제</Text>
+      <Text onClick={handleClickEdit}>수정</Text>
+      <Text onClick={handleClickDelete}>삭제</Text>
     </Block>
   );
 }

@@ -29,16 +29,16 @@ export default function RecipeWritePage() {
   const {
     form,
     validationForm,
-    onChangeTitle,
-    onChangeDescription,
-    onChangeContent,
-    onClickAddCourse,
-    onClickRemoveCourse,
-    onClickRemovePicture,
-    onClickThumbnail,
-    onClickPicture,
-    onClickIsPublic,
-    onClickIsPrivate,
+    handleChangeTitle,
+    handleChangeDescription,
+    handleChangeContent,
+    handleClickAddCourse,
+    handleClickRemoveCourse,
+    handleClickRemovePicture,
+    handleClickThumbnail,
+    handleClickPicture,
+    handleClickIsPublic,
+    handleClickIsPrivate,
   } = useRecipeForm();
 
   const { mutateAsync: createRecipe } = useMutation(postRecipe, {
@@ -47,7 +47,7 @@ export default function RecipeWritePage() {
     },
   });
 
-  const onSubmitRecipe = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitRecipe = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const isValid = validationForm();
     if (!isValid) return;
@@ -60,17 +60,17 @@ export default function RecipeWritePage() {
     <MainLayout>
       <Header />
       <ContentLayout>
-        <RecipeForm onSubmit={onSubmitRecipe} buttonText="레시피 작성하기">
+        <RecipeForm onSubmit={handleSubmitRecipe} buttonText="레시피 작성하기">
           <TitleGroup title="레시피 정보">
             <RecipeEditor
               title={form.title}
               imagePath={form.thumbnail}
               isPrivate={form.isPrivate}
-              onClickImage={onClickThumbnail}
-              onChangeTitle={onChangeTitle}
-              onChangeDescription={onChangeDescription}
-              onClickIsPublic={onClickIsPublic}
-              onClickIsPrivate={onClickIsPrivate}
+              onClickImage={handleClickThumbnail}
+              onChangeTitle={handleChangeTitle}
+              onChangeDescription={handleChangeDescription}
+              onClickIsPublic={handleClickIsPublic}
+              onClickIsPrivate={handleClickIsPrivate}
             />
           </TitleGroup>
           <TitleGroup title="레시피 과정">
@@ -80,13 +80,13 @@ export default function RecipeWritePage() {
                   key={course.id}
                   step={index + 1}
                   course={course}
-                  onChangeContent={onChangeContent}
-                  onClickRemove={onClickRemoveCourse}
-                  onClickImage={onClickPicture}
-                  onClickRemoveImage={onClickRemovePicture}
+                  onChangeContent={handleChangeContent}
+                  onClickRemove={handleClickRemoveCourse}
+                  onClickImage={handleClickPicture}
+                  onClickRemoveImage={handleClickRemovePicture}
                 />
               ))}
-              <RecipeCourseAddButton onClick={onClickAddCourse} />
+              <RecipeCourseAddButton onClick={handleClickAddCourse} />
             </Block>
           </TitleGroup>
         </RecipeForm>

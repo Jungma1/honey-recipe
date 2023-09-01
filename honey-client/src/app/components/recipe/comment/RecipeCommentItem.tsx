@@ -57,7 +57,7 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
     },
   });
 
-  const onClickDelete = () => {
+  const handleClickDelete = () => {
     openModal({
       title: '댓글 삭제',
       description: '정말 삭제하시겠습니까?',
@@ -140,7 +140,7 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
       {isOwner && (
         <Interaction>
           <span onClick={() => setIsEditMode(true)}>수정</span>
-          <span onClick={onClickDelete}>삭제</span>
+          <span onClick={handleClickDelete}>삭제</span>
         </Interaction>
       )}
     </Block>

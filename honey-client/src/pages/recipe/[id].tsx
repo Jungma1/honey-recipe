@@ -39,7 +39,7 @@ export default function RecipeDetailPage({ id, recipe, isOwner }: Props) {
     ],
   });
 
-  if (!data || !comments) return <></>;
+  if (!data || !comments) return null;
 
   return (
     <MainLayout>

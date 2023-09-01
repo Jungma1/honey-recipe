@@ -56,7 +56,7 @@ function RecipeViewerReaction({ isLiked, isBookmarked, recipeId }: Props) {
     },
   });
 
-  const onClickLike = async () => {
+  const handleClickLike = async () => {
     if (!user) {
       openModal({
         title: '로그인이 필요합니다.',
@@ -79,7 +79,7 @@ function RecipeViewerReaction({ isLiked, isBookmarked, recipeId }: Props) {
     }
   };
 
-  const onClickBookmark = async () => {
+  const handleClickBookmark = async () => {
     if (!user) {
       openModal({
         title: '로그인이 필요합니다.',
@@ -105,7 +105,7 @@ function RecipeViewerReaction({ isLiked, isBookmarked, recipeId }: Props) {
   return (
     <Block>
       <IconBlock
-        onClick={onClickLike}
+        onClick={handleClickLike}
         initial={{ scale: 1 }}
         whileTap={isLikedState ? {} : { scale: 2 }}
       >
@@ -116,7 +116,7 @@ function RecipeViewerReaction({ isLiked, isBookmarked, recipeId }: Props) {
         />
       </IconBlock>
       <IconBlock
-        onClick={onClickBookmark}
+        onClick={handleClickBookmark}
         initial={{ scale: 1 }}
         whileTap={isBookmarked ? {} : { scale: 2 }}
       >

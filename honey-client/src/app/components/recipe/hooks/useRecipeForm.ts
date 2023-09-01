@@ -32,25 +32,25 @@ export function useRecipeForm(recipe?: RecipeRead) {
     onError: () => {},
   });
 
-  const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, title: e.target.value });
   };
 
-  const onChangeDescription = (value: string) => {
+  const handleChangeDescription = (value: string) => {
     setForm({ ...form, description: value });
   };
 
-  const onClickIsPublic = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClickIsPublic = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setForm({ ...form, isPrivate: false });
   };
 
-  const onClickIsPrivate = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClickIsPrivate = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setForm({ ...form, isPrivate: true });
   };
 
-  const onChangeContent = (id: number, value: string) => {
+  const handleChangeContent = (id: number, value: string) => {
     setForm({
       ...form,
       course: form.course.map((course) =>
@@ -59,14 +59,14 @@ export function useRecipeForm(recipe?: RecipeRead) {
     });
   };
 
-  const onClickRemoveCourse = (id: number) => {
+  const handleClickRemoveCourse = (id: number) => {
     setForm({
       ...form,
       course: form.course.filter((course) => course.id !== id),
     });
   };
 
-  const onClickRemovePicture = (id: number) => {
+  const handleClickRemovePicture = (id: number) => {
     setForm({
       ...form,
       course: form.course.map((course) =>
@@ -75,21 +75,21 @@ export function useRecipeForm(recipe?: RecipeRead) {
     });
   };
 
-  const onClickAddCourse = () => {
+  const handleClickAddCourse = () => {
     setForm({
       ...form,
       course: [...form.course, { id: Math.random(), content: '', picture: null, created: false }],
     });
   };
 
-  const onClickThumbnail = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClickThumbnail = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const file = await upload();
     if (!file) return;
     await uploadImage(file);
   };
 
-  const onClickPicture = async (id: number) => {
+  const handleClickPicture = async (id: number) => {
     const file = await upload();
     if (!file) return;
     setSelectedCourseId(id);
@@ -112,15 +112,15 @@ export function useRecipeForm(recipe?: RecipeRead) {
   return {
     form,
     validationForm,
-    onChangeTitle,
-    onChangeDescription,
-    onChangeContent,
-    onClickAddCourse,
-    onClickRemoveCourse,
-    onClickRemovePicture,
-    onClickThumbnail,
-    onClickPicture,
-    onClickIsPublic,
-    onClickIsPrivate,
+    handleChangeTitle,
+    handleChangeDescription,
+    handleChangeContent,
+    handleClickAddCourse,
+    handleClickRemoveCourse,
+    handleClickRemovePicture,
+    handleClickThumbnail,
+    handleClickPicture,
+    handleClickIsPublic,
+    handleClickIsPrivate,
   };
 }

@@ -17,11 +17,11 @@ function RecipeCommentEditor() {
     },
   });
 
-  const onChangeContent = (value: string) => {
+  const handleChangeContent = (value: string) => {
     setContent(value);
   };
 
-  const onSubmitComment = async () => {
+  const handleSubmitComment = async () => {
     await createComment({
       id,
       request: {
@@ -31,7 +31,7 @@ function RecipeCommentEditor() {
     });
   };
 
-  return <CommentEditor onChange={onChangeContent} onConfirm={onSubmitComment} />;
+  return <CommentEditor onChange={handleChangeContent} onConfirm={handleSubmitComment} />;
 }
 
 export default RecipeCommentEditor;

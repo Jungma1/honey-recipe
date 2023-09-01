@@ -33,7 +33,7 @@ function RecipeListTab({ mode }: Props) {
     []
   );
 
-  const onClickTab = (e: React.MouseEvent<HTMLLIElement>, mode: string) => {
+  const handleClickTab = (e: React.MouseEvent<HTMLLIElement>, mode: string) => {
     router.push(`/?mode=${mode}`);
   };
 
@@ -44,7 +44,7 @@ function RecipeListTab({ mode }: Props) {
           <StyledLi
             key={menu.name}
             isActive={menu.mode === mode}
-            onClick={(e) => onClickTab(e, menu.mode)}
+            onClick={(e) => handleClickTab(e, menu.mode)}
           >
             {menu.name}
           </StyledLi>
