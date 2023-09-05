@@ -1,14 +1,19 @@
 import styled from '@emotion/styled';
-import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultRounded';
+import {
+  Add,
+  DisabledByDefaultRounded,
+  KeyboardArrowDownRounded,
+  KeyboardArrowUpRounded,
+  Remove,
+} from '@mui/icons-material';
 import { rem } from 'polished';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { RecipeCourse } from '~/apis/types';
 import { defaultPictureImage } from '~/static';
 import { colors } from '~/utils/colors';
 import Editor from '../common/Editor';
 import LabelGroup from '../common/LabelGroup';
 import AutoImage from '../system/AutoImage';
-import Button from '../system/Button';
 
 interface Props {
   course: RecipeCourse;
@@ -16,7 +21,10 @@ interface Props {
   onChangeContent: (id: number, value: string) => void;
   onClickRemove: (id: number) => void;
   onClickImage: (id: number) => void;
+  onClickAddCourse: (id: number) => void;
   onClickRemoveImage: (id: number) => void;
+  onClickChangeOrderUp: (id: number) => void;
+  onClickChangeOrderDown: (id: number) => void;
 }
 
 function RecipeCourseEditor({
@@ -25,7 +33,10 @@ function RecipeCourseEditor({
   onChangeContent,
   onClickRemove,
   onClickImage,
+  onClickAddCourse,
   onClickRemoveImage,
+  onClickChangeOrderUp,
+  onClickChangeOrderDown,
 }: Props) {
   const [isHover, setIsHover] = useState(false);
 
@@ -34,19 +45,28 @@ function RecipeCourseEditor({
   };
 
   const handleClickPicture = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
     onClickImage(course.id);
   };
 
-  const handleClickRemoveCourse = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const handleClickAddCourse = (e: React.MouseEvent<HTMLDivElement>) => {
+    onClickAddCourse(course.id);
+  };
+
+  const handleClickRemoveCourse = (e: React.MouseEvent<HTMLDivElement>) => {
     onClickRemove(course.id);
   };
 
   const handleClickRemovePicture = (e: React.MouseEvent<SVGSVGElement>) => {
-    e.preventDefault();
     e.stopPropagation();
     onClickRemoveImage(course.id);
+  };
+
+  const handleClickChangeOrderUp = (e: React.MouseEvent<HTMLDivElement>) => {
+    onClickChangeOrderUp(course.id);
+  };
+
+  const handleClickChangeOrderDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    onClickChangeOrderDown(course.id);
   };
 
   return (
@@ -66,9 +86,20 @@ function RecipeCourseEditor({
           </LabelGroup>
         </EditorWrapper>
       </Wrapper>
-      <Button onClick={handleClickRemoveCourse} danger>
-        Step {step} 지우기
-      </Button>
+      <StepWrapper>
+        <StepIcon onClick={handleClickChangeOrderUp}>
+          <KeyboardArrowUpRounded />
+        </StepIcon>
+        <StepIcon onClick={handleClickChangeOrderDown}>
+          <KeyboardArrowDownRounded />
+        </StepIcon>
+        <StepIcon onClick={handleClickAddCourse}>
+          <Add />
+        </StepIcon>
+        <StepIcon onClick={handleClickRemoveCourse}>
+          <Remove />
+        </StepIcon>
+      </StepWrapper>
     </Block>
   );
 }
@@ -86,6 +117,27 @@ const Wrapper = styled.div`
   gap: ${rem(32)};
 `;
 
+const StepWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: ${rem(4)};
+`;
+
+const StepIcon = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${colors.gray6};
+  border-radius: ${rem(4)};
+  border: ${rem(1)} solid ${colors.gray2};
+  cursor: pointer;
+
+  :hover {
+    color: ${colors.primary};
+    border-color: ${colors.primary};
+  }
+`;
+
 const ImageWrapper = styled.div`
   flex: 1;
   display: flex;
@@ -97,7 +149,7 @@ const ImageWrapper = styled.div`
   }
 `;
 
-const ImageRemoveIcon = styled(DisabledByDefaultRoundedIcon)`
+const ImageRemoveIcon = styled(DisabledByDefaultRounded)`
   right: 0;
   width: ${rem(32)};
   height: ${rem(32)};

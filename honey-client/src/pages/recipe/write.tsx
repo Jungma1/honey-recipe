@@ -33,12 +33,15 @@ export default function RecipeWritePage() {
     handleChangeDescription,
     handleChangeContent,
     handleClickAddCourse,
+    handleClickNewCourse,
     handleClickRemoveCourse,
     handleClickRemovePicture,
     handleClickThumbnail,
     handleClickPicture,
     handleClickIsPublic,
     handleClickIsPrivate,
+    handleClickChangeOrderUp,
+    handleClickChangeOrderDown,
   } = useRecipeForm();
 
   const { mutateAsync: createRecipe } = useMutation(postRecipe, {
@@ -83,10 +86,13 @@ export default function RecipeWritePage() {
                   onChangeContent={handleChangeContent}
                   onClickRemove={handleClickRemoveCourse}
                   onClickImage={handleClickPicture}
+                  onClickAddCourse={handleClickAddCourse}
                   onClickRemoveImage={handleClickRemovePicture}
+                  onClickChangeOrderUp={handleClickChangeOrderUp}
+                  onClickChangeOrderDown={handleClickChangeOrderDown}
                 />
               ))}
-              <RecipeCourseAddButton onClick={handleClickAddCourse} />
+              <RecipeCourseAddButton onClick={handleClickNewCourse} />
             </Block>
           </TitleGroup>
         </RecipeForm>

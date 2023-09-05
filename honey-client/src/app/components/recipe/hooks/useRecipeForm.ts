@@ -75,10 +75,51 @@ export function useRecipeForm(recipe?: RecipeRead) {
     });
   };
 
-  const handleClickAddCourse = () => {
+  const handleClickNewCourse = () => {
     setForm({
       ...form,
       course: [...form.course, { id: Math.random(), content: '', picture: null, created: false }],
+    });
+  };
+
+  const handleClickAddCourse = (id: number) => {
+    const index = form.course.findIndex((course) => course.id === id);
+    const tempCourse = form.course;
+    tempCourse.splice(index + 1, 0, {
+      id: Math.random(),
+      content: '',
+      picture: null,
+      created: false,
+    });
+    setForm({
+      ...form,
+      course: tempCourse,
+    });
+  };
+
+  const handleClickChangeOrderUp = (id: number) => {
+    const index = form.course.findIndex((course) => course.id === id);
+    if (index === 0) return;
+
+    const tempCourse = form.course;
+    const findCourse = tempCourse.splice(index, 1);
+    tempCourse.splice(index - 1, 0, findCourse[0]);
+    setForm({
+      ...form,
+      course: tempCourse,
+    });
+  };
+
+  const handleClickChangeOrderDown = (id: number) => {
+    const index = form.course.findIndex((course) => course.id === id);
+    if (index === form.course.length - 1) return;
+
+    const tempCourse = form.course;
+    const findCourse = tempCourse.splice(index, 1);
+    tempCourse.splice(index + 1, 0, findCourse[0]);
+    setForm({
+      ...form,
+      course: tempCourse,
     });
   };
 
@@ -116,11 +157,14 @@ export function useRecipeForm(recipe?: RecipeRead) {
     handleChangeDescription,
     handleChangeContent,
     handleClickAddCourse,
+    handleClickNewCourse,
     handleClickRemoveCourse,
     handleClickRemovePicture,
     handleClickThumbnail,
     handleClickPicture,
     handleClickIsPublic,
     handleClickIsPrivate,
+    handleClickChangeOrderUp,
+    handleClickChangeOrderDown,
   };
 }

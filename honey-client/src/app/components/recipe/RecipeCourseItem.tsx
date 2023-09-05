@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { rem } from 'polished';
 import { RecipeCourse } from '~/apis/types';
+import { defaultPictureImage } from '~/static';
 import { colors } from '~/utils/colors';
 import TitleGroup from '../common/TitleGroup';
 import AutoImage from '../system/AutoImage';
@@ -15,7 +16,7 @@ function RecipeCourseItem({ step, course }: Props) {
     <TitleGroup title={`Step ${step + 1}`}>
       <Block>
         <ImageWrapper>
-          <AutoImage src={course.picture ?? '/test.png'} />
+          <AutoImage src={course.picture ?? defaultPictureImage} />
         </ImageWrapper>
         <Content>{course.content}</Content>
       </Block>

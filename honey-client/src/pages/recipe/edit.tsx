@@ -43,12 +43,15 @@ export default function RecipeEditPage({ recipe }: Props) {
     handleChangeDescription,
     handleChangeContent,
     handleClickAddCourse,
+    handleClickNewCourse,
     handleClickRemoveCourse,
     handleClickRemovePicture,
     handleClickThumbnail,
     handleClickPicture,
     handleClickIsPublic,
     handleClickIsPrivate,
+    handleClickChangeOrderUp,
+    handleClickChangeOrderDown,
   } = useRecipeForm(recipe);
 
   const { mutateAsync: updateRecipe } = useMutation(patchRecipe, {
@@ -96,10 +99,13 @@ export default function RecipeEditPage({ recipe }: Props) {
                   onChangeContent={handleChangeContent}
                   onClickRemove={handleClickRemoveCourse}
                   onClickImage={handleClickPicture}
+                  onClickAddCourse={handleClickAddCourse}
                   onClickRemoveImage={handleClickRemovePicture}
+                  onClickChangeOrderUp={handleClickChangeOrderUp}
+                  onClickChangeOrderDown={handleClickChangeOrderDown}
                 />
               ))}
-              <RecipeCourseAddButton onClick={handleClickAddCourse} />
+              <RecipeCourseAddButton onClick={handleClickNewCourse} />
             </Block>
           </TitleGroup>
         </RecipeForm>
