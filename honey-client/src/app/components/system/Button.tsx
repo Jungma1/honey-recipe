@@ -31,6 +31,10 @@ const StyledButton = styled.button<StyledButtonProps>`
     background-color: ${colors.primaryDark};
   }
 
+  :disabled {
+    cursor: not-allowed;
+  }
+
   ${(props) =>
     props.danger &&
     css`

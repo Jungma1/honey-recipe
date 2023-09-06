@@ -41,10 +41,11 @@ function Setting({ profile }: Props) {
     },
   });
 
-  const { mutateAsync: uploadPicture } = useMutation(patchProfilePicture, {
+  const { mutateAsync: uploadPicture, isLoading } = useMutation(patchProfilePicture, {
     onSuccess: ({ imagePath }) => {
       setPicture(imagePath);
       setUser({ ...profile, picture: imagePath });
+      toast.success('프로필 이미지가 수정되었습니다.');
     },
   });
 
@@ -86,8 +87,8 @@ function Setting({ profile }: Props) {
             <AutoImage src={picture ?? defaultProfileImage} />
           </ImageLeft>
           <ImageRight>
-            <StyledButton onClick={onClickPicture} twoTone>
-              프로필 이미지 업데이트
+            <StyledButton onClick={onClickPicture} disabled={isLoading} twoTone>
+              {!isLoading ? '프로필 이미지 업데이트' : '이미지 업로드 중...'}
             </StyledButton>
             <div>2MB 이내의 JPEG, PNG 형식의 이미지만 업로드 가능합니다.</div>
           </ImageRight>
