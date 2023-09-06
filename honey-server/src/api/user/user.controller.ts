@@ -13,7 +13,7 @@ import { User } from '@prisma/client';
 import { MultiFileTypeValidator } from '~/common/validator/multi-file-type.validator';
 import { AuthUser } from '../auth/decorator/auth-user.decorator';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
-import { UserUpdateDto } from './dto/user-update.dto';
+import { UserUpdateRequestDto } from './dto/user-update-request.dto';
 import { UserService } from './user.service';
 
 @Controller('users')
@@ -22,7 +22,7 @@ export class UserController {
 
   @Patch()
   @UseGuards(JwtAuthGuard)
-  async update(@AuthUser() user: User, @Body() request: UserUpdateDto) {
+  async update(@AuthUser() user: User, @Body() request: UserUpdateRequestDto) {
     return this.userService.updateUser(user, request);
   }
 

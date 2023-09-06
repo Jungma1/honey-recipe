@@ -35,7 +35,8 @@ function Setting({ profile }: Props) {
   });
 
   const { mutateAsync: updateProfile } = useMutation(patchProfile, {
-    onSuccess: () => {
+    onSuccess: (user) => {
+      setUser(user);
       toast.success('프로필 정보가 수정되었습니다.');
     },
   });

@@ -11,7 +11,8 @@ export const getProfile = async () => {
 };
 
 export const patchProfile = async ({ request }: { request: UserUpdateRequest }) => {
-  await client.patch('/api/v1/users', request);
+  const response = await client.patch<User>('/api/v1/users', request);
+  return response.data;
 };
 
 export const postLogout = async () => {

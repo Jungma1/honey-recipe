@@ -3,7 +3,8 @@ import { User } from '@prisma/client';
 import * as mimeTypes from 'mime-types';
 import { FileService } from '~/common/file/file.service';
 import { PrismaService } from '~/common/prisma/prisma.service';
-import { UserUpdateDto } from './dto/user-update.dto';
+import { AuthUserDto } from '../auth/dto/auth-user.dto';
+import { UserUpdateRequestDto } from './dto/user-update-request.dto';
 
 @Injectable()
 export class UserService {
@@ -12,7 +13,7 @@ export class UserService {
     private readonly fileService: FileService,
   ) {}
 
-  async updateUser(user: User, request: UserUpdateDto) {
+  async updateUser(user: User, request: UserUpdateRequestDto) {
     if (request.handle) {
       const exist = await this.prismaService.user.findUnique({
         where: {
@@ -25,7 +26,7 @@ export class UserService {
       }
     }
 
-    await this.prismaService.user.update({
+    const updatedUser = await this.prismaService.user.update({
       where: {
         id: user.id,
       },
@@ -34,6 +35,7 @@ export class UserService {
         handle: request.handle,
       },
     });
+    return new AuthUserDto(updatedUser);
   }
 
   async updateProfileImage(user: User, image: Express.Multer.File) {

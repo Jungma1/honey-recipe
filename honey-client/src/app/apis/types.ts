@@ -74,4 +74,7 @@ export interface ImageUploadResponse {
 
 export interface PaginationRecipe extends Page<Recipe> {}
 
-export type UserUpdateRequest = Pick<User, 'handle' | 'username'>;
+export interface UserUpdateRequest {
+  handle: string;
+  username: string;
+}
