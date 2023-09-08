@@ -103,7 +103,7 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
         )}
         <Wrapper>
           <CreatedAt>{formatDate(comment.createdAt)}</CreatedAt>
-          <Reply onClick={() => setIsReplyOpen(!isReplyOpen)}>답글쓰기</Reply>
+          {user && <Reply onClick={() => setIsReplyOpen(!isReplyOpen)}>답글쓰기</Reply>}
         </Wrapper>
         {isReplyOpen && (
           <RecipeSubCommentEditor

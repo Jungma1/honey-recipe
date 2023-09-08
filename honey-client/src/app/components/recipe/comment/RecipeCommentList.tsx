@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { rem } from 'polished';
 import { RecipeComment } from '~/apis/types';
+import { useUserStore } from '~/stores/user';
 import { colors } from '~/utils/colors';
 import RecipeCommentEditor from './RecipeCommentEditor';
 import RecipeCommentItem from './RecipeCommentItem';
@@ -11,10 +12,12 @@ interface Props {
 }
 
 function RecipeCommentList({ comments, commentCount }: Props) {
+  const { user } = useUserStore();
+
   return (
     <Block>
       <CommentCount>댓글 {commentCount.toLocaleString()}개</CommentCount>
-      <RecipeCommentEditor />
+      {user && <RecipeCommentEditor />}
       <Wrapper>
         {comments.map((comment) => (
           <RecipeCommentItem key={comment.id} comment={comment} />
