@@ -7,7 +7,6 @@ import {
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
-  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -33,8 +32,8 @@ export class RecipeController {
 
   @Get()
   async findAll(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('size', new DefaultValuePipe(10), ParseIntPipe) size: number,
+    @Query('page', new DefaultValuePipe(1)) page: number,
+    @Query('size', new DefaultValuePipe(10)) size: number,
     @Query('mode', new DefaultValuePipe('recent')) mode: string,
     @Body() request: RecipeConditionRequestDto,
   ) {
