@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   MaxFileSizeValidator,
@@ -32,9 +33,9 @@ export class RecipeController {
 
   @Get()
   async findAll(
-    @Query('page', ParseIntPipe) page = 1,
-    @Query('size', ParseIntPipe) size = 10,
-    @Query('mode') mode = 'recent',
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('size', new DefaultValuePipe(10), ParseIntPipe) size: number,
+    @Query('mode', new DefaultValuePipe('recent')) mode: string,
     @Body() request: RecipeConditionRequestDto,
   ) {
     return this.recipeService.findAll(page, size, mode, request.userId);
