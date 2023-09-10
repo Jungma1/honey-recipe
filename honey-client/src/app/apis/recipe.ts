@@ -20,7 +20,7 @@ export const getRecipes = async (page: number, size: number, mode: string, userI
       mode,
     },
   });
-  return { ...response.data, nextPage: page + 1 };
+  return response.data;
 };
 
 export const getRecipe = async (id: number) => {

@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { rem } from 'polished';
 import { useState } from 'react';
 import { Recipe } from '~/apis/types';
+import { defaultPictureImage, defaultProfileImage } from '~/static';
 import { colors } from '~/utils/colors';
 import AutoImage from '../system/AutoImage';
 
@@ -46,7 +47,7 @@ function RecipeBannerItem({ recipe }: Props) {
       <Wrapper>
         <ProfileWrapper>
           <ImageWrapper>
-            <StyledImage src={recipe.user.picture ?? '/test.png'} />
+            <StyledImage src={recipe.user.picture ?? defaultProfileImage} />
           </ImageWrapper>
           <RightWrapper>
             <Username>{recipe.user.username}</Username>
@@ -55,7 +56,7 @@ function RecipeBannerItem({ recipe }: Props) {
         </ProfileWrapper>
         <Description>{recipe.description}</Description>
       </Wrapper>
-      <StyledImage src={recipe.thumbnail ?? '/test.png'} />
+      <StyledImage src={recipe.thumbnail ?? defaultPictureImage} />
     </Block>
   );
 }

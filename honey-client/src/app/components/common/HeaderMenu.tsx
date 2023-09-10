@@ -20,11 +20,12 @@ function HeaderMenu({ isOpen }: Props) {
     } catch (e) {}
   };
 
-  if (!isOpen) return <></>;
+  if (!isOpen) return null;
 
   return (
     <Block>
       <MenuItem onClick={() => router.push(`/@${user?.handle}`)}>내 레시피</MenuItem>
+      <MenuItem onClick={() => router.push('/bookmark')}>북마크</MenuItem>
       <MenuItem onClick={() => router.push('/setting')}>설정</MenuItem>
       <MenuItem onClick={handleClickLogout}>로그아웃</MenuItem>
     </Block>
