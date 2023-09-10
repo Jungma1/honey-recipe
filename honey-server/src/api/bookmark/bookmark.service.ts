@@ -15,17 +15,17 @@ export class BookmarkService {
           userId: user.id,
         },
       }),
-      this.prismaService.recipe.findMany({
-        include: {
-          user: true,
-          recipeStat: true,
-        },
-        where: {
-          recipeBookmark: {
-            every: {
-              userId: user.id,
+      this.prismaService.recipeBookmark.findMany({
+        select: {
+          recipe: {
+            include: {
+              user: true,
+              recipeStat: true,
             },
           },
+        },
+        where: {
+          userId: user.id,
         },
         skip: (page - 1) * size,
         take: size,
@@ -35,7 +35,9 @@ export class BookmarkService {
       }),
     ]);
 
-    const result = bookmarks.map((bookmark) => new RecipeResponseDto(bookmark));
-    return new Page(totalCount, page, size, result);
+    const recipes = bookmarks.map(
+      (bookmark) => new RecipeResponseDto(bookmark.recipe),
+    );
+    return new Page(totalCount, page, size, recipes);
   }
 }
