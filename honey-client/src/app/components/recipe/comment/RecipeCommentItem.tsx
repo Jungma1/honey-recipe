@@ -10,6 +10,7 @@ import { deleteRecipeComment, getRecipeSubComments } from '~/apis/recipe';
 import { RecipeComment } from '~/apis/types';
 import Toggle from '~/components/common/Toggle';
 import AutoImage from '~/components/system/AutoImage';
+import { queryKeys } from '~/constants/queryKeys';
 import { defaultProfileImage } from '~/static';
 import { useModalStore } from '~/stores/modal';
 import { useUserStore } from '~/stores/user';
@@ -38,7 +39,7 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
   const queryClient = useQueryClient();
 
   const { data: subComments } = useQuery(
-    ['comment', comment.id],
+    [queryKeys.comment, comment.id],
     () => getRecipeSubComments(id, comment.id),
     {
       enabled: isSubCommentLoaded,
@@ -47,12 +48,12 @@ function RecipeCommentItem({ comment, isSubComment }: Props) {
 
   const { mutateAsync: deleteComment } = useMutation(deleteRecipeComment, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['recipe', id]);
+      queryClient.invalidateQueries([queryKeys.recipe, id]);
 
       if (comment.id === parentCommentId) {
-        queryClient.invalidateQueries(['comments', id]);
+        queryClient.invalidateQueries([queryKeys.comments, id]);
       } else {
-        queryClient.invalidateQueries(['comment', parentCommentId]);
+        queryClient.invalidateQueries([queryKeys.comment, parentCommentId]);
       }
     },
   });

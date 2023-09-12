@@ -10,6 +10,7 @@ import MainLayout from '~/components/layout/MainLayout';
 import RecipeBannerList from '~/components/recipe/RecipeBannerList';
 import RecipeList from '~/components/recipe/RecipeList';
 import RecipeListTab from '~/components/recipe/RecipeListTab';
+import { queryKeys } from '~/constants/queryKeys';
 import { useInfiniteScroll } from '~/hooks/useInfiniteScroll';
 import { json } from '~/utils/json';
 import { redirect } from '~/utils/router';
@@ -31,7 +32,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
 export default function HomePage({ bestRecipes, recipes, mode }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const { data, isFetched, hasNextPage, fetchNextPage } = useInfiniteQuery(
-    ['recipes', mode],
+    [queryKeys.recipes, mode],
     ({ pageParam }) => getRecipes(pageParam, 10, mode),
     {
       initialData: {

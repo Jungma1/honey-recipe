@@ -9,6 +9,7 @@ import TitleGroup from '~/components/common/TitleGroup';
 import ContentLayout from '~/components/layout/ContentLayout';
 import MainLayout from '~/components/layout/MainLayout';
 import RecipeList from '~/components/recipe/RecipeList';
+import { queryKeys } from '~/constants/queryKeys';
 import { useInfiniteScroll } from '~/hooks/useInfiniteScroll';
 import { json } from '~/utils/json';
 import { redirect } from '~/utils/router';
@@ -26,7 +27,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
 export default function BookmarkPage({ bookmarks }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const { data, isFetched, hasNextPage, fetchNextPage } = useInfiniteQuery(
-    ['bookmarks'],
+    [queryKeys.bookmarks],
     ({ pageParam }) => getBookmarks(pageParam, 10),
     {
       initialData: {

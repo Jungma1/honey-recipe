@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { patchRecipeComment, postRecipeComment } from '~/apis/recipe';
 import CommentEditor from '~/components/common/CommentEditor';
+import { queryKeys } from '~/constants/queryKeys';
 
 interface Props {
   parentCommentId: number;
@@ -32,17 +33,17 @@ function RecipeSubCommentEditor({
   const { mutateAsync: createComment } = useMutation(postRecipeComment, {
     onSuccess: () => {
       onLoaded?.();
-      queryClient.invalidateQueries(['recipe', id]);
-      queryClient.invalidateQueries(['comment', parentCommentId]);
+      queryClient.invalidateQueries([queryKeys.recipe, id]);
+      queryClient.invalidateQueries([queryKeys.comment, parentCommentId]);
     },
   });
 
   const { mutateAsync: updateComment } = useMutation(patchRecipeComment, {
     onSuccess: () => {
       if (targetCommentId === parentCommentId) {
-        queryClient.invalidateQueries(['comments', id]);
+        queryClient.invalidateQueries([queryKeys.comments, id]);
       } else {
-        queryClient.invalidateQueries(['comment', parentCommentId]);
+        queryClient.invalidateQueries([queryKeys.comment, parentCommentId]);
       }
     },
   });

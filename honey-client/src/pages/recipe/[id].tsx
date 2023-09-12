@@ -12,6 +12,7 @@ import RecipeViewerHeader from '~/components/recipe/RecipeViewerHeader';
 import RecipeViewerInteraction from '~/components/recipe/RecipeViewerInteraction';
 import RecipeViewerReaction from '~/components/recipe/RecipeViewerReaction';
 import RecipeCommentList from '~/components/recipe/comment/RecipeCommentList';
+import { queryKeys } from '~/constants/queryKeys';
 import { json } from '~/utils/json';
 import { redirect } from '~/utils/router';
 
@@ -26,7 +27,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
   if (recipe.isPrivate && recipe.user.id !== user?.id) return redirect('/404');
 
   const isOwner = recipe.user.id === user?.id;
-  await queryClient.prefetchQuery(['comments', id], () => getRecipeComments(id));
+  await queryClient.prefetchQuery([queryKeys.comments, id], () => getRecipeComments(id));
 
   return json({ user, id, recipe, isOwner, dehydratedState: dehydrate(queryClient) });
 };
@@ -34,8 +35,8 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
 export default function RecipeDetailPage({ id, recipe, isOwner }: Props) {
   const [{ data }, { data: comments }] = useQueries({
     queries: [
-      { queryKey: ['recipe', id], queryFn: () => getRecipe(id), initialData: recipe },
-      { queryKey: ['comments', id], queryFn: () => getRecipeComments(id) },
+      { queryKey: [queryKeys.recipe, id], queryFn: () => getRecipe(id), initialData: recipe },
+      { queryKey: [queryKeys.comments, id], queryFn: () => getRecipeComments(id) },
     ],
   });
 

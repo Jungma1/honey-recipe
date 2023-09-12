@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { postRecipeComment } from '~/apis/recipe';
 import CommentEditor from '~/components/common/CommentEditor';
+import { queryKeys } from '~/constants/queryKeys';
 
 function RecipeCommentEditor() {
   const router = useRouter();
@@ -12,8 +13,8 @@ function RecipeCommentEditor() {
 
   const { mutateAsync: createComment } = useMutation(postRecipeComment, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['recipe', id]);
-      queryClient.invalidateQueries(['comments', id]);
+      queryClient.invalidateQueries([queryKeys.recipe, id]);
+      queryClient.invalidateQueries([queryKeys.comments, id]);
     },
   });
 
