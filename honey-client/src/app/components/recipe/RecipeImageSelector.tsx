@@ -38,7 +38,7 @@ const Block = styled.div`
 const ButtonGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${rem(4)};
+  gap: ${rem(8)};
 `;
 
 const StyledButton = styled(Button)`

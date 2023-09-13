@@ -81,14 +81,11 @@ export default function RecipeEditPage({ recipe }: Props) {
             <RecipeEditor
               title={form.title}
               imagePath={form.thumbnail}
-              isPrivate={form.isPrivate}
               onClickImage={handleClickThumbnail}
               onClickRemoveImage={handleClickRemoveThumbnail}
               description={form.description}
               onChangeTitle={handleChangeTitle}
               onChangeDescription={handleChangeDescription}
-              onClickIsPublic={handleClickIsPublic}
-              onClickIsPrivate={handleClickIsPrivate}
             />
           </TitleGroup>
           <TitleGroup title="레시피 과정">

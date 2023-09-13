@@ -69,13 +69,10 @@ export default function RecipeWritePage() {
             <RecipeEditor
               title={form.title}
               imagePath={form.thumbnail}
-              isPrivate={form.isPrivate}
               onClickImage={handleClickThumbnail}
               onClickRemoveImage={handleClickRemoveThumbnail}
               onChangeTitle={handleChangeTitle}
               onChangeDescription={handleChangeDescription}
-              onClickIsPublic={handleClickIsPublic}
-              onClickIsPrivate={handleClickIsPrivate}
             />
           </TitleGroup>
           <TitleGroup title="레시피 과정">
