@@ -12,6 +12,7 @@ interface Props {
   imagePath: string | null;
   isPrivate: boolean;
   onClickImage: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onClickRemoveImage: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onChangeTitle: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeDescription: (value: string) => void;
   onClickIsPublic: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -24,6 +25,7 @@ function RecipeEditor({
   imagePath,
   isPrivate,
   onClickImage,
+  onClickRemoveImage,
   onChangeTitle,
   onChangeDescription,
   onClickIsPublic,
@@ -32,7 +34,11 @@ function RecipeEditor({
   return (
     <Block>
       <Info>
-        <RecipeImageSelector imagePath={imagePath} onClickImage={onClickImage} />
+        <RecipeImageSelector
+          imagePath={imagePath}
+          onClickUpload={onClickImage}
+          onClickRemove={onClickRemoveImage}
+        />
         <Wrapper>
           <LabelGroup label="레시피 이름">
             <Input value={title} onChange={onChangeTitle} />

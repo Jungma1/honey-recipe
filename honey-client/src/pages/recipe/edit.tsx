@@ -47,6 +47,7 @@ export default function RecipeEditPage({ recipe }: Props) {
     handleClickRemoveCourse,
     handleClickRemovePicture,
     handleClickThumbnail,
+    handleClickRemoveThumbnail,
     handleClickPicture,
     handleClickIsPublic,
     handleClickIsPrivate,
@@ -82,6 +83,7 @@ export default function RecipeEditPage({ recipe }: Props) {
               imagePath={form.thumbnail}
               isPrivate={form.isPrivate}
               onClickImage={handleClickThumbnail}
+              onClickRemoveImage={handleClickRemoveThumbnail}
               description={form.description}
               onChangeTitle={handleChangeTitle}
               onChangeDescription={handleChangeDescription}

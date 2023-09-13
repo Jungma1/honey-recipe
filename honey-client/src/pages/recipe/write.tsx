@@ -37,6 +37,7 @@ export default function RecipeWritePage() {
     handleClickRemoveCourse,
     handleClickRemovePicture,
     handleClickThumbnail,
+    handleClickRemoveThumbnail,
     handleClickPicture,
     handleClickIsPublic,
     handleClickIsPrivate,
@@ -70,6 +71,7 @@ export default function RecipeWritePage() {
               imagePath={form.thumbnail}
               isPrivate={form.isPrivate}
               onClickImage={handleClickThumbnail}
+              onClickRemoveImage={handleClickRemoveThumbnail}
               onChangeTitle={handleChangeTitle}
               onChangeDescription={handleChangeDescription}
               onClickIsPublic={handleClickIsPublic}

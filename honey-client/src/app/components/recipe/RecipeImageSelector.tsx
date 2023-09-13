@@ -6,16 +6,20 @@ import Button from '../system/Button';
 
 interface Props {
   imagePath: string | null;
-  onClickImage: React.MouseEventHandler<HTMLButtonElement>;
+  onClickUpload: React.MouseEventHandler<HTMLButtonElement>;
+  onClickRemove: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-function RecipeImageSelector({ imagePath, onClickImage }: Props) {
+function RecipeImageSelector({ imagePath, onClickUpload, onClickRemove }: Props) {
   return (
     <Block>
       <AutoImage src={imagePath ?? defaultPictureImage} />
-      <ThumbnailButton onClick={onClickImage} twoTone>
-        썸네일 업로드
-      </ThumbnailButton>
+      <ButtonGroup>
+        <StyledButton onClick={onClickUpload}>이미지 업로드</StyledButton>
+        <StyledButton onClick={onClickRemove} outlined>
+          이미지 삭제
+        </StyledButton>
+      </ButtonGroup>
     </Block>
   );
 }
@@ -27,11 +31,17 @@ const Block = styled.div`
   gap: ${rem(32)};
 
   img {
-    border-radius: ${rem(8)};
+    border-radius: ${rem(4)};
   }
 `;
 
-const ThumbnailButton = styled(Button)`
+const ButtonGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${rem(4)};
+`;
+
+const StyledButton = styled(Button)`
   font-size: ${rem(16)};
 `;
 

@@ -66,15 +66,6 @@ export function useRecipeForm(recipe?: RecipeRead) {
     });
   };
 
-  const handleClickRemovePicture = (id: number) => {
-    setForm({
-      ...form,
-      course: form.course.map((course) =>
-        course.id === id ? { ...course, picture: null } : course
-      ),
-    });
-  };
-
   const handleClickNewCourse = () => {
     setForm({
       ...form,
@@ -130,11 +121,25 @@ export function useRecipeForm(recipe?: RecipeRead) {
     await uploadImage(file);
   };
 
+  const handleClickRemoveThumbnail = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setForm({ ...form, thumbnail: null });
+  };
+
   const handleClickPicture = async (id: number) => {
     const file = await upload();
     if (!file) return;
     setSelectedCourseId(id);
     await uploadImage(file);
+  };
+
+  const handleClickRemovePicture = (id: number) => {
+    setForm({
+      ...form,
+      course: form.course.map((course) =>
+        course.id === id ? { ...course, picture: null } : course
+      ),
+    });
   };
 
   const validationForm = () => {
@@ -161,6 +166,7 @@ export function useRecipeForm(recipe?: RecipeRead) {
     handleClickRemoveCourse,
     handleClickRemovePicture,
     handleClickThumbnail,
+    handleClickRemoveThumbnail,
     handleClickPicture,
     handleClickIsPublic,
     handleClickIsPrivate,
