@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { EditorView, minimalSetup } from 'codemirror';
 import { rem } from 'polished';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { colors } from '~/utils/colors';
 
 interface Props {
@@ -18,19 +18,24 @@ const editorTheme = EditorView.theme({
 });
 
 function Editor({ defaultValue, onChangeValue, ...rest }: Props) {
+  const [isLoaded, setIsLoaded] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
   const onChangeRef = useRef(onChangeValue);
-  const defaultValueRef = useRef(defaultValue);
+
+  useEffect(() => {
+    setIsLoaded(true);
+  }, [setIsLoaded]);
 
   useEffect(() => {
     onChangeRef.current = onChangeValue;
   }, [onChangeValue]);
 
   useEffect(() => {
+    if (!isLoaded) return;
     if (!editorRef.current) return;
 
     const view = new EditorView({
-      doc: defaultValueRef.current,
+      doc: defaultValue,
       parent: editorRef.current,
       extensions: [
         minimalSetup,
@@ -45,7 +50,8 @@ function Editor({ defaultValue, onChangeValue, ...rest }: Props) {
     return () => {
       view.destroy();
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoaded]);
 
   return <Block ref={editorRef} {...rest} />;
 }

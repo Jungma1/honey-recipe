@@ -56,7 +56,7 @@ export interface RecipeRequest {
   description: string;
   thumbnail: string | null;
   isPrivate: boolean;
-  course: RecipeCourse[];
+  courses: RecipeCourse[];
 }
 
 export interface RecipeCreateResponse {

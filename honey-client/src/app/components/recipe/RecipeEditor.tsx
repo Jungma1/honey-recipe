@@ -1,44 +1,66 @@
 import styled from '@emotion/styled';
+import { useMutation } from '@tanstack/react-query';
 import { rem } from 'polished';
+import React from 'react';
+import { postRecipeImage } from '~/apis/recipe';
+import { defaultPictureImage } from '~/static';
+import { useEditorStore } from '~/stores/editor';
+import { upload } from '~/utils/file';
 import Editor from '../common/Editor';
 import LabelGroup from '../common/LabelGroup';
+import AutoImage from '../system/AutoImage';
+import Button from '../system/Button';
 import Input from '../system/Input';
-import RecipeImageSelector from './RecipeImageSelector';
 
-interface Props {
-  title: string;
-  description?: string;
-  imagePath: string | null;
-  onClickImage: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  onClickRemoveImage: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  onChangeTitle: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onChangeDescription: (value: string) => void;
-}
+function RecipeEditor() {
+  const { title, description, thumbnail, setTitle, setDescription, setThumbnail } =
+    useEditorStore();
 
-function RecipeEditor({
-  title,
-  description,
-  imagePath,
-  onClickImage,
-  onClickRemoveImage,
-  onChangeTitle,
-  onChangeDescription,
-}: Props) {
+  const { mutateAsync: uploadThumbnail } = useMutation(postRecipeImage, {
+    onSuccess: ({ imagePath }) => {
+      setThumbnail(imagePath);
+    },
+  });
+
+  const handleChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
+
+  const handleChangeDescription = (description: string) => {
+    setDescription(description);
+  };
+
+  const handleUploadThumbnail = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const file = await upload();
+    if (!file) return;
+    await uploadThumbnail(file);
+  };
+
+  const handleRemoveThumbnail = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setThumbnail(null);
+  };
+
   return (
     <Block>
-      <RecipeImageSelector
-        imagePath={imagePath}
-        onClickUpload={onClickImage}
-        onClickRemove={onClickRemoveImage}
-      />
-      <Wrapper>
+      <ImageWrapper>
+        <AutoImage src={thumbnail ?? defaultPictureImage} />
+        <ButtonGroup>
+          <StyledButton onClick={handleUploadThumbnail}>이미지 업로드</StyledButton>
+          <StyledButton onClick={handleRemoveThumbnail} outlined>
+            이미지 삭제
+          </StyledButton>
+        </ButtonGroup>
+      </ImageWrapper>
+      <InfoWrapper>
         <LabelGroup label="레시피 이름">
-          <Input value={title} onChange={onChangeTitle} />
+          <Input value={title} onChange={handleChangeTitle} />
         </LabelGroup>
         <LabelGroup label="레시피 설명">
-          <Editor onChangeValue={onChangeDescription} defaultValue={description} />
+          <Editor onChangeValue={handleChangeDescription} defaultValue={description} />
         </LabelGroup>
-      </Wrapper>
+      </InfoWrapper>
     </Block>
   );
 }
@@ -48,7 +70,28 @@ const Block = styled.div`
   gap: ${rem(32)};
 `;
 
-const Wrapper = styled.div`
+const ImageWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: ${rem(32)};
+
+  img {
+    border-radius: ${rem(4)};
+  }
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${rem(8)};
+`;
+
+const StyledButton = styled(Button)`
+  font-size: ${rem(16)};
+`;
+
+const InfoWrapper = styled.div`
   flex: 2;
   display: flex;
   flex-direction: column;

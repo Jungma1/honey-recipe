@@ -25,5 +25,5 @@ export class RecipeUpdateRequestDto {
   @ValidateNested({ each: true })
   @Type(() => RecipeCourseUpdateRequestDto)
   @IsArray()
-  course: RecipeCourseUpdateRequestDto[];
+  courses: RecipeCourseUpdateRequestDto[];
 }

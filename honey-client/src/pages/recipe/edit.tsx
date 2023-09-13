@@ -3,7 +3,8 @@ import { useMutation } from '@tanstack/react-query';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { rem } from 'polished';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { toast } from 'react-hot-toast';
 import { withSSR } from '~/apis';
 import { getRecipe, patchRecipe } from '~/apis/recipe';
 import { getProfile } from '~/apis/user';
@@ -15,7 +16,7 @@ import RecipeCourseAddButton from '~/components/recipe/RecipeCourseAddButton';
 import RecipeCourseEditor from '~/components/recipe/RecipeCourseEditor';
 import RecipeEditor from '~/components/recipe/RecipeEditor';
 import RecipeForm from '~/components/recipe/RecipeForm';
-import { useRecipeForm } from '~/components/recipe/hooks/useRecipeForm';
+import { useEditorStore } from '~/stores/editor';
 import { json } from '~/utils/json';
 import { redirect } from '~/utils/router';
 
@@ -36,24 +37,8 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
 
 export default function RecipeEditPage({ recipe }: Props) {
   const router = useRouter();
-  const {
-    form,
-    validationForm,
-    handleChangeTitle,
-    handleChangeDescription,
-    handleChangeContent,
-    handleClickAddCourse,
-    handleClickNewCourse,
-    handleClickRemoveCourse,
-    handleClickRemovePicture,
-    handleClickThumbnail,
-    handleClickRemoveThumbnail,
-    handleClickPicture,
-    handleClickIsPublic,
-    handleClickIsPrivate,
-    handleClickChangeOrderUp,
-    handleClickChangeOrderDown,
-  } = useRecipeForm(recipe);
+  const form = useEditorStore((state) => state.getForm());
+  const { courses, setForm, resetForm } = useEditorStore();
 
   const { mutateAsync: updateRecipe } = useMutation(patchRecipe, {
     onSuccess: () => {
@@ -63,8 +48,10 @@ export default function RecipeEditPage({ recipe }: Props) {
 
   const handleSubmitRecipe = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const isValid = validationForm();
-    if (!isValid) return;
+
+    if (!form.title || !form.description) {
+      return toast.error('레시피 이름 또는 설명을 입력해주세요.');
+    }
 
     await updateRecipe({
       id: recipe.id,
@@ -72,39 +59,28 @@ export default function RecipeEditPage({ recipe }: Props) {
     });
   };
 
+  useEffect(() => {
+    setForm(recipe);
+  }, [recipe, setForm]);
+
+  useEffect(() => {
+    return () => resetForm();
+  }, [resetForm]);
+
   return (
     <MainLayout>
       <Header />
       <ContentLayout>
         <RecipeForm onSubmit={handleSubmitRecipe} buttonText="레시피 수정하기">
           <TitleGroup title="레시피 정보">
-            <RecipeEditor
-              title={form.title}
-              imagePath={form.thumbnail}
-              onClickImage={handleClickThumbnail}
-              onClickRemoveImage={handleClickRemoveThumbnail}
-              description={form.description}
-              onChangeTitle={handleChangeTitle}
-              onChangeDescription={handleChangeDescription}
-            />
+            <RecipeEditor />
           </TitleGroup>
           <TitleGroup title="레시피 과정">
             <Block>
-              {form.course.map((course, index) => (
-                <RecipeCourseEditor
-                  key={course.id}
-                  step={index + 1}
-                  course={course}
-                  onChangeContent={handleChangeContent}
-                  onClickRemove={handleClickRemoveCourse}
-                  onClickImage={handleClickPicture}
-                  onClickAddCourse={handleClickAddCourse}
-                  onClickRemoveImage={handleClickRemovePicture}
-                  onClickChangeOrderUp={handleClickChangeOrderUp}
-                  onClickChangeOrderDown={handleClickChangeOrderDown}
-                />
+              {courses.map((course, index) => (
+                <RecipeCourseEditor key={course.id} step={index} course={course} />
               ))}
-              <RecipeCourseAddButton onClick={handleClickNewCourse} />
+              <RecipeCourseAddButton />
             </Block>
           </TitleGroup>
         </RecipeForm>

@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 import { rem } from 'polished';
+import toast from 'react-hot-toast';
 import { withSSR } from '~/apis';
 import { postRecipe } from '~/apis/recipe';
 import { getProfile } from '~/apis/user';
@@ -14,7 +15,7 @@ import RecipeCourseAddButton from '~/components/recipe/RecipeCourseAddButton';
 import RecipeCourseEditor from '~/components/recipe/RecipeCourseEditor';
 import RecipeEditor from '~/components/recipe/RecipeEditor';
 import RecipeForm from '~/components/recipe/RecipeForm';
-import { useRecipeForm } from '~/components/recipe/hooks/useRecipeForm';
+import { useEditorStore } from '~/stores/editor';
 import { json } from '~/utils/json';
 import { redirect } from '~/utils/router';
 
@@ -26,24 +27,8 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
 
 export default function RecipeWritePage() {
   const router = useRouter();
-  const {
-    form,
-    validationForm,
-    handleChangeTitle,
-    handleChangeDescription,
-    handleChangeContent,
-    handleClickAddCourse,
-    handleClickNewCourse,
-    handleClickRemoveCourse,
-    handleClickRemovePicture,
-    handleClickThumbnail,
-    handleClickRemoveThumbnail,
-    handleClickPicture,
-    handleClickIsPublic,
-    handleClickIsPrivate,
-    handleClickChangeOrderUp,
-    handleClickChangeOrderDown,
-  } = useRecipeForm();
+  const { courses } = useEditorStore();
+  const form = useEditorStore((state) => state.getForm());
 
   const { mutateAsync: createRecipe } = useMutation(postRecipe, {
     onSuccess: ({ id }) => {
@@ -53,8 +38,11 @@ export default function RecipeWritePage() {
 
   const handleSubmitRecipe = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const isValid = validationForm();
-    if (!isValid) return;
+
+    if (!form.title || !form.description) {
+      return toast.error('레시피 이름 또는 설명을 입력해주세요.');
+    }
+
     await createRecipe({
       request: form,
     });
@@ -66,32 +54,14 @@ export default function RecipeWritePage() {
       <ContentLayout>
         <RecipeForm onSubmit={handleSubmitRecipe} buttonText="레시피 작성하기">
           <TitleGroup title="레시피 정보">
-            <RecipeEditor
-              title={form.title}
-              imagePath={form.thumbnail}
-              onClickImage={handleClickThumbnail}
-              onClickRemoveImage={handleClickRemoveThumbnail}
-              onChangeTitle={handleChangeTitle}
-              onChangeDescription={handleChangeDescription}
-            />
+            <RecipeEditor />
           </TitleGroup>
           <TitleGroup title="레시피 과정">
             <Block>
-              {form.course.map((course, index) => (
-                <RecipeCourseEditor
-                  key={course.id}
-                  step={index + 1}
-                  course={course}
-                  onChangeContent={handleChangeContent}
-                  onClickRemove={handleClickRemoveCourse}
-                  onClickImage={handleClickPicture}
-                  onClickAddCourse={handleClickAddCourse}
-                  onClickRemoveImage={handleClickRemovePicture}
-                  onClickChangeOrderUp={handleClickChangeOrderUp}
-                  onClickChangeOrderDown={handleClickChangeOrderDown}
-                />
+              {courses.map((course, index) => (
+                <RecipeCourseEditor key={course.id} step={index} course={course} />
               ))}
-              <RecipeCourseAddButton onClick={handleClickNewCourse} />
+              <RecipeCourseAddButton />
             </Block>
           </TitleGroup>
         </RecipeForm>

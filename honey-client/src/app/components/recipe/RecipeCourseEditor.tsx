@@ -6,74 +6,87 @@ import {
   KeyboardArrowUpRounded,
   Remove,
 } from '@mui/icons-material';
+import { useMutation } from '@tanstack/react-query';
 import { rem } from 'polished';
 import React, { useState } from 'react';
+import { postRecipeImage } from '~/apis/recipe';
 import { RecipeCourse } from '~/apis/types';
 import { defaultPictureImage } from '~/static';
+import { useEditorStore } from '~/stores/editor';
 import { colors } from '~/utils/colors';
+import { upload } from '~/utils/file';
 import Editor from '../common/Editor';
 import LabelGroup from '../common/LabelGroup';
 import AutoImage from '../system/AutoImage';
 
 interface Props {
-  course: RecipeCourse;
   step: number;
-  onChangeContent: (id: number, value: string) => void;
-  onClickRemove: (id: number) => void;
-  onClickImage: (id: number) => void;
-  onClickAddCourse: (id: number) => void;
-  onClickRemoveImage: (id: number) => void;
-  onClickChangeOrderUp: (id: number) => void;
-  onClickChangeOrderDown: (id: number) => void;
+  course: RecipeCourse;
 }
 
-function RecipeCourseEditor({
-  step,
-  course,
-  onChangeContent,
-  onClickRemove,
-  onClickImage,
-  onClickAddCourse,
-  onClickRemoveImage,
-  onClickChangeOrderUp,
-  onClickChangeOrderDown,
-}: Props) {
+function RecipeCourseEditor({ step, course }: Props) {
   const [isHover, setIsHover] = useState(false);
+  const { courses, setCourses, setContent, setPicture, removeCourse } = useEditorStore();
 
-  const handleChangeContentValue = (value: string) => {
-    onChangeContent(course.id, value);
+  const { mutateAsync: uploadPicture } = useMutation(postRecipeImage, {
+    onSuccess: ({ imagePath }) => {
+      setPicture(course.id, imagePath);
+    },
+  });
+
+  const handleChangeContent = (value: string) => {
+    setContent(course.id, value);
   };
 
-  const handleClickPicture = (e: React.MouseEvent<HTMLDivElement>) => {
-    onClickImage(course.id);
+  const handleClickAddCourse = () => {
+    const tempCourses = courses;
+    tempCourses.splice(step + 1, 0, {
+      id: Math.random(),
+      content: '',
+      picture: null,
+      created: false,
+    });
+    setCourses(tempCourses);
   };
 
-  const handleClickAddCourse = (e: React.MouseEvent<HTMLDivElement>) => {
-    onClickAddCourse(course.id);
+  const handleClickRemoveCourse = () => {
+    removeCourse(course.id);
   };
 
-  const handleClickRemoveCourse = (e: React.MouseEvent<HTMLDivElement>) => {
-    onClickRemove(course.id);
+  const handleClickUploadPicture = async () => {
+    const file = await upload();
+    if (!file) return;
+    await uploadPicture(file);
   };
 
   const handleClickRemovePicture = (e: React.MouseEvent<SVGSVGElement>) => {
     e.stopPropagation();
-    onClickRemoveImage(course.id);
+    setPicture(course.id, null);
   };
 
-  const handleClickChangeOrderUp = (e: React.MouseEvent<HTMLDivElement>) => {
-    onClickChangeOrderUp(course.id);
+  const handleClickChangeOrderUp = () => {
+    if (step === 0) return;
+
+    const tempCourses = courses;
+    const [movedCourse] = tempCourses.splice(step, 1);
+    tempCourses.splice(step - 1, 0, movedCourse);
+    setCourses(tempCourses);
   };
 
-  const handleClickChangeOrderDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    onClickChangeOrderDown(course.id);
+  const handleClickChangeOrderDown = () => {
+    if (step === courses.length - 1) return;
+
+    const tempCourses = courses;
+    const [movedCourse] = tempCourses.splice(step, 1);
+    tempCourses.splice(step + 1, 0, movedCourse);
+    setCourses(tempCourses);
   };
 
   return (
     <Block>
       <Wrapper>
         <ImageWrapper
-          onClick={handleClickPicture}
+          onClick={handleClickUploadPicture}
           onMouseOver={() => setIsHover(true)}
           onMouseOut={() => setIsHover(false)}
         >
@@ -81,8 +94,8 @@ function RecipeCourseEditor({
           {course.picture && isHover && <ImageRemoveIcon onClick={handleClickRemovePicture} />}
         </ImageWrapper>
         <EditorWrapper>
-          <LabelGroup label={`Step ${step}`}>
-            <Editor onChangeValue={handleChangeContentValue} defaultValue={course.content} />
+          <LabelGroup label={`Step ${step + 1}`}>
+            <Editor onChangeValue={handleChangeContent} defaultValue={course.content} />
           </LabelGroup>
         </EditorWrapper>
       </Wrapper>

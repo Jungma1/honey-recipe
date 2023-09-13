@@ -3,17 +3,23 @@ import NoteAddRoundedIcon from '@mui/icons-material/NoteAddRounded';
 import { motion } from 'framer-motion';
 import { rem } from 'polished';
 import { useMotionVertical } from '~/hooks/useMotionVertical';
+import { useEditorStore } from '~/stores/editor';
 import { colors } from '~/utils/colors';
 
-interface Props {
-  onClick: () => void;
-}
-
-function RecipeCourseAddButton({ onClick }: Props) {
+function RecipeCourseAddButton() {
+  const { createCourse } = useEditorStore();
   const { y, handleMouseEnter, handleMouseLeave } = useMotionVertical(5);
 
+  const handleClickNewCourse = () => {
+    createCourse();
+  };
+
   return (
-    <Block onClick={onClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <Block
+      onClick={handleClickNewCourse}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <AnimationBlock animate={{ y }}>
         <NoteAddRoundedIcon fontSize="large" />
         <Text>레시피 요리과정 추가</Text>

@@ -77,7 +77,7 @@ export class RecipeService {
         },
       });
 
-      for (const [index, item] of request.course.entries()) {
+      for (const [index, item] of request.courses.entries()) {
         await tx.recipeCourse.create({
           data: {
             recipeId: recipe.id,
@@ -108,7 +108,7 @@ export class RecipeService {
         },
       });
 
-      const course = request.course;
+      const course = request.courses;
 
       if (course.length === 0) {
         await tx.recipeCourse.deleteMany({
