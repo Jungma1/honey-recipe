@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import {
   Add,
-  DisabledByDefaultRounded,
+  ClearRounded,
   KeyboardArrowDownRounded,
   KeyboardArrowUpRounded,
   Remove,
@@ -78,7 +78,7 @@ function RecipeCourseEditor({
           onMouseOut={() => setIsHover(false)}
         >
           <AutoImage src={course.picture ?? defaultPictureImage} />
-          {isHover && <ImageRemoveIcon onClick={handleClickRemovePicture} />}
+          {course.picture && isHover && <ImageRemoveIcon onClick={handleClickRemovePicture} />}
         </ImageWrapper>
         <EditorWrapper>
           <LabelGroup label={`Step ${step}`}>
@@ -141,6 +141,7 @@ const StepIcon = styled.div`
 const ImageWrapper = styled.div`
   flex: 1;
   display: flex;
+  flex-direction: column;
   cursor: pointer;
   position: relative;
 
@@ -149,12 +150,14 @@ const ImageWrapper = styled.div`
   }
 `;
 
-const ImageRemoveIcon = styled(DisabledByDefaultRounded)`
+const ImageRemoveIcon = styled(ClearRounded)`
   right: 0;
   width: ${rem(32)};
   height: ${rem(32)};
   position: absolute;
-  color: ${colors.gray2};
+  color: ${colors.white};
+  background: ${colors.black};
+  border-radius: ${rem(4)};
 `;
 
 const EditorWrapper = styled.div`
