@@ -11,6 +11,7 @@ function ContentLayout({ children }: Props) {
 }
 
 const Block = styled.main`
+  flex: 1;
   padding: ${rem(32)};
 `;
 
