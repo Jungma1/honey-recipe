@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { RecipeCourse, RecipeRead } from '~/apis/types';
 
-interface EditorState {
+interface Form {
   title: string;
   description: string;
   thumbnail: string | null;
@@ -10,9 +10,18 @@ interface EditorState {
   courses: RecipeCourse[] | [];
 }
 
+interface EditorState {
+  title: string;
+  description: string;
+  thumbnail: string | null;
+  isPrivate: boolean;
+  courses: RecipeCourse[] | [];
+  isPublish: boolean;
+}
+
 interface EditorAction {
   resetForm(): void;
-  getForm(): EditorState;
+  getForm(): Form;
   setForm(recipe: RecipeRead): void;
   setTitle(title: string): void;
   setDescription(description: string): void;
@@ -23,6 +32,8 @@ interface EditorAction {
   setPicture(courseId: number, picture: string | null): void;
   createCourse(): void;
   removeCourse(courseId: number): void;
+  openPublish(): void;
+  closePublish(): void;
 }
 
 interface EditorStore extends EditorState, EditorAction {}
@@ -33,6 +44,7 @@ const initialState: EditorState = {
   thumbnail: null,
   isPrivate: false,
   courses: [],
+  isPublish: false,
 };
 
 export const useEditorStore = create<EditorStore>()(
@@ -85,6 +97,12 @@ export const useEditorStore = create<EditorStore>()(
       set((state) => ({
         courses: state.courses.filter((course) => course.id !== courseId),
       }));
+    },
+    openPublish() {
+      set({ isPublish: true });
+    },
+    closePublish() {
+      set({ isPublish: false });
     },
   }))
 );
