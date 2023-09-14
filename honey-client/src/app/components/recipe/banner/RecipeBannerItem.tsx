@@ -3,9 +3,9 @@ import { useRouter } from 'next/router';
 import { rem } from 'polished';
 import { useState } from 'react';
 import { Recipe } from '~/apis/types';
+import AutoImage from '~/components/system/AutoImage';
 import { defaultPictureImage, defaultProfileImage } from '~/static';
 import { colors } from '~/utils/colors';
-import AutoImage from '../system/AutoImage';
 
 interface Props {
   recipe: Recipe;

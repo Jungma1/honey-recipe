@@ -14,10 +14,10 @@ import {
   postRecipeBookmark,
   postRecipeLike,
 } from '~/apis/recipe';
+import Toggle from '~/components/common/Toggle';
 import { useModalStore } from '~/stores/modal';
 import { useUserStore } from '~/stores/user';
 import { colors } from '~/utils/colors';
-import Toggle from '../common/Toggle';
 
 interface Props {
   isLiked: boolean;

@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import { rem } from 'polished';
 import { RecipeCourse } from '~/apis/types';
+import TitleGroup from '~/components/common/TitleGroup';
+import AutoImage from '~/components/system/AutoImage';
 import { defaultPictureImage } from '~/static';
 import { colors } from '~/utils/colors';
-import TitleGroup from '../common/TitleGroup';
-import AutoImage from '../system/AutoImage';
 
 interface Props {
   step: number;

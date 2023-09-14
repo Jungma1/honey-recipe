@@ -6,7 +6,7 @@ import { RecipeRead } from '~/apis/types';
 import { defaultPictureImage, defaultProfileImage } from '~/static';
 import { colors } from '~/utils/colors';
 import { formatNumber } from '~/utils/format';
-import AutoImage from '../system/AutoImage';
+import AutoImage from '../../system/AutoImage';
 
 interface Props {
   recipe: RecipeRead;

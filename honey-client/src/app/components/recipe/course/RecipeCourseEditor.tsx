@@ -11,13 +11,13 @@ import { rem } from 'polished';
 import React, { useState } from 'react';
 import { postRecipeImage } from '~/apis/recipe';
 import { RecipeCourse } from '~/apis/types';
+import Editor from '~/components/common/Editor';
+import LabelGroup from '~/components/common/LabelGroup';
+import AutoImage from '~/components/system/AutoImage';
 import { defaultPictureImage } from '~/static';
 import { useEditorStore } from '~/stores/editor';
 import { colors } from '~/utils/colors';
 import { upload } from '~/utils/file';
-import Editor from '../common/Editor';
-import LabelGroup from '../common/LabelGroup';
-import AutoImage from '../system/AutoImage';
 
 interface Props {
   step: number;
