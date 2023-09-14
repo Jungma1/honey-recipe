@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 import { rem } from 'polished';
+import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { withSSR } from '~/apis';
 import { postRecipe } from '~/apis/recipe';
@@ -27,7 +28,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
 
 export default function RecipeWritePage() {
   const router = useRouter();
-  const { courses } = useEditorStore();
+  const { courses, resetForm } = useEditorStore();
   const form = useEditorStore((state) => state.getForm());
 
   const { mutateAsync: createRecipe } = useMutation(postRecipe, {
@@ -47,6 +48,10 @@ export default function RecipeWritePage() {
       request: form,
     });
   };
+
+  useEffect(() => {
+    return () => resetForm();
+  }, [resetForm]);
 
   return (
     <MainLayout>
