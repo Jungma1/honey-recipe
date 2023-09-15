@@ -47,10 +47,10 @@ function RecipeEditor() {
       <ImageWrapper>
         <AutoImage src={thumbnail ?? defaultPictureImage} />
         <ButtonGroup>
-          <StyledButton onClick={handleUploadThumbnail}>이미지 업로드</StyledButton>
-          <StyledButton onClick={handleRemoveThumbnail} outlined>
+          <Button onClick={handleUploadThumbnail}>이미지 업로드</Button>
+          <Button onClick={handleRemoveThumbnail} outlined>
             이미지 삭제
-          </StyledButton>
+          </Button>
         </ButtonGroup>
       </ImageWrapper>
       <InfoWrapper>
@@ -85,10 +85,6 @@ const ButtonGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${rem(8)};
-`;
-
-const StyledButton = styled(Button)`
-  font-size: ${rem(16)};
 `;
 
 const InfoWrapper = styled.div`

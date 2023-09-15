@@ -5,6 +5,7 @@ import React from 'react';
 import { colors } from '~/utils/colors';
 
 interface StyledButtonProps {
+  size?: 'small' | 'medium' | 'large';
   danger?: boolean;
   twoTone?: boolean;
   outlined?: boolean;
@@ -20,7 +21,7 @@ function Button({ children, ...props }: Props) {
 
 const StyledButton = styled.button<StyledButtonProps>`
   cursor: pointer;
-  font-size: ${rem(14)};
+  font-size: ${rem(16)};
   font-weight: bold;
   padding: ${rem(8)} ${rem(8)};
   border-radius: 4px;
@@ -34,6 +35,18 @@ const StyledButton = styled.button<StyledButtonProps>`
   :disabled {
     cursor: not-allowed;
   }
+
+  ${(props) =>
+    props.size === 'small' &&
+    css`
+      font-size: ${rem(14)};
+    `}
+
+  ${(props) =>
+    props.size === 'large' &&
+    css`
+      font-size: ${rem(18)};
+    `}
 
   ${(props) =>
     props.danger &&

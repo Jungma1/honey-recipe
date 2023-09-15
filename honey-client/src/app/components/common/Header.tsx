@@ -35,7 +35,9 @@ function Header() {
       <StyledLogo onClick={handleClickLogo}>KKULPI</StyledLogo>
       {user ? (
         <Wrapper>
-          <Button onClick={handleClickRecipeWrite}>레시피 작성</Button>
+          <Button size="small" onClick={handleClickRecipeWrite}>
+            레시피 작성
+          </Button>
           <Image
             src={user.picture ?? defaultProfileImage}
             width={32}
@@ -46,7 +48,9 @@ function Header() {
           <HeaderMenu isOpen={isMenuOpen} />
         </Wrapper>
       ) : (
-        <Button onClick={handleClickLogin}>로그인</Button>
+        <Button size="small" onClick={handleClickLogin}>
+          로그인
+        </Button>
       )}
     </StyledHeader>
   );

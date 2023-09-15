@@ -87,10 +87,12 @@ function CommentEditor({
       <Block ref={editorRef} onFocus={() => setIsButtonVisible(true)} />
       {isButtonVisible && (
         <ButtonGroup initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <StyledButton onClick={handleClickCancel} outlined>
+          <StyledButton onClick={handleClickCancel} size="small" outlined>
             취소
           </StyledButton>
-          <StyledButton onClick={handleClickConfirm}>작성</StyledButton>
+          <StyledButton onClick={handleClickConfirm} size="small">
+            작성
+          </StyledButton>
         </ButtonGroup>
       )}
     </Container>

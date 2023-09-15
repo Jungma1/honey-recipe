@@ -104,7 +104,7 @@ function Setting({ profile }: Props) {
             <Input {...handleRegister} />
             {errors.handle && <ErrorMessage>{errors.handle?.message}</ErrorMessage>}
           </LabelGroup>
-          <SubmitButton>정보 수정하기</SubmitButton>
+          <Button>정보 수정하기</Button>
         </StyledForm>
       </TitleGroup>
     </Block>
@@ -151,10 +151,6 @@ const ErrorMessage = styled.span`
   font-size: ${rem(14)};
   font-weight: 600;
   color: ${colors.danger};
-`;
-
-const SubmitButton = styled(Button)`
-  font-size: ${rem(16)};
 `;
 
 export default Setting;

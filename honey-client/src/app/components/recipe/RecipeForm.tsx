@@ -13,7 +13,7 @@ function RecipeForm({ buttonText, onSubmit, children }: Props) {
     <Section>
       <Form onSubmit={onSubmit}>
         {children}
-        <SubmitButton>{buttonText}</SubmitButton>
+        <SubmitButton size="large">{buttonText}</SubmitButton>
       </Form>
     </Section>
   );
@@ -32,7 +32,6 @@ const Form = styled.form`
 
 const SubmitButton = styled(Button)`
   height: ${rem(48)};
-  font-size: ${rem(18)};
 `;
 
 export default RecipeForm;
