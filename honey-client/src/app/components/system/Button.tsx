@@ -23,7 +23,7 @@ const StyledButton = styled.button<StyledButtonProps>`
   cursor: pointer;
   font-size: ${rem(16)};
   font-weight: bold;
-  padding: ${rem(8)} ${rem(8)};
+  padding: ${rem(8)} ${rem(12)};
   border-radius: 4px;
   color: ${colors.white};
   background-color: ${colors.primary};

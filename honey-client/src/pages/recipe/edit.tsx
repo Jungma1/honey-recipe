@@ -14,6 +14,7 @@ import ContentLayout from '~/components/layout/ContentLayout';
 import MainLayout from '~/components/layout/MainLayout';
 import RecipeCourseAddButton from '~/components/recipe/course/RecipeCourseAddButton';
 import RecipeCourseEditor from '~/components/recipe/course/RecipeCourseEditor';
+import RecipePublish from '~/components/recipe/publish/RecipePublish';
 import RecipeEditor from '~/components/recipe/RecipeEditor';
 import RecipeForm from '~/components/recipe/RecipeForm';
 import { useEditorStore } from '~/stores/editor';
@@ -38,7 +39,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
 export default function RecipeEditPage({ recipe }: Props) {
   const router = useRouter();
   const form = useEditorStore((state) => state.getForm());
-  const { courses, setForm, resetForm } = useEditorStore();
+  const { courses, setForm, resetForm, openPublish } = useEditorStore();
 
   const { mutateAsync: updateRecipe } = useMutation(patchRecipe, {
     onSuccess: () => {
@@ -52,11 +53,7 @@ export default function RecipeEditPage({ recipe }: Props) {
     if (!form.title || !form.description) {
       return toast.error('레시피 이름 또는 설명을 입력해주세요.');
     }
-
-    await updateRecipe({
-      id: recipe.id,
-      request: form,
-    });
+    openPublish();
   };
 
   useEffect(() => {
@@ -85,6 +82,7 @@ export default function RecipeEditPage({ recipe }: Props) {
           </TitleGroup>
         </RecipeForm>
       </ContentLayout>
+      <RecipePublish />
     </MainLayout>
   );
 }
