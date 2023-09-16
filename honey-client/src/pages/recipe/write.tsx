@@ -16,7 +16,7 @@ import RecipeCourseAddButton from '~/components/recipe/course/RecipeCourseAddBut
 import RecipeCourseEditor from '~/components/recipe/course/RecipeCourseEditor';
 import RecipePublish from '~/components/recipe/publish/RecipePublish';
 import RecipeEditor from '~/components/recipe/RecipeEditor';
-import RecipeForm from '~/components/recipe/RecipeForm';
+import RecipeTemplate from '~/components/recipe/RecipeTemplate';
 import { useEditorStore } from '~/stores/editor';
 import { json } from '~/utils/json';
 import { redirect } from '~/utils/router';
@@ -38,9 +38,7 @@ export default function RecipeWritePage() {
     },
   });
 
-  const handleSubmitRecipe = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const handleClickButton = () => {
     if (!form.title || !form.description) {
       return toast.error('레시피 이름 또는 설명을 입력해주세요.');
     }
@@ -61,7 +59,7 @@ export default function RecipeWritePage() {
     <MainLayout>
       <Header />
       <ContentLayout>
-        <RecipeForm onSubmit={handleSubmitRecipe} buttonText="레시피 작성하기">
+        <RecipeTemplate buttonText="레시피 작성하기" onClickButton={handleClickButton}>
           <TitleGroup title="레시피 정보">
             <RecipeEditor />
           </TitleGroup>
@@ -73,9 +71,9 @@ export default function RecipeWritePage() {
               <RecipeCourseAddButton />
             </Block>
           </TitleGroup>
-        </RecipeForm>
+        </RecipeTemplate>
+        <RecipePublish onConfirm={handleWriteRecipe} />
       </ContentLayout>
-      <RecipePublish onConfirm={handleWriteRecipe} />
     </MainLayout>
   );
 }

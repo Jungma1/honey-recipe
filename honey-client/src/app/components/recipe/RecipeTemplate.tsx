@@ -3,18 +3,20 @@ import { rem } from 'polished';
 import Button from '../system/Button';
 
 interface Props {
-  buttonText: string;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   children: React.ReactNode;
+  buttonText: string;
+  onClickButton(): void;
 }
 
-function RecipeForm({ buttonText, onSubmit, children }: Props) {
+function RecipeTemplate({ buttonText, onClickButton, children }: Props) {
   return (
     <Section>
-      <Form onSubmit={onSubmit}>
+      <Wrapper>
         {children}
-        <SubmitButton size="large">{buttonText}</SubmitButton>
-      </Form>
+        <SubmitButton size="large" onClick={onClickButton}>
+          {buttonText}
+        </SubmitButton>
+      </Wrapper>
     </Section>
   );
 }
@@ -24,7 +26,7 @@ const Section = styled.section`
   flex-direction: column;
 `;
 
-const Form = styled.form`
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${rem(64)};
@@ -34,4 +36,4 @@ const SubmitButton = styled(Button)`
   height: ${rem(48)};
 `;
 
-export default RecipeForm;
+export default RecipeTemplate;
