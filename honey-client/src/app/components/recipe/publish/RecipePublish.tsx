@@ -26,24 +26,22 @@ function RecipePublish({ isEdit, onConfirm }: Props) {
   return (
     <AnimatePresence>
       {isPublish && (
-        <>
+        <Block>
           <Fill initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
-          <Block>
-            <Wrapper initial={{ y: 20 }} animate={{ y: 0 }} exit={{ height: 0 }}>
-              <Content>
-                <Selector>
-                  <PublishPrivacySelector />
-                </Selector>
-                <ButtonGroup>
-                  <Button onClick={handleClickClosePublish} outlined>
-                    취소
-                  </Button>
-                  <Button onClick={onConfirm}>{isEdit ? '수정하기' : '작성하기'}</Button>
-                </ButtonGroup>
-              </Content>
-            </Wrapper>
-          </Block>
-        </>
+          <Wrapper initial={{ y: 20 }} animate={{ y: 0 }} exit={{ height: 0 }}>
+            <Content>
+              <Selector>
+                <PublishPrivacySelector />
+              </Selector>
+              <ButtonGroup>
+                <Button onClick={handleClickClosePublish} outlined>
+                  취소
+                </Button>
+                <Button onClick={onConfirm}>{isEdit ? '수정하기' : '작성하기'}</Button>
+              </ButtonGroup>
+            </Content>
+          </Wrapper>
+        </Block>
       )}
     </AnimatePresence>
   );
