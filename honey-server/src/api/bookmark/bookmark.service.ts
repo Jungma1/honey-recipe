@@ -13,6 +13,17 @@ export class BookmarkService {
       this.prismaService.recipeBookmark.count({
         where: {
           userId: user.id,
+          recipe: {
+            OR: [
+              {
+                isPrivate: false,
+              },
+              {
+                userId: user.id,
+                isPrivate: true,
+              },
+            ],
+          },
         },
       }),
       this.prismaService.recipeBookmark.findMany({
@@ -26,6 +37,17 @@ export class BookmarkService {
         },
         where: {
           userId: user.id,
+          recipe: {
+            OR: [
+              {
+                isPrivate: false,
+              },
+              {
+                userId: user.id,
+                isPrivate: true,
+              },
+            ],
+          },
         },
         skip: (page - 1) * size,
         take: size,
