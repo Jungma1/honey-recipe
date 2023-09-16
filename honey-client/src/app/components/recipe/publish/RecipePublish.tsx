@@ -5,8 +5,14 @@ import { useEffect } from 'react';
 import Button from '~/components/system/Button';
 import { useEditorStore } from '~/stores/editor';
 import { colors } from '~/utils/colors';
+import PublishPrivacySelector from './PublishPrivacySelector';
 
-function RecipePublish() {
+interface Props {
+  isEdit?: boolean;
+  onConfirm(): void;
+}
+
+function RecipePublish({ isEdit, onConfirm }: Props) {
   const { isPublish, closePublish } = useEditorStore();
 
   const handleClickClosePublish = () => {
@@ -25,11 +31,14 @@ function RecipePublish() {
           <Block>
             <Wrapper initial={{ y: 20 }} animate={{ y: 0 }} exit={{ height: 0 }}>
               <Content>
+                <Selector>
+                  <PublishPrivacySelector />
+                </Selector>
                 <ButtonGroup>
                   <Button onClick={handleClickClosePublish} outlined>
                     취소
                   </Button>
-                  <Button>수정하기</Button>
+                  <Button onClick={onConfirm}>{isEdit ? '수정하기' : '작성하기'}</Button>
                 </ButtonGroup>
               </Content>
             </Wrapper>
@@ -69,6 +78,12 @@ const Content = styled.div`
   max-width: 768px;
   margin: auto;
   padding: ${rem(32)} ${rem(16)};
+`;
+
+const Selector = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: ${rem(48)};
 `;
 
 const ButtonGroup = styled.div`

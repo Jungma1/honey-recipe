@@ -56,6 +56,13 @@ export default function RecipeEditPage({ recipe }: Props) {
     openPublish();
   };
 
+  const handleUpdateRecipe = () => {
+    updateRecipe({
+      id: recipe.id,
+      request: form,
+    });
+  };
+
   useEffect(() => {
     setForm(recipe);
   }, [recipe, setForm]);
@@ -82,7 +89,7 @@ export default function RecipeEditPage({ recipe }: Props) {
           </TitleGroup>
         </RecipeForm>
       </ContentLayout>
-      <RecipePublish />
+      <RecipePublish onConfirm={handleUpdateRecipe} isEdit />
     </MainLayout>
   );
 }

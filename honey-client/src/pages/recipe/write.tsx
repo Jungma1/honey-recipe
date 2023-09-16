@@ -47,6 +47,12 @@ export default function RecipeWritePage() {
     openPublish();
   };
 
+  const handleWriteRecipe = () => {
+    createRecipe({
+      request: form,
+    });
+  };
+
   useEffect(() => {
     return () => resetForm();
   }, [resetForm]);
@@ -69,7 +75,7 @@ export default function RecipeWritePage() {
           </TitleGroup>
         </RecipeForm>
       </ContentLayout>
-      <RecipePublish />
+      <RecipePublish onConfirm={handleWriteRecipe} />
     </MainLayout>
   );
 }
