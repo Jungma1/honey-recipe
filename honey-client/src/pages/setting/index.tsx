@@ -1,14 +1,12 @@
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
+import { GetServerSidePropsContext } from 'next';
 import { withSSR } from '~/apis';
 import { getProfile } from '~/apis/user';
 import Header from '~/components/common/Header';
 import ContentLayout from '~/components/layout/ContentLayout';
 import MainLayout from '~/components/layout/MainLayout';
-import Setting from '~/components/setting/Setting';
+import SettingProfile from '~/components/setting/SettingProfile';
 import { json } from '~/utils/json';
 import { redirect } from '~/utils/router';
-
-interface Props extends InferGetServerSidePropsType<typeof getServerSideProps> {}
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
   const user = await withSSR(() => getProfile(), context);
@@ -16,12 +14,12 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
   return json({ user });
 };
 
-export default function SettingPage({ user }: Props) {
+export default function SettingPage() {
   return (
     <MainLayout>
       <Header />
       <ContentLayout>
-        <Setting profile={user} />
+        <SettingProfile />
       </ContentLayout>
     </MainLayout>
   );

@@ -12,13 +12,9 @@ import TitleGroup from '../common/TitleGroup';
 import AutoImage from '../system/AutoImage';
 import Button from '../system/Button';
 
-interface Props {
-  defaultImage: string | null;
-}
-
-function SettingProfileImage({ defaultImage }: Props) {
-  const { setUser } = useUserStore();
-  const [profileImage, setProfileImage] = useState(defaultImage);
+function SettingProfileImage() {
+  const { user, setUser } = useUserStore();
+  const [profileImage, setProfileImage] = useState(user?.picture);
 
   const { mutateAsync: updateProfileImage, isLoading } = useMutation(patchProfileImage, {
     onSuccess: (user) => {

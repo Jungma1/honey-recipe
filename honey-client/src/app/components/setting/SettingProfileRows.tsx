@@ -2,8 +2,7 @@ import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
 import { rem } from 'polished';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-hot-toast';
-import { User } from '~/apis/types';
+import toast from 'react-hot-toast';
 import { patchProfile } from '~/apis/user';
 import { useUserStore } from '~/stores/user';
 import { colors } from '~/utils/colors';
@@ -11,22 +10,17 @@ import LabelGroup from '../common/LabelGroup';
 import TitleGroup from '../common/TitleGroup';
 import Button from '../system/Button';
 import Input from '../system/Input';
-import SettingProfileImage from './SettingProfileImage';
 
-interface Props {
-  profile: User;
-}
-
-function Setting({ profile }: Props) {
-  const { setUser } = useUserStore();
+function SettingProfileRows() {
+  const { user, setUser } = useUserStore();
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm({
     defaultValues: {
-      handle: profile.handle,
-      username: profile.username,
+      handle: user?.handle ?? '',
+      username: user?.username ?? '',
     },
   });
 
@@ -62,30 +56,21 @@ function Setting({ profile }: Props) {
   });
 
   return (
-    <Block>
-      <SettingProfileImage defaultImage={profile.picture} />
-      <TitleGroup title="프로필 정보">
-        <StyledForm onSubmit={handleSubmitProfile}>
-          <LabelGroup label="사용자 이름">
-            <Input {...usernameRegister} />
-            {errors.username && <ErrorMessage>{errors.username?.message}</ErrorMessage>}
-          </LabelGroup>
-          <LabelGroup label="사용자 URL">
-            <Input {...handleRegister} />
-            {errors.handle && <ErrorMessage>{errors.handle?.message}</ErrorMessage>}
-          </LabelGroup>
-          <Button>정보 수정하기</Button>
-        </StyledForm>
-      </TitleGroup>
-    </Block>
+    <TitleGroup title="프로필 정보">
+      <StyledForm onSubmit={handleSubmitProfile}>
+        <LabelGroup label="사용자 이름">
+          <Input {...usernameRegister} />
+          {errors.username && <ErrorMessage>{errors.username?.message}</ErrorMessage>}
+        </LabelGroup>
+        <LabelGroup label="사용자 URL">
+          <Input {...handleRegister} />
+          {errors.handle && <ErrorMessage>{errors.handle?.message}</ErrorMessage>}
+        </LabelGroup>
+        <Button>정보 수정하기</Button>
+      </StyledForm>
+    </TitleGroup>
   );
 }
-
-const Block = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${rem(64)};
-`;
 
 const StyledForm = styled.form`
   display: flex;
@@ -100,4 +85,4 @@ const ErrorMessage = styled.span`
   color: ${colors.danger};
 `;
 
-export default Setting;
+export default SettingProfileRows;
