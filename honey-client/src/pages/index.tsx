@@ -36,7 +36,7 @@ export default function HomePage({ bestRecipes, recipes, mode }: Props) {
     ({ pageParam }) => getRecipes(pageParam, 10, mode),
     {
       initialData: {
-        pageParams: [undefined],
+        pageParams: [1],
         pages: [recipes],
       },
       getNextPageParam: (lastPage) => (!lastPage.isLast ? lastPage.page + 1 : undefined),

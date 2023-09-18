@@ -10,7 +10,7 @@ export interface Page<T> {
 export interface User {
   id: number;
   handle: string;
-  picture: string;
+  picture: string | null;
   username: string;
 }
 

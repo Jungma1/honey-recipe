@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { User } from '~/apis/types';
-import { patchProfile, patchProfilePicture } from '~/apis/user';
+import { deleteProfileImage, patchProfile, patchProfileImage } from '~/apis/user';
 import { defaultProfileImage } from '~/static';
 import { useUserStore } from '~/stores/user';
 import { colors } from '~/utils/colors';
@@ -22,7 +22,7 @@ interface Props {
 
 function Setting({ profile }: Props) {
   const { setUser } = useUserStore();
-  const [picture, setPicture] = useState(profile.picture);
+  const [profileImage, setProfileImage] = useState(profile.picture);
   const {
     register,
     formState: { errors },
@@ -41,18 +41,29 @@ function Setting({ profile }: Props) {
     },
   });
 
-  const { mutateAsync: uploadPicture, isLoading } = useMutation(patchProfilePicture, {
+  const { mutateAsync: updateProfileImage, isLoading } = useMutation(patchProfileImage, {
     onSuccess: ({ imagePath }) => {
-      setPicture(imagePath);
+      setProfileImage(imagePath);
       setUser({ ...profile, picture: imagePath });
       toast.success('프로필 이미지가 수정되었습니다.');
     },
   });
 
-  const onClickPicture = async () => {
+  const { mutateAsync: removeProfileImage } = useMutation(deleteProfileImage, {
+    onSuccess: () => {
+      setProfileImage(null);
+      setUser({ ...profile, picture: null });
+    },
+  });
+
+  const onClickUpdateProfileImage = async () => {
     const file = await upload();
     if (!file) return;
-    await uploadPicture(file);
+    await updateProfileImage(file);
+  };
+
+  const onClickRemoveProfileImage = async () => {
+    await removeProfileImage();
   };
 
   const onSubmitProfile = handleSubmit(async (request) => {
@@ -84,12 +95,17 @@ function Setting({ profile }: Props) {
       <TitleGroup title="프로필 이미지">
         <ImageWrapper>
           <ImageLeft>
-            <AutoImage src={picture ?? defaultProfileImage} />
+            <AutoImage src={profileImage ?? defaultProfileImage} />
           </ImageLeft>
           <ImageRight>
-            <StyledButton onClick={onClickPicture} disabled={isLoading} twoTone>
-              {!isLoading ? '프로필 이미지 업데이트' : '이미지 업로드 중...'}
-            </StyledButton>
+            <ButtonGroup>
+              <Button onClick={onClickUpdateProfileImage} disabled={isLoading}>
+                {!isLoading ? '프로필 이미지 업데이트' : '이미지 업로드 중...'}
+              </Button>
+              <Button onClick={onClickRemoveProfileImage} outlined>
+                이미지 삭제
+              </Button>
+            </ButtonGroup>
             <div>2MB 이내의 JPEG, PNG 형식의 이미지만 업로드 가능합니다.</div>
           </ImageRight>
         </ImageWrapper>
@@ -130,8 +146,9 @@ const ImageLeft = styled.div`
   }
 `;
 
-const StyledButton = styled(Button)`
-  font-size: ${rem(16)};
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: ${rem(8)};
   margin-bottom: ${rem(16)};
 `;
 

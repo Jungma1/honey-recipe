@@ -19,7 +19,12 @@ export const postLogout = async () => {
   await client.post('/api/v1/auth/logout');
 };
 
-export const patchProfilePicture = async (image: File) => {
+export const deleteProfileImage = async () => {
+  const response = await client.delete('/api/v1/users/picture');
+  return response.data;
+};
+
+export const patchProfileImage = async (image: File) => {
   const formData = new FormData();
   formData.append('image', image);
 
