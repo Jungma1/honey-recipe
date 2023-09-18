@@ -38,6 +38,17 @@ export class UserService {
     return new AuthUserDto(updatedUser);
   }
 
+  async deleteProfileImage(user: User) {
+    await this.prismaService.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        picture: null,
+      },
+    });
+  }
+
   async updateProfileImage(user: User, image: Express.Multer.File) {
     const key = await this.fileService.generateKey({
       id: user.id,

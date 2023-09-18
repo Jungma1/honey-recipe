@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   MaxFileSizeValidator,
   ParseFilePipe,
   Patch,
@@ -24,6 +25,12 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async update(@AuthUser() user: User, @Body() request: UserUpdateRequestDto) {
     return this.userService.updateUser(user, request);
+  }
+
+  @Delete('picture')
+  @UseGuards(JwtAuthGuard)
+  async deleteProfileImage(@AuthUser() user: User) {
+    return this.userService.deleteProfileImage(user);
   }
 
   @Patch('picture')
