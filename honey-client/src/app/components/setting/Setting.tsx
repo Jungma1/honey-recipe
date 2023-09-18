@@ -1,20 +1,17 @@
 import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
 import { rem } from 'polished';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { User } from '~/apis/types';
-import { deleteProfileImage, patchProfile, patchProfileImage } from '~/apis/user';
-import { defaultProfileImage } from '~/static';
+import { patchProfile } from '~/apis/user';
 import { useUserStore } from '~/stores/user';
 import { colors } from '~/utils/colors';
-import { upload } from '~/utils/file';
 import LabelGroup from '../common/LabelGroup';
 import TitleGroup from '../common/TitleGroup';
-import AutoImage from '../system/AutoImage';
 import Button from '../system/Button';
 import Input from '../system/Input';
+import SettingProfileImage from './SettingProfileImage';
 
 interface Props {
   profile: User;
@@ -22,7 +19,6 @@ interface Props {
 
 function Setting({ profile }: Props) {
   const { setUser } = useUserStore();
-  const [profileImage, setProfileImage] = useState(profile.picture);
   const {
     register,
     formState: { errors },
@@ -40,31 +36,6 @@ function Setting({ profile }: Props) {
       toast.success('프로필 정보가 수정되었습니다.');
     },
   });
-
-  const { mutateAsync: updateProfileImage, isLoading } = useMutation(patchProfileImage, {
-    onSuccess: (user) => {
-      setUser(user);
-      setProfileImage(user.picture);
-      toast.success('프로필 이미지가 수정되었습니다.');
-    },
-  });
-
-  const { mutateAsync: removeProfileImage } = useMutation(deleteProfileImage, {
-    onSuccess: (user) => {
-      setUser(user);
-      setProfileImage(null);
-    },
-  });
-
-  const handleClickUpdateProfileImage = async () => {
-    const file = await upload();
-    if (!file) return;
-    await updateProfileImage(file);
-  };
-
-  const handleClickRemoveProfileImage = async () => {
-    await removeProfileImage();
-  };
 
   const handleSubmitProfile = handleSubmit(async (request) => {
     await updateProfile({
@@ -92,24 +63,7 @@ function Setting({ profile }: Props) {
 
   return (
     <Block>
-      <TitleGroup title="프로필 이미지">
-        <ImageWrapper>
-          <ImageLeft>
-            <AutoImage src={profileImage ?? defaultProfileImage} />
-          </ImageLeft>
-          <ImageRight>
-            <ButtonGroup>
-              <Button onClick={handleClickUpdateProfileImage} disabled={isLoading}>
-                {!isLoading ? '프로필 이미지 업데이트' : '이미지 업로드 중...'}
-              </Button>
-              <Button onClick={handleClickRemoveProfileImage} outlined>
-                이미지 삭제
-              </Button>
-            </ButtonGroup>
-            <div>2MB 이내의 JPEG, PNG 형식의 이미지만 업로드 가능합니다.</div>
-          </ImageRight>
-        </ImageWrapper>
-      </TitleGroup>
+      <SettingProfileImage defaultImage={profile.picture} />
       <TitleGroup title="프로필 정보">
         <StyledForm onSubmit={handleSubmitProfile}>
           <LabelGroup label="사용자 이름">
@@ -131,30 +85,6 @@ const Block = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${rem(64)};
-`;
-
-const ImageWrapper = styled.div`
-  display: flex;
-  gap: ${rem(32)};
-`;
-
-const ImageLeft = styled.div`
-  flex: 1;
-
-  img {
-    border-radius: ${rem(4)};
-  }
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: ${rem(8)};
-  margin-bottom: ${rem(16)};
-`;
-
-const ImageRight = styled.div`
-  flex: 3;
-  color: ${colors.gray9};
 `;
 
 const StyledForm = styled.form`
