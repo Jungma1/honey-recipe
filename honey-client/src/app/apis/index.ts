@@ -9,7 +9,7 @@ const createClient = () => {
 
   _client.interceptors.response.use(
     (response) => response,
-    (error) => error.response
+    (error) => Promise.reject(error.response)
   );
   return _client;
 };
