@@ -56,17 +56,17 @@ function Setting({ profile }: Props) {
     },
   });
 
-  const onClickUpdateProfileImage = async () => {
+  const handleClickUpdateProfileImage = async () => {
     const file = await upload();
     if (!file) return;
     await updateProfileImage(file);
   };
 
-  const onClickRemoveProfileImage = async () => {
+  const handleClickRemoveProfileImage = async () => {
     await removeProfileImage();
   };
 
-  const onSubmitProfile = handleSubmit(async (request) => {
+  const handleSubmitProfile = handleSubmit(async (request) => {
     await updateProfile({
       request,
     });
@@ -99,10 +99,10 @@ function Setting({ profile }: Props) {
           </ImageLeft>
           <ImageRight>
             <ButtonGroup>
-              <Button onClick={onClickUpdateProfileImage} disabled={isLoading}>
+              <Button onClick={handleClickUpdateProfileImage} disabled={isLoading}>
                 {!isLoading ? '프로필 이미지 업데이트' : '이미지 업로드 중...'}
               </Button>
-              <Button onClick={onClickRemoveProfileImage} outlined>
+              <Button onClick={handleClickRemoveProfileImage} outlined>
                 이미지 삭제
               </Button>
             </ButtonGroup>
@@ -111,7 +111,7 @@ function Setting({ profile }: Props) {
         </ImageWrapper>
       </TitleGroup>
       <TitleGroup title="프로필 정보">
-        <StyledForm onSubmit={onSubmitProfile}>
+        <StyledForm onSubmit={handleSubmitProfile}>
           <LabelGroup label="사용자 이름">
             <Input {...usernameRegister} />
             {errors.username && <ErrorMessage>{errors.username?.message}</ErrorMessage>}
