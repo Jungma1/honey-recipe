@@ -42,17 +42,17 @@ function Setting({ profile }: Props) {
   });
 
   const { mutateAsync: updateProfileImage, isLoading } = useMutation(patchProfileImage, {
-    onSuccess: ({ imagePath }) => {
-      setProfileImage(imagePath);
-      setUser({ ...profile, picture: imagePath });
+    onSuccess: (user) => {
+      setUser(user);
+      setProfileImage(user.picture);
       toast.success('프로필 이미지가 수정되었습니다.');
     },
   });
 
   const { mutateAsync: removeProfileImage } = useMutation(deleteProfileImage, {
-    onSuccess: () => {
+    onSuccess: (user) => {
+      setUser(user);
       setProfileImage(null);
-      setUser({ ...profile, picture: null });
     },
   });
 
