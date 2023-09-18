@@ -1,10 +1,20 @@
 import axios from 'axios';
 import { GetServerSidePropsContext } from 'next';
 
-export const client = axios.create({
-  withCredentials: true,
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
-});
+const createClient = () => {
+  const _client = axios.create({
+    withCredentials: true,
+    baseURL: process.env.NEXT_PUBLIC_API_URL,
+  });
+
+  _client.interceptors.response.use(
+    (response) => response,
+    (error) => error.response
+  );
+  return _client;
+};
+
+export const client = createClient();
 
 export const withSSR = async <T>(fn: () => Promise<T>, context: GetServerSidePropsContext) => {
   client.defaults.headers['Authorization'] = '';
