@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
 import { rem } from 'polished';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { patchProfile } from '~/apis/user';
@@ -15,6 +16,7 @@ function SettingProfileRows() {
   const { user, setUser } = useUserStore();
   const {
     register,
+    setValue,
     formState: { errors },
     handleSubmit,
   } = useForm({
@@ -23,6 +25,12 @@ function SettingProfileRows() {
       username: user?.username ?? '',
     },
   });
+
+  useEffect(() => {
+    if (!user) return;
+    setValue('handle', user.handle);
+    setValue('username', user.username);
+  }, [user]);
 
   const { mutateAsync: updateProfile } = useMutation(patchProfile, {
     onSuccess: (user) => {
