@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
 import { rem } from 'polished';
-import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { deleteProfileImage, patchProfileImage } from '~/apis/user';
 import { defaultProfileImage } from '~/static';
@@ -14,12 +13,10 @@ import Button from '../system/Button';
 
 function SettingProfileImage() {
   const { user, setUser } = useUserStore();
-  const [profileImage, setProfileImage] = useState(user?.picture);
 
   const { mutateAsync: updateProfileImage, isLoading } = useMutation(patchProfileImage, {
     onSuccess: (user) => {
       setUser(user);
-      setProfileImage(user.picture);
       toast.success('프로필 이미지가 수정되었습니다.');
     },
   });
@@ -27,7 +24,6 @@ function SettingProfileImage() {
   const { mutateAsync: removeProfileImage } = useMutation(deleteProfileImage, {
     onSuccess: (user) => {
       setUser(user);
-      setProfileImage(null);
     },
   });
 
@@ -45,7 +41,7 @@ function SettingProfileImage() {
     <TitleGroup title="프로필 이미지">
       <ImageWrapper>
         <ImageLeft>
-          <AutoImage src={profileImage ?? defaultProfileImage} />
+          <AutoImage src={user?.picture ?? defaultProfileImage} />
         </ImageLeft>
         <ImageRight>
           <ButtonGroup>

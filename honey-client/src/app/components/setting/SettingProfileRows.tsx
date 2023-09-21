@@ -26,12 +26,6 @@ function SettingProfileRows() {
     },
   });
 
-  useEffect(() => {
-    if (!user) return;
-    setValue('handle', user.handle);
-    setValue('username', user.username);
-  }, [user]);
-
   const { mutateAsync: updateProfile } = useMutation(patchProfile, {
     onSuccess: (user) => {
       setUser(user);
@@ -62,6 +56,12 @@ function SettingProfileRows() {
       message: '영문(대소문자), 숫자, 특수문자(-, _)만 입력 가능합니다.',
     },
   });
+
+  useEffect(() => {
+    if (!user) return;
+    setValue('handle', user.handle);
+    setValue('username', user.username);
+  }, [user]);
 
   return (
     <TitleGroup title="프로필 정보">
