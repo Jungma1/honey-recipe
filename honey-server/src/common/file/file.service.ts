@@ -14,6 +14,7 @@ interface KeyPayload {
 @Injectable()
 export class FileService {
   private readonly R2: S3Client;
+  private readonly R2_URL: string;
   private readonly BUCKET_NAME: string;
 
   constructor(private readonly configService: ConfigService) {
@@ -25,6 +26,7 @@ export class FileService {
         secretAccessKey: configService.get<string>('R2_SECRET_KEY'),
       },
     });
+    this.R2_URL = configService.get<string>('R2_URL');
     this.BUCKET_NAME = configService.get<string>('R2_BUCKET_NAME');
   }
 
@@ -54,6 +56,6 @@ export class FileService {
   }
 
   async generateUrl(key: string) {
-    return `https://cdn.kkulpi.com/${key}`;
+    return `${this.R2_URL}/${key}`;
   }
 }

@@ -5,7 +5,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'cdn.kkulpi.com',
+        hostname: '*.kkulpi.com',
       },
     ],
   },
