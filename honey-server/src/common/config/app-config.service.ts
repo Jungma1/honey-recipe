@@ -22,6 +22,6 @@ export class AppConfigService {
   }
 
   get domain() {
-    return this.NODE_ENV === 'production' ? '.kkulpi.com' : undefined;
+    return this.NODE_ENV === 'production' ? '.kkulpi.com' : 'localhost';
   }
 }

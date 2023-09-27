@@ -43,7 +43,7 @@ export class AuthController {
   @UseGuards(RefreshTokenGuard)
   async refresh(@Req() req: Request) {
     const tokens = req.user as { accessToken: string; refreshToken: string };
-    return tokens;
+    return { ...tokens, domain: this.domain };
   }
 
   @Get('oauth/google')

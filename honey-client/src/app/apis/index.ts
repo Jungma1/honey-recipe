@@ -31,13 +31,13 @@ export const withSSR = async <T>(fn: () => Promise<T>, context: GetServerSidePro
           Authorization: `Bearer ${currentRefreshToken}`,
         },
       });
-      const { accessToken, refreshToken } = response.data;
+      const { accessToken, refreshToken, domain } = response.data;
       const date = new Date();
       const accessTokenExpires = new Date(date.getTime() + 60 * 60 * 1000);
       const refreshTokenExpires = new Date(date.getTime() + 60 * 60 * 1000 * 7 * 24);
       context.res.setHeader('Set-Cookie', [
-        `access_token=${accessToken}; path=/; expires=${accessTokenExpires.toUTCString()}; httpOnly`,
-        `refresh_token=${refreshToken}; path=/; expires=${refreshTokenExpires.toUTCString()}; httpOnly`,
+        `access_token=${accessToken}; path=/; expires=${accessTokenExpires.toUTCString()}; domain=${domain}; httpOnly`,
+        `refresh_token=${refreshToken}; path=/; expires=${refreshTokenExpires.toUTCString()}; domain=${domain}; httpOnly`,
       ]);
       currentAccessToken = accessToken;
     } catch (error) {
