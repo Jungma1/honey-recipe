@@ -18,3 +18,8 @@ export function setTokenCookies(
     maxAge: 60 * 60 * 1000 * 24 * 7,
   });
 }
+
+export function clearTokenCookies(res: Response, domain: string) {
+  res.clearCookie('access_token', { domain, path: '/' });
+  res.clearCookie('refresh_token', { domain, path: '/' });
+}

@@ -11,7 +11,7 @@ import {
 import { User } from '@prisma/client';
 import { Request, Response } from 'express';
 import { AppConfigService } from '~/common/config/app-config.service';
-import { setTokenCookies } from '~/lib/cookies';
+import { clearTokenCookies, setTokenCookies } from '~/lib/cookies';
 import { AuthService } from './auth.service';
 import { AuthUser } from './decorator/auth-user.decorator';
 import { AuthUserDto } from './dto/auth-user.dto';
@@ -84,6 +84,7 @@ export class AuthController {
   async logout(@Req() req: Request, @Res() res: Response) {
     const refreshToken = req.cookies['refresh_token'];
     await this.authService.removeToken(refreshToken);
-    return res.clearCookie('access_token').clearCookie('refresh_token').send();
+    clearTokenCookies(res, this.domain);
+    return res.sendStatus(200);
   }
 }
