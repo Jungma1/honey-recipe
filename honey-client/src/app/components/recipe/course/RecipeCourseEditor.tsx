@@ -1,11 +1,9 @@
 import styled from '@emotion/styled';
-import {
-  Add,
-  ClearRounded,
-  KeyboardArrowDownRounded,
-  KeyboardArrowUpRounded,
-  Remove,
-} from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
+import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
+import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRounded';
+import RemoveIcon from '@mui/icons-material/Remove';
 import { useMutation } from '@tanstack/react-query';
 import { rem } from 'polished';
 import React, { useState } from 'react';
@@ -101,16 +99,16 @@ function RecipeCourseEditor({ step, course }: Props) {
       </Wrapper>
       <StepWrapper>
         <StepIcon onClick={handleClickChangeOrderUp}>
-          <KeyboardArrowUpRounded />
+          <KeyboardArrowUpRoundedIcon />
         </StepIcon>
         <StepIcon onClick={handleClickChangeOrderDown}>
-          <KeyboardArrowDownRounded />
+          <KeyboardArrowDownRoundedIcon />
         </StepIcon>
         <StepIcon onClick={handleClickAddCourse}>
-          <Add />
+          <AddIcon />
         </StepIcon>
         <StepIcon onClick={handleClickRemoveCourse}>
-          <Remove />
+          <RemoveIcon />
         </StepIcon>
       </StepWrapper>
     </Block>
@@ -163,7 +161,7 @@ const ImageWrapper = styled.div`
   }
 `;
 
-const ImageRemoveIcon = styled(ClearRounded)`
+const ImageRemoveIcon = styled(ClearRoundedIcon)`
   right: 0;
   width: ${rem(32)};
   height: ${rem(32)};
