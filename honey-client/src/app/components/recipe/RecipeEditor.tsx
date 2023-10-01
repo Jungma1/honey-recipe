@@ -16,7 +16,7 @@ function RecipeEditor() {
   const { title, description, thumbnail, setTitle, setDescription, setThumbnail } =
     useEditorStore();
 
-  const { mutateAsync: uploadThumbnail } = useMutation(postRecipeImage, {
+  const { mutateAsync: uploadThumbnail, isLoading } = useMutation(postRecipeImage, {
     onSuccess: ({ imagePath }) => {
       setThumbnail(imagePath);
     },
@@ -47,8 +47,10 @@ function RecipeEditor() {
       <ImageWrapper>
         <AutoImage src={thumbnail ?? defaultPictureImage} />
         <ButtonGroup>
-          <Button onClick={handleUploadThumbnail}>이미지 업로드</Button>
-          <Button onClick={handleRemoveThumbnail} outlined>
+          <Button onClick={handleUploadThumbnail} disabled={isLoading}>
+            {!isLoading ? '이미지 업로드' : '이미지 업로드 중...'}
+          </Button>
+          <Button onClick={handleRemoveThumbnail} disabled={isLoading} outlined>
             이미지 삭제
           </Button>
         </ButtonGroup>
