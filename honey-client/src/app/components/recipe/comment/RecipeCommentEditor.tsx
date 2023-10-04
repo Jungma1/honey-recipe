@@ -23,6 +23,8 @@ function RecipeCommentEditor() {
   };
 
   const handleSubmitComment = async () => {
+    if (!content) return;
+
     await createComment({
       id,
       request: {

@@ -56,6 +56,7 @@ function RecipeSubCommentEditor({
   };
 
   const handleSubmitComment = async () => {
+    if (!form.content) return;
     if (!isEdit) {
       await createComment({
         id,
