@@ -56,7 +56,6 @@ function RecipeSubCommentEditor({
   };
 
   const handleSubmitComment = async () => {
-    if (!form.content) return;
     if (!isEdit) {
       await createComment({
         id,
@@ -81,6 +80,7 @@ function RecipeSubCommentEditor({
       onConfirm={handleSubmitComment}
       onClose={onClose}
       defaultButtonVisible={true}
+      isConfirm={!form.content}
     />
   );
 }
