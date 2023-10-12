@@ -50,7 +50,7 @@ function RecipeEditor() {
           <Button onClick={handleUploadThumbnail} disabled={isLoading}>
             {!isLoading ? '이미지 업로드' : '이미지 업로드 중...'}
           </Button>
-          <Button onClick={handleRemoveThumbnail} disabled={isLoading} outlined>
+          <Button onClick={handleRemoveThumbnail} outlined>
             이미지 삭제
           </Button>
         </ButtonGroup>
