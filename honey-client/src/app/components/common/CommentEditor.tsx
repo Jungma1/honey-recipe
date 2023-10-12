@@ -9,6 +9,7 @@ import Button from '../system/Button';
 interface Props {
   defaultValue?: string;
   defaultButtonVisible?: boolean;
+  isConfirm: boolean;
   onClose?: () => void;
   onConfirm: () => void;
   onChange: (value: string) => void;
@@ -25,6 +26,7 @@ const editorTheme = EditorView.theme({
 function CommentEditor({
   defaultValue,
   defaultButtonVisible,
+  isConfirm,
   onChange,
   onConfirm,
   onClose,
@@ -90,7 +92,7 @@ function CommentEditor({
           <StyledButton onClick={handleClickCancel} size="small" outlined>
             취소
           </StyledButton>
-          <StyledButton onClick={handleClickConfirm} size="small">
+          <StyledButton onClick={handleClickConfirm} size="small" disabled={isConfirm}>
             작성
           </StyledButton>
         </ButtonGroup>
