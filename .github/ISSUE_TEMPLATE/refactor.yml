@@ -1,5 +1,5 @@
 name: '🛠️ Refactor'
-description: ' '
+description: 'Refactor Template'
 labels: ['🛠️ Refactor']
 body:
   - type: textarea

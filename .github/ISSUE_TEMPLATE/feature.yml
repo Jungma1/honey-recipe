@@ -1,5 +1,5 @@
 name: '✨ Feature'
-description: ' '
+description: 'Feature Template'
 labels: [✨ Feature']
 body:
   - type: textarea
