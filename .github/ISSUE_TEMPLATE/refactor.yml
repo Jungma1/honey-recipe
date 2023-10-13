@@ -1,0 +1,9 @@
+name: '🛠️ Refactor'
+description: ' '
+labels: ['🛠️ Refactor']
+body:
+  - type: textarea
+    attributes:
+      label: 📄 Describe
+    validations:
+      required: true
