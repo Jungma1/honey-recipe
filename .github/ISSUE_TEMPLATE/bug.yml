@@ -1,5 +1,5 @@
 name: '🐞 Bug'
-description: ' '
+description: 'Bug Template'
 labels: ['🐞 Bug']
 body:
   - type: textarea
