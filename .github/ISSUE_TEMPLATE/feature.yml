@@ -1,0 +1,9 @@
+name: '✨ Feature'
+description: ' '
+labels: [✨ Feature']
+body:
+  - type: textarea
+    attributes:
+      label: 📄 Describe
+    validations:
+      required: true
