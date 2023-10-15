@@ -1,6 +1,6 @@
 name: '✨ Feature'
 description: 'Feature Template'
-labels: [✨ Feature']
+labels: ['✨ Feature']
 body:
   - type: textarea
     attributes:
