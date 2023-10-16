@@ -1,6 +1,4 @@
 import styled from '@emotion/styled';
-import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
-import ForumRoundedIcon from '@mui/icons-material/ForumRounded';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,8 +8,8 @@ import { Recipe } from '~/apis/types';
 import { useMotionHorizontal } from '~/hooks/useMotionHorizontal';
 import { defaultPictureImage, defaultProfileImage } from '~/static';
 import { colors } from '~/utils/colors';
-import { formatDate, formatNumber } from '~/utils/format';
 import AutoImage from '../system/AutoImage';
+import RecipeStats from './RecipeStats';
 
 interface Props {
   recipe: Recipe;
@@ -40,17 +38,11 @@ function RecipeItem({ recipe }: Props) {
             <Image src={recipe.user.picture || defaultProfileImage} width={24} height={24} alt="" />
             <span>{recipe.user.username}</span>
           </AvatarLink>
-          <StatBlock>
-            <CreatedAt>{formatDate(recipe.createdAt)}</CreatedAt>
-            <Stat>
-              <FavoriteRoundedIcon />
-              <span>{formatNumber(recipe.likeCount)}</span>
-            </Stat>
-            <Stat>
-              <ForumRoundedIcon />
-              <span>{formatNumber(recipe.commentCount)}</span>
-            </Stat>
-          </StatBlock>
+          <RecipeStats
+            createdAt={recipe.createdAt}
+            likeCount={recipe.likeCount}
+            commentCount={recipe.commentCount}
+          />
         </Footer>
       </ContentWrapper>
     </Block>
@@ -116,27 +108,6 @@ const AvatarLink = styled(Link)`
   img {
     border-radius: 50%;
   }
-`;
-
-const StatBlock = styled.div`
-  display: flex;
-  gap: ${rem(16)};
-  color: ${colors.gray6};
-`;
-
-const Stat = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${rem(4)};
-
-  svg {
-    width: 16px;
-    height: 16px;
-  }
-`;
-
-const CreatedAt = styled.div`
-  color: ${colors.gray6};
 `;
 
 export default RecipeItem;
