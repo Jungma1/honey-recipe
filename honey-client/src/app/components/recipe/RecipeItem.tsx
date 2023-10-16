@@ -24,7 +24,7 @@ function RecipeItem({ recipe }: Props) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       animate={{ x }}
-      onClick={(e) => router.push(`/recipe/${recipe.id}`)}
+      onClick={() => router.push(`/recipe/${recipe.id}`)}
     >
       <ImageWrapper>
         <AutoImage src={recipe.thumbnail ?? defaultPictureImage} />
@@ -42,6 +42,7 @@ function RecipeItem({ recipe }: Props) {
             createdAt={recipe.createdAt}
             likeCount={recipe.likeCount}
             commentCount={recipe.commentCount}
+            isPrivate={recipe.isPrivate}
           />
         </Footer>
       </ContentWrapper>

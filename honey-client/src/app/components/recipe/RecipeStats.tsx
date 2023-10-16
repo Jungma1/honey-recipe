@@ -9,11 +9,13 @@ interface Props {
   createdAt: string;
   likeCount: number;
   commentCount: number;
+  isPrivate: boolean;
 }
 
-function RecipeStats({ createdAt, likeCount, commentCount }: Props) {
+function RecipeStats({ createdAt, likeCount, commentCount, isPrivate }: Props) {
   return (
     <Block>
+      {isPrivate && <Private>비공개</Private>}
       <CreatedAt>{formatDate(createdAt)}</CreatedAt>
       <Stat>
         <FavoriteRoundedIcon />
@@ -29,6 +31,7 @@ function RecipeStats({ createdAt, likeCount, commentCount }: Props) {
 
 const Block = styled.div`
   display: flex;
+  align-items: center;
   gap: ${rem(16)};
   color: ${colors.gray6};
 `;
@@ -46,6 +49,14 @@ const Stat = styled.div`
     width: 16px;
     height: 16px;
   }
+`;
+
+const Private = styled.div`
+  padding: ${rem(2)} ${rem(8)};
+  border-radius: ${rem(4)};
+  font-size: ${rem(14)};
+  color: ${colors.white};
+  background: ${colors.gray3};
 `;
 
 export default RecipeStats;
