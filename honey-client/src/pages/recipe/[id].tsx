@@ -23,7 +23,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
   const isOwner = recipe.user.id === user?.id;
 
   if (recipe.isPrivate && !isOwner) return redirect('/404');
-  return json({ user, recipe, comments, isOwner });
+  return json({ user, recipe, comments });
 };
 
 export default function RecipeDetailPage({ recipe, comments }: Props) {
@@ -34,11 +34,7 @@ export default function RecipeDetailPage({ recipe, comments }: Props) {
         <Block>
           <RecipeViewerHeader recipe={recipe} />
           <RecipeCourseList course={recipe.course} />
-          <RecipeViewerReaction
-            isLiked={recipe.isLiked}
-            isBookmarked={recipe.isBookmarked}
-            recipeId={recipe.id}
-          />
+          <RecipeViewerReaction recipe={recipe} />
           <RecipeCommentList comments={comments} commentCount={recipe.commentCount} />
         </Block>
       </ContentLayout>
