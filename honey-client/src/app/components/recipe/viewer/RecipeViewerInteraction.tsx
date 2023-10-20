@@ -7,10 +7,11 @@ import { colors } from '~/utils/colors';
 
 interface Props {
   isOwner: boolean;
+  isPrivate: boolean;
   recipeId: number;
 }
 
-function RecipeViewerInteraction({ isOwner, recipeId }: Props) {
+function RecipeViewerInteraction({ isOwner, isPrivate, recipeId }: Props) {
   const router = useRouter();
   const { openModal } = useModalStore();
 
@@ -33,6 +34,7 @@ function RecipeViewerInteraction({ isOwner, recipeId }: Props) {
 
   return (
     <Block>
+      {isPrivate && <Private>비공개</Private>}
       <Text onClick={handleClickEdit}>수정</Text>
       <Text onClick={handleClickDelete}>삭제</Text>
     </Block>
@@ -53,6 +55,14 @@ const Text = styled.span`
   :hover {
     color: ${colors.gray9};
   }
+`;
+
+const Private = styled.div`
+  padding: ${rem(2)} ${rem(8)};
+  border-radius: ${rem(4)};
+  font-size: ${rem(14)};
+  color: ${colors.white};
+  background: ${colors.gray3};
 `;
 
 export default RecipeViewerInteraction;

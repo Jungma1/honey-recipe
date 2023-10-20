@@ -48,7 +48,11 @@ export default function RecipeDetailPage({ id, recipe, isOwner }: Props) {
       <ContentLayout>
         <Block>
           <RecipeViewerHeader recipe={data} />
-          <RecipeViewerInteraction isOwner={isOwner} recipeId={data.id} />
+          <RecipeViewerInteraction
+            isOwner={isOwner}
+            isPrivate={recipe.isPrivate}
+            recipeId={data.id}
+          />
           <RecipeCourseList course={data.course} />
           <RecipeViewerReaction
             isLiked={recipe.isLiked}

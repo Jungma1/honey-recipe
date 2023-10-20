@@ -61,7 +61,7 @@ function SettingProfileRows() {
     if (!user) return;
     setValue('handle', user.handle);
     setValue('username', user.username);
-  }, [user]);
+  }, [setValue, user]);
 
   return (
     <TitleGroup title="프로필 정보">
