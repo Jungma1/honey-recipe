@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { QueryClient, dehydrate, useQueries } from '@tanstack/react-query';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import { withSSR } from '~/apis';
 import { getRecipe, getRecipeComments } from '~/apis/recipe';
@@ -12,7 +11,6 @@ import RecipeCourseList from '~/components/recipe/course/RecipeCourseList';
 import RecipeViewerHeader from '~/components/recipe/viewer/RecipeViewerHeader';
 import RecipeViewerInteraction from '~/components/recipe/viewer/RecipeViewerInteraction';
 import RecipeViewerReaction from '~/components/recipe/viewer/RecipeViewerReaction';
-import { queryKeys } from '~/constants/queryKeys';
 import { json } from '~/utils/json';
 import { redirect } from '~/utils/router';
 
@@ -20,46 +18,34 @@ interface Props extends InferGetServerSidePropsType<typeof getServerSideProps> {
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
   const user = await withSSR(() => getProfile(), context);
-  const queryClient = new QueryClient();
   const id = parseInt(context.params?.id as string);
-
   const recipe = await getRecipe(id);
-  if (recipe.isPrivate && recipe.user.id !== user?.id) return redirect('/404');
-
+  const comments = await getRecipeComments(id);
   const isOwner = recipe.user.id === user?.id;
-  await queryClient.prefetchQuery([queryKeys.comments, id], () => getRecipeComments(id));
 
-  return json({ user, id, recipe, isOwner, dehydratedState: dehydrate(queryClient) });
+  if (recipe.isPrivate && !isOwner) return redirect('/404');
+  return json({ user, recipe, comments, isOwner });
 };
 
-export default function RecipeDetailPage({ id, recipe, isOwner }: Props) {
-  const [{ data }, { data: comments }] = useQueries({
-    queries: [
-      { queryKey: [queryKeys.recipe, id], queryFn: () => getRecipe(id), initialData: recipe },
-      { queryKey: [queryKeys.comments, id], queryFn: () => getRecipeComments(id) },
-    ],
-  });
-
-  if (!data || !comments) return null;
-
+export default function RecipeDetailPage({ recipe, comments, isOwner }: Props) {
   return (
     <MainLayout>
       <Header />
       <ContentLayout>
         <Block>
-          <RecipeViewerHeader recipe={data} />
+          <RecipeViewerHeader recipe={recipe} />
           <RecipeViewerInteraction
             isOwner={isOwner}
             isPrivate={recipe.isPrivate}
-            recipeId={data.id}
+            recipeId={recipe.id}
           />
-          <RecipeCourseList course={data.course} />
+          <RecipeCourseList course={recipe.course} />
           <RecipeViewerReaction
             isLiked={recipe.isLiked}
             isBookmarked={recipe.isBookmarked}
-            recipeId={data.id}
+            recipeId={recipe.id}
           />
-          <RecipeCommentList comments={comments} commentCount={data.commentCount} />
+          <RecipeCommentList comments={comments} commentCount={recipe.commentCount} />
         </Block>
       </ContentLayout>
     </MainLayout>
