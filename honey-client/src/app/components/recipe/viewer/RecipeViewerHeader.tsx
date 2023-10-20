@@ -1,9 +1,13 @@
 import styled from '@emotion/styled';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { rem } from 'polished';
+import { deleteRecipe } from '~/apis/recipe';
 import { RecipeRead } from '~/apis/types';
 import { defaultPictureImage, defaultProfileImage } from '~/static';
+import { useModalStore } from '~/stores/modal';
+import { useUserStore } from '~/stores/user';
 import { colors } from '~/utils/colors';
 import { formatNumber } from '~/utils/format';
 import AutoImage from '../../system/AutoImage';
@@ -13,6 +17,26 @@ interface Props {
 }
 
 function RecipeViewerHeader({ recipe }: Props) {
+  const router = useRouter();
+  const { user } = useUserStore();
+  const { openModal } = useModalStore();
+  const isOwner = recipe.user.id === user?.id;
+
+  const handleClickEdit = () => {
+    router.push(`/recipe/edit?id=${recipe.id}`);
+  };
+
+  const handleClickDelete = () => {
+    openModal({
+      title: '레시피 삭제',
+      description: '정말 삭제하시겠습니까?',
+      onConfirm: async () => {
+        await deleteRecipe(recipe.id);
+        router.push('/');
+      },
+    });
+  };
+
   return (
     <Block>
       <ImageWrapper>
@@ -38,6 +62,13 @@ function RecipeViewerHeader({ recipe }: Props) {
         <Title>{recipe.title}</Title>
         <Description>{recipe.description}</Description>
       </ContentWrapper>
+      {isOwner && (
+        <InteractionWrapper>
+          {recipe.isPrivate && <Private>비공개</Private>}
+          <Text onClick={handleClickEdit}>수정</Text>
+          <Text onClick={handleClickDelete}>삭제</Text>
+        </InteractionWrapper>
+      )}
     </Block>
   );
 }
@@ -120,6 +151,30 @@ const Description = styled.span`
   font-size: ${rem(16)};
   color: ${colors.gray9};
   white-space: pre-line;
+`;
+
+const InteractionWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: ${rem(8)};
+  padding-top: ${rem(16)};
+`;
+
+const Text = styled.span`
+  color: ${colors.gray5};
+  cursor: pointer;
+
+  :hover {
+    color: ${colors.gray9};
+  }
+`;
+
+const Private = styled.div`
+  padding: ${rem(2)} ${rem(8)};
+  border-radius: ${rem(4)};
+  font-size: ${rem(14)};
+  color: ${colors.white};
+  background: ${colors.gray3};
 `;
 
 export default RecipeViewerHeader;

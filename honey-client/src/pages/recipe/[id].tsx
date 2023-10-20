@@ -9,7 +9,6 @@ import MainLayout from '~/components/layout/MainLayout';
 import RecipeCommentList from '~/components/recipe/comment/RecipeCommentList';
 import RecipeCourseList from '~/components/recipe/course/RecipeCourseList';
 import RecipeViewerHeader from '~/components/recipe/viewer/RecipeViewerHeader';
-import RecipeViewerInteraction from '~/components/recipe/viewer/RecipeViewerInteraction';
 import RecipeViewerReaction from '~/components/recipe/viewer/RecipeViewerReaction';
 import { json } from '~/utils/json';
 import { redirect } from '~/utils/router';
@@ -27,18 +26,13 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
   return json({ user, recipe, comments, isOwner });
 };
 
-export default function RecipeDetailPage({ recipe, comments, isOwner }: Props) {
+export default function RecipeDetailPage({ recipe, comments }: Props) {
   return (
     <MainLayout>
       <Header />
       <ContentLayout>
         <Block>
           <RecipeViewerHeader recipe={recipe} />
-          <RecipeViewerInteraction
-            isOwner={isOwner}
-            isPrivate={recipe.isPrivate}
-            recipeId={recipe.id}
-          />
           <RecipeCourseList course={recipe.course} />
           <RecipeViewerReaction
             isLiked={recipe.isLiked}
