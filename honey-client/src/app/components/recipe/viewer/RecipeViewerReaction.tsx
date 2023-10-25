@@ -14,21 +14,21 @@ import {
   postRecipeBookmark,
   postRecipeLike,
 } from '~/apis/recipe';
+import { RecipeRead } from '~/apis/types';
 import Toggle from '~/components/common/Toggle';
 import { useModalStore } from '~/stores/modal';
 import { useUserStore } from '~/stores/user';
 import { colors } from '~/utils/colors';
 
 interface Props {
-  isLiked: boolean;
-  isBookmarked: boolean;
-  recipeId: number;
+  recipe: RecipeRead;
 }
 
-function RecipeViewerReaction({ isLiked, isBookmarked, recipeId }: Props) {
+function RecipeViewerReaction({ recipe }: Props) {
   const router = useRouter();
   const { user } = useUserStore();
   const { openModal } = useModalStore();
+  const { isLiked, isBookmarked, id } = recipe;
   const [isLikedState, setIsLikedState] = useState(isLiked);
   const [isBookmarkedState, setIsBookmarkedState] = useState(isBookmarked);
 
@@ -69,13 +69,9 @@ function RecipeViewerReaction({ isLiked, isBookmarked, recipeId }: Props) {
     }
 
     if (isLikedState) {
-      await unlikeRecipe({
-        id: recipeId,
-      });
+      await unlikeRecipe({ id });
     } else {
-      await likeRecipe({
-        id: recipeId,
-      });
+      await likeRecipe({ id });
     }
   };
 
@@ -92,13 +88,9 @@ function RecipeViewerReaction({ isLiked, isBookmarked, recipeId }: Props) {
     }
 
     if (isBookmarkedState) {
-      await unBookmarkRecipe({
-        id: recipeId,
-      });
+      await unBookmarkRecipe({ id });
     } else {
-      await bookmarkRecipe({
-        id: recipeId,
-      });
+      await bookmarkRecipe({ id });
     }
   };
 
