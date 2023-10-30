@@ -110,7 +110,7 @@ function RecipeViewerReaction({ recipe }: Props) {
       <IconBlock
         onClick={handleClickBookmark}
         initial={{ scale: 1 }}
-        whileTap={isBookmarked ? {} : { scale: 2 }}
+        whileTap={isBookmarkedState ? {} : { scale: 2 }}
       >
         <Toggle
           isValue={isBookmarkedState}
