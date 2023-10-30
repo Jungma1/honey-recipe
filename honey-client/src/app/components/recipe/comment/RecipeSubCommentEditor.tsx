@@ -33,7 +33,6 @@ function RecipeSubCommentEditor({
   const { mutateAsync: createComment } = useMutation(postRecipeComment, {
     onSuccess: () => {
       onLoaded?.();
-      queryClient.invalidateQueries([queryKeys.recipe, id]);
       queryClient.invalidateQueries([queryKeys.comment, parentCommentId]);
     },
   });
