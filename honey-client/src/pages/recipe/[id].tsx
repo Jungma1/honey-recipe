@@ -26,13 +26,13 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
   if (recipe.isPrivate && !isOwner) return redirect('/404');
 
   const queryClient = new QueryClient();
-  await queryClient.prefetchQuery([queryKeys.comments], () => getRecipeComments(id));
+  await queryClient.prefetchQuery([queryKeys.comments, id], () => getRecipeComments(id));
 
   return json({ user, recipe, id, dehydratedState: dehydrate(queryClient) });
 };
 
 export default function RecipeDetailPage({ recipe, id }: Props) {
-  const { data: comments } = useQuery([queryKeys.comments], () => getRecipeComments(id));
+  const { data: comments } = useQuery([queryKeys.comments, id], () => getRecipeComments(id));
 
   if (!comments) return null;
 
