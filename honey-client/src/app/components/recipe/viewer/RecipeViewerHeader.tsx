@@ -9,7 +9,7 @@ import { defaultPictureImage, defaultProfileImage } from '~/static';
 import { useModalStore } from '~/stores/modal';
 import { useUserStore } from '~/stores/user';
 import { colors } from '~/utils/colors';
-import { formatNumber } from '~/utils/format';
+import { formatNumber, formatePureDate } from '~/utils/format';
 import AutoImage from '../../system/AutoImage';
 
 interface Props {
@@ -58,9 +58,12 @@ function RecipeViewerHeader({ recipe }: Props) {
       </Content>
       {isOwner && (
         <Footer>
-          {recipe.isPrivate && <Private>비공개</Private>}
-          <Text onClick={handleClickEdit}>수정</Text>
-          <Text onClick={handleClickDelete}>삭제</Text>
+          <div className="date">{formatePureDate(recipe.createdAt)}</div>
+          <div className="actions">
+            {recipe.isPrivate && <Private>비공개</Private>}
+            <Text onClick={handleClickEdit}>수정</Text>
+            <Text onClick={handleClickDelete}>삭제</Text>
+          </div>
         </Footer>
       )}
     </Block>
@@ -149,9 +152,23 @@ const Description = styled.span`
 
 const Footer = styled.div`
   display: flex;
-  justify-content: flex-end;
-  gap: ${rem(8)};
+  align-items: center;
+  justify-content: space-between;
   padding-top: ${rem(16)};
+
+  .date {
+    font-weight: 500;
+    font-size: ${rem(14)};
+    color: ${colors.gray5};
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: ${rem(8)};
+    font-weight: 500;
+    font-size: ${rem(14)};
+  }
 `;
 
 const Text = styled.span`

@@ -39,5 +39,5 @@ export const formatDate = (date: string) => {
 
 export const formatePureDate = (date: string) => {
   const d = new Date(date);
-  return format(d, 'PPP', { locale: ko });
+  return format(d, 'PPP p', { locale: ko });
 };
