@@ -56,16 +56,23 @@ function RecipeViewerHeader({ recipe }: Props) {
         <Title>{recipe.title}</Title>
         <Description>{recipe.description}</Description>
       </Content>
-      {isOwner && (
-        <Footer>
-          <div className="date">{formatePureDate(recipe.createdAt)}</div>
-          <div className="actions">
-            {recipe.isPrivate && <Private>비공개</Private>}
-            <Text onClick={handleClickEdit}>수정</Text>
-            <Text onClick={handleClickDelete}>삭제</Text>
-          </div>
-        </Footer>
-      )}
+      <Footer>
+        <FooterRow>
+          <DateText>{formatePureDate(recipe.createdAt)}</DateText>
+          {recipe.isPrivate && (
+            <>
+              <DotText>·</DotText>
+              <Private>비공개</Private>
+            </>
+          )}
+        </FooterRow>
+        {isOwner && (
+          <FooterRow>
+            <ActionText onClick={handleClickEdit}>수정</ActionText>
+            <ActionText onClick={handleClickDelete}>삭제</ActionText>
+          </FooterRow>
+        )}
+      </Footer>
     </Block>
   );
 }
@@ -152,28 +159,33 @@ const Description = styled.span`
 
 const Footer = styled.div`
   display: flex;
-  align-items: center;
   justify-content: space-between;
   padding-top: ${rem(16)};
-
-  .date {
-    font-weight: 500;
-    font-size: ${rem(14)};
-    color: ${colors.gray5};
-  }
-
-  .actions {
-    display: flex;
-    align-items: center;
-    gap: ${rem(8)};
-    font-weight: 500;
-    font-size: ${rem(14)};
-  }
 `;
 
-const Text = styled.span`
+const FooterRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${rem(8)};
+`;
+
+const DateText = styled.span`
+  font-weight: 500;
+  font-size: ${rem(14)};
   color: ${colors.gray5};
+`;
+
+const DotText = styled.span`
+  font-weight: 500;
+  font-size: ${rem(14)};
+  color: ${colors.gray5};
+`;
+
+const ActionText = styled.span`
   cursor: pointer;
+  font-weight: 500;
+  font-size: ${rem(14)};
+  color: ${colors.gray5};
 
   :hover {
     color: ${colors.gray9};
