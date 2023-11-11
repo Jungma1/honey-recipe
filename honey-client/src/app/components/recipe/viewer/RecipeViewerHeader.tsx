@@ -39,7 +39,7 @@ function RecipeViewerHeader({ recipe }: Props) {
 
   return (
     <Block>
-      <ImageWrapper>
+      <Header>
         <Thumbnail>
           <AutoImage src={recipe.thumbnail ?? defaultPictureImage} />
         </Thumbnail>
@@ -48,26 +48,20 @@ function RecipeViewerHeader({ recipe }: Props) {
             <FavoriteRoundedIcon />
             <span>{formatNumber(recipe.likeCount)}</span>
           </LikeCount>
-          <Image
-            src={recipe.user.picture ?? defaultProfileImage}
-            width={128}
-            height={128}
-            priority
-            alt=""
-          />
+          <Image src={recipe.user.picture ?? defaultProfileImage} width={128} height={128} alt="" />
           <Username>{recipe.user.username}</Username>
         </Avatar>
-      </ImageWrapper>
-      <ContentWrapper>
+      </Header>
+      <Content>
         <Title>{recipe.title}</Title>
         <Description>{recipe.description}</Description>
-      </ContentWrapper>
+      </Content>
       {isOwner && (
-        <InteractionWrapper>
+        <Footer>
           {recipe.isPrivate && <Private>비공개</Private>}
           <Text onClick={handleClickEdit}>수정</Text>
           <Text onClick={handleClickDelete}>삭제</Text>
-        </InteractionWrapper>
+        </Footer>
       )}
     </Block>
   );
@@ -78,7 +72,7 @@ const Block = styled.div`
   flex-direction: column;
 `;
 
-const ImageWrapper = styled.div`
+const Header = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -132,7 +126,7 @@ const Username = styled.span`
   align-self: center;
 `;
 
-const ContentWrapper = styled.div`
+const Content = styled.div`
   display: flex;
   flex-direction: column;
   padding-top: ${rem(80)};
@@ -153,7 +147,7 @@ const Description = styled.span`
   white-space: pre-line;
 `;
 
-const InteractionWrapper = styled.div`
+const Footer = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: ${rem(8)};
