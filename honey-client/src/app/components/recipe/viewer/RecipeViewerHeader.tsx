@@ -9,7 +9,7 @@ import { defaultPictureImage, defaultProfileImage } from '~/static';
 import { useModalStore } from '~/stores/modal';
 import { useUserStore } from '~/stores/user';
 import { colors } from '~/utils/colors';
-import { formatNumber } from '~/utils/format';
+import { formatNumber, formatePureDate } from '~/utils/format';
 import AutoImage from '../../system/AutoImage';
 
 interface Props {
@@ -39,7 +39,7 @@ function RecipeViewerHeader({ recipe }: Props) {
 
   return (
     <Block>
-      <ImageWrapper>
+      <Header>
         <Thumbnail>
           <AutoImage src={recipe.thumbnail ?? defaultPictureImage} />
         </Thumbnail>
@@ -48,27 +48,31 @@ function RecipeViewerHeader({ recipe }: Props) {
             <FavoriteRoundedIcon />
             <span>{formatNumber(recipe.likeCount)}</span>
           </LikeCount>
-          <Image
-            src={recipe.user.picture ?? defaultProfileImage}
-            width={128}
-            height={128}
-            priority
-            alt=""
-          />
+          <Image src={recipe.user.picture ?? defaultProfileImage} width={128} height={128} alt="" />
           <Username>{recipe.user.username}</Username>
         </Avatar>
-      </ImageWrapper>
-      <ContentWrapper>
+      </Header>
+      <Content>
         <Title>{recipe.title}</Title>
         <Description>{recipe.description}</Description>
-      </ContentWrapper>
-      {isOwner && (
-        <InteractionWrapper>
-          {recipe.isPrivate && <Private>비공개</Private>}
-          <Text onClick={handleClickEdit}>수정</Text>
-          <Text onClick={handleClickDelete}>삭제</Text>
-        </InteractionWrapper>
-      )}
+      </Content>
+      <Footer>
+        <FooterRow>
+          <DateText>{formatePureDate(recipe.createdAt)}</DateText>
+          {recipe.isPrivate && (
+            <>
+              <DotText>·</DotText>
+              <Private>비공개</Private>
+            </>
+          )}
+        </FooterRow>
+        {isOwner && (
+          <FooterRow>
+            <ActionText onClick={handleClickEdit}>수정</ActionText>
+            <ActionText onClick={handleClickDelete}>삭제</ActionText>
+          </FooterRow>
+        )}
+      </Footer>
     </Block>
   );
 }
@@ -78,7 +82,7 @@ const Block = styled.div`
   flex-direction: column;
 `;
 
-const ImageWrapper = styled.div`
+const Header = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -132,7 +136,7 @@ const Username = styled.span`
   align-self: center;
 `;
 
-const ContentWrapper = styled.div`
+const Content = styled.div`
   display: flex;
   flex-direction: column;
   padding-top: ${rem(80)};
@@ -153,16 +157,35 @@ const Description = styled.span`
   white-space: pre-line;
 `;
 
-const InteractionWrapper = styled.div`
+const Footer = styled.div`
   display: flex;
-  justify-content: flex-end;
-  gap: ${rem(8)};
+  justify-content: space-between;
   padding-top: ${rem(16)};
 `;
 
-const Text = styled.span`
+const FooterRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${rem(8)};
+`;
+
+const DateText = styled.span`
+  font-weight: 500;
+  font-size: ${rem(14)};
   color: ${colors.gray5};
+`;
+
+const DotText = styled.span`
+  font-weight: 500;
+  font-size: ${rem(14)};
+  color: ${colors.gray5};
+`;
+
+const ActionText = styled.span`
   cursor: pointer;
+  font-weight: 500;
+  font-size: ${rem(14)};
+  color: ${colors.gray5};
 
   :hover {
     color: ${colors.gray9};

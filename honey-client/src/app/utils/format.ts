@@ -1,4 +1,4 @@
-import { formatDistanceToNow } from 'date-fns';
+import { format, formatDistanceToNow } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
 export const formatNumber = (number: number) => {
@@ -35,4 +35,9 @@ export const formatDate = (date: string) => {
   }
 
   return formatDistanceToNow(d, { addSuffix: true, locale: ko }).replace('약 ', '');
+};
+
+export const formatePureDate = (date: string) => {
+  const d = new Date(date);
+  return format(d, 'PPP p', { locale: ko });
 };
