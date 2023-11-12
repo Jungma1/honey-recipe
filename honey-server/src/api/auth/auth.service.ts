@@ -93,13 +93,14 @@ export class AuthService {
         });
 
         await this.fileService.uploadFile(key, buffer);
+        const imagePath = await this.fileService.generateUrl(key);
 
         await this.prismaService.user.update({
           where: {
             id: findUser.id,
           },
           data: {
-            picture: `https://cdn.kkulpi.com/${key}`,
+            picture: imagePath,
           },
         });
       }
